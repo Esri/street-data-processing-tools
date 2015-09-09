@@ -1,4 +1,4 @@
-# street-data-processing-tools
+# Street Data Processing Tools
 When you purchase commercial street data with the intent of using it in ArcGIS Network Analyst, you’ll need to create a network dataset if one isn’t already provided. Creating a good network dataset takes time and requires a fairly thorough understanding of the process. For this reason, we have tried to simplify the process for many ArcGIS users by writing a set of tools that automatically creates a network dataset from two popular street data products: HERE™ NAVSTREETS™ and TomTom® MultiNet®.
 
 ![Street Data Processing Tools](street-data-processing-tools.png)
