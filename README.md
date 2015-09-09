@@ -16,7 +16,7 @@ The tools process shapefile data from TomTom MultiNet or HERE NAVSTREETS into a 
 ## Installation
 To install the tools
 
-1. Download the latest version of [StreetDataProcessingTools_v*.zip](releases/latest) file.
+1. Download the latest version of [StreetDataProcessingTools_v*.zip](https://github.com/ArcGIS/street-data-processing-tools/releases/latest) file.
 2. Extract the contents of the archive to a folder.
 3. Right-click `GPProcessVendorDataFunctions.dll` and select Properties.
 4. In the Properties dialog, click the General tab and then click Unblock button in the Security section. Click Ok to save the changes and close the properties dialog.
