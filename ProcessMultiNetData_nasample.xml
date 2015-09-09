@@ -1,0 +1,165 @@
+﻿<metadata xml:lang="en">
+  <Esri>
+    <CreaDate>20110901</CreaDate>
+    <CreaTime>12345600</CreaTime>
+    <ArcGISFormat>1.0</ArcGISFormat>
+    <SyncOnce>TRUE</SyncOnce>
+    <ModDate>20110901</ModDate>
+    <ModTime>12345600</ModTime>
+    <ArcGISProfile>ItemDescription</ArcGISProfile>
+  </Esri>
+  <tool name="ProcessMultiNetData" displayname="Process MultiNet® Street Data" toolboxalias="" xmlns="">
+    <parameters>
+      <param name="input_nw_feature_class" displayname="Input Network Geometry (NW) Feature Class" type="Required" direction="Input" datatype="Feature Class" expression="input_nw_feature_class">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The line feature class of your Tele Atlas MultiNet data that represents the network geometries. This feature class has a name that typically ends in "NW".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_mn_feature_class" displayname="Input Maneuvers Geometry (MN) Feature Class" type="Required" direction="Input" datatype="Feature Class" expression="input_mn_feature_class">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The point feature class of your Tele Atlas MultiNet data that represents the maneuver geometries. This feature class has a name that typically ends in "MN".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_mp_table" displayname="Input Maneuver Path Index (MP) Table" type="Required" direction="Input" datatype="Table" expression="input_mp_table">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet data that represents the maneuver path indexes. This table has a name that typically ends in "MP".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_si_table" displayname="Input Sign Information (SI) Table" type="Required" direction="Input" datatype="Table" expression="input_si_table">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet data that represents the sign information. This table has a name that typically ends in "SI".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_sp_table" displayname="Input Sign Path (SP) Table" type="Required" direction="Input" datatype="Table" expression="input_sp_table">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet data that represents the sign path. This table has a name that typically ends in "SP".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="output_file_geodatabase" displayname="Output File Geodatabase" type="Required" direction="Output" datatype="Workspace" expression="output_file_geodatabase">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The full path including the name of the file geodatabase to be created containing the resulting network dataset.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="output_file_geodatabase_version" displayname="Output File Geodatabase Version" type="Required" direction="Input" datatype="String" expression="output_file_geodatabase_version">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The ArcGIS version of the file geodatabase to create.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="feature_dataset_name" displayname="Feature Dataset Name" type="Required" direction="Input" datatype="String" expression="feature_dataset_name">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of the feature dataset to be created in the output file geodatabase.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="network_dataset_name" displayname="Network Dataset Name" type="Required" direction="Input" datatype="String" expression="network_dataset_name">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of the network dataset to be created in the output file geodatabase.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_create_network_attributes_in_metric" displayname="Create Network Attributes in Metric" type="Optional" direction="Input" datatype="Boolean" expression="{input_create_network_attributes_in_metric}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset contains attributes in metric or non-metric units of measure.&lt;/SPAN&gt;&lt;/P&gt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- The distance network attribute will be in kilometers, and the Logistics network attributes will be in meters and metric tons.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- The distance network attribute will be in miles, and the Logistics network attributes will be in feet and tons.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_create_two_distance_attributes" displayname="Create Two Distance Attributes" type="Optional" direction="Input" datatype="Boolean" expression="{input_create_two_distance_attributes}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset is created with two distance attributes -- Miles and Kilometers. This is useful when you need to create a network dataset that needs to report distances in both miles and kilometers.&lt;/SPAN&gt;&lt;/P&gt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- Two distance network attributes will be created -- Miles and Kilometers.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- Only one distance network attribute will be created -- it will be either Miles or Kilometers, depending on whether or not network attributes are to be created in metric units of measure.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_rs_table" displayname="Input Restrictions (RS) Table" type="Optional" direction="Input" datatype="Table" expression="{input_rs_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet data that represents the restrictions. This table has a name that typically ends in "RS".&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN&gt;If provided, the output network dataset will contain restriction attributes specific for passenger cars, residential vehicles, taxis, and public buses. Otherwise, the output network dataset will contain restriction attributes for general one-way and turn restrictions.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_time_zone_id_base_field_name" displayname="Input Time Zone ID Base Field Name" type="Optional" direction="Input" datatype="String" expression="{input_time_zone_id_base_field_name}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of the field in your Network Geometry (NW) feature class that contains the time zone IDs. This parameter must be specified together with the Input Time Zone Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN&gt;If time zones are modeled for each direction of travel, then only specify the base name of the field. For example, if the fields are named FT_TimeZoneID and TF_TimeZoneID, then specify TimeZoneID for this parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_time_zone_table" displayname="Input Time Zone Table" type="Optional" direction="Input" datatype="Table" expression="{input_time_zone_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The time zone table created by the ProcessMultiNetTimeZones tool. This parameter must be specified together with the Input Time Zone ID Base field Name parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_common_time_zone_for_the_entire_dataset" displayname="Input Time Zone for the Entire Dataset" type="Optional" direction="Input" datatype="String" expression="{input_common_time_zone_for_the_entire_dataset}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The time zone that is valid for the entire extent of the input data. This name is the official name of the time zone as defined by Microsoft. This parameter is ignored Input Time Zone Table parameter is specified.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_hsnp_table" displayname="Input Network Profile Link (HSNP) Table" type="Optional" direction="Input" datatype="Table" expression="{input_hsnp_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas Speed Profiles data that represents the network profile links. This table has a name that typically ends in "HSNP". This parameter must be specified together with the Input Historical Speed Profiles (HSPR) Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_hspr_table" displayname="Input Historical Speed Profiles (HSPR) Table" type="Optional" direction="Input" datatype="Table" expression="{input_hspr_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas Speed Profiles data that represents the historical speed profiles. This table has a name that typically ends in "HSPR". This parameter must be specified together with the Input Network Profile Link (HSNP) Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_rd_table" displayname="Input RDS-TMC Information (RD) Table" type="Optional" direction="Input" datatype="Table" expression="{input_rd_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet data that represents the RDS-TMC information. This table has a name that typically ends in "RD". This parameter must be specified together with either the Input Live Traffic Feed Folder parameter; or all of the Input Live Traffic Feed ArcGIS Server Connection, Input Live Traffic Feed Geoprocessing Service Name, and Input Live Traffic Feed Geoprocessing Task Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_live_traffic_feed_folder" displayname="Input Live Traffic Feed Folder" type="Optional" direction="Input" datatype="String" expression="{input_live_traffic_feed_folder}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The folder of your live traffic feed files. This parameter must be specified together with the Input RDS-TMC Information (RD) Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_live_traffic_feed_arcgis_server_connection" displayname="Input Live Traffic Feed ArcGIS Server Connection" type="Optional" direction="Input" datatype="Server Connection" expression="{input_live_traffic_feed_arcgis_server_connection}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The connection to your ArcGIS Server live traffic feed. This parameter must be specified together with the Input RDS-TMC Information (RD) Table, Input Live Traffic Feed Geoprocessing Service Name, and Input Live Traffic Feed Geoprocessing Task Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_live_traffic_feed_geoprocessing_service_name" displayname="Input Live Traffic Feed Geoprocessing Service Name" type="Optional" direction="Input" datatype="String" expression="{input_live_traffic_feed_geoprocessing_service_name}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of your live traffic feed geoprocessing service. This parameter must be specified together with the Input RDS-TMC Information (RD) Table, Input Live Traffic Feed ArcGIS Server Connection, and Input Live Traffic Feed Geoprocessing Task Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_live_traffic_feed_geoprocessing_task_name" displayname="Input Live Traffic Feed Geoprocessing Task Name" type="Optional" direction="Input" datatype="String" expression="{input_live_traffic_feed_geoprocessing_task_name}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of your live traffic feed geoprocessing task. This parameter must be specified together with the Input RDS-TMC Information (RD) Table, Input Live Traffic Feed ArcGIS Server Connection, and Input Live Traffic Feed Geoprocessing Service Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_ltr_table" displayname="Input Logistics Truck Routes (LTR) Table" type="Optional" direction="Input" datatype="Table" expression="{input_ltr_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet Logistics data that represents the logistics truck routes. This table has a name that typically ends in "LTR".&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN&gt;If provided, the output network dataset will contain restriction attributes specific for truck preferred and truck restricted roads.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_lrs_table" displayname="Input Logistics Restrictions (LRS) Table" type="Optional" direction="Input" datatype="Table" expression="{input_lrs_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet Logistics data that represents the logistics restrictions. This table has a name that typically ends in "LRS". This parameter must be specified together with the Input Logistics Vehicle Characteristics (LVC) Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN&gt;If provided, the output network dataset will contain restriction attributes for preferred and restricted roads for trucks of a specific size or carrying a specific type of load.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_lvc_table" displayname="Input Logistics Vehicle Characteristics (LVC) Table" type="Optional" direction="Input" datatype="Table" expression="{input_lvc_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet Logistics data that represents the logistics vehicle characteristics. This table has a name that typically ends in "LVC". This parameter must be specified together with the Input Logistics Restrictions (LRS) Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+    </parameters>
+    <summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;This tool reads in Tele Atlas® MultiNet® data, Tele Atlas Speed Profiles® data (if provided), and Tele Atlas MultiNet Logistics™ data (if provided), and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary>
+    <usage>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;The tool requires Network Analyst extension license. &lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;If you run the tool using an ArcInfo license, the tool spatially sorts the street features while converting them to feature classes in the file geodatabase. Spatially sorted street features result in faster route shape generation when perfoming network analysis.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Multiple regions of Tele Atlas MultiNet data can be processed together to create a larger network dataset. First use the &lt;/SPAN&gt;&lt;A href="http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/Merge/001700000055000000/"&gt;&lt;SPAN&gt;Merge&lt;/SPAN&gt;&lt;/A&gt;&lt;SPAN&gt; tool to combine the similar layers of the MultiNet data into common feature classes and tables, then pass these combined feature classes and tables as inputs to this tool. Do not combine the Historical Speed Profiles (HSPR) tables from the various regions, as this table is identical in all regions within the same continent.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;The prohibited maneuvers as modeled in the MultiNet data do not coincide with the network dataset turn model as described in the section &lt;/SPAN&gt;&lt;A href="http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/Turns_in_the_network_dataset/00470000000p000000/"&gt;&lt;SPAN&gt;Properly defined turns &lt;/SPAN&gt;&lt;/A&gt;&lt;SPAN&gt;in the ArcGIS Desktop Help. As a result, build errors occur when the tool builds the network dataset. Those turn features that generate the errors are indicated by a value of 1 in the BuildError column of the turn feature class. You should edit the turn features at street intersections containing these errors so they comply with the network dataset model.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;The tool only processes Tele Atlast MultiNet Logistics data for North America. It does not work with Logistics data from Europe.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</usage>
+    <scriptExamples>
+      <scriptExample>
+        <title>ProcessMultiNetData Python Example</title>
+        <para>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Create and build a network dataset from MultiNet data&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</para>
+        <code>
+          # Name: ProcessMultiNetData_nasample.py
+          # Description: Create and build a network dataset from MultiNet data.
+          # Requirements: Network Analyst Extension
+          # Author: ESRI
+
+          #Import system modules
+          import arcpy
+          from arcpy import env
+
+          #Check out the Network Analyst extension license
+          arcpy.CheckOutExtension("Network")
+
+          #Import the toolbox containing the tool
+          arcpy.ImportToolbox("C:/MyTools/Vendor Data Processing Tools.tbx")
+
+          #Set environment settings
+          env.workspace = "C:/data/MultiNet"
+
+          #Set local variables
+          inNW = "usaudc___________nw.shp"
+          inMN = "usaudc___________mn.shp"
+          inMP = "usaudc___________mp.dbf"
+          inSI = "usaudc___________si.dbf"
+          inSP = "usaudc___________sp.dbf"
+          outFileGDB = "DC.gdb"
+          fdName = "Routing"
+          ndName = "Routing_ND"
+          inMetric = "False"
+          twoDistances = "False"
+          inRS = "usaudc___________rs.dbf"
+          inCommonTimeZone = "Eastern Standard Time"
+          inHSNP = "usaudc___________hsnp.dbf"
+          inHSPR = "usaudc___________hspr.dbf"
+          inLTR = "usaudc___________ltr.dbf"
+          inLRS = "usaudc___________lrs.dbf"
+          inLVC = "usaudc___________lvc.dbf"
+
+          #Create and build the network dataset
+          arcpy.ProcessMultiNetData_nasample(inNW, inMN, inMP, inSI, inSP,
+          outFileGDB, "10.1", fdName, ndName, inMetric,
+          twoDistances, inRS, "#", "#", inCommonTimeZone,
+          inHSNP, inHSPR, "#", "#", "#", "#", "#",
+          inLTR, inLRS, inLVC)</code>
+      </scriptExample>
+    </scriptExamples>
+  </tool>
+  <dataIdInfo>
+    <idCitation>
+      <resTitle>Process MultiNet® Street Data</resTitle>
+    </idCitation>
+    <idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;This tool reads in Tele Atlas® MultiNet® data, Tele Atlas Speed Profiles® data (if provided), and Tele Atlas MultiNet Logistics™ data (if provided), and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs>
+    <idCredit>Esri</idCredit>
+    <searchKeys>
+      <keyword>Tele Atlas</keyword>
+      <keyword>MultiNet</keyword>
+      <keyword>Vendor data</keyword>
+      <keyword>Commercial data</keyword>
+      <keyword>Network dataset</keyword>
+      <keyword>MultiNet shapefiles</keyword>
+    </searchKeys>
+  </dataIdInfo>
+  <distInfo>
+    <distributor>
+      <distorFormat>
+        <formatName>ArcToolbox Tool</formatName>
+      </distorFormat>
+    </distributor>
+  </distInfo>
+  <mdDateSt>20110901</mdDateSt>
+</metadata>

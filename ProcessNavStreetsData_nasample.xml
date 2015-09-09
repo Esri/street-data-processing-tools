@@ -1,0 +1,169 @@
+﻿<metadata xml:lang="en">
+  <Esri>
+    <CreaDate>20150415</CreaDate>
+    <CreaTime>12345600</CreaTime>
+    <ArcGISFormat>1.0</ArcGISFormat>
+    <SyncOnce>TRUE</SyncOnce>
+    <ModDate>20150415</ModDate>
+    <ModTime>12345600</ModTime>
+    <ArcGISProfile>ItemDescription</ArcGISProfile>
+  </Esri>
+  <tool name="ProcessNavStreetsData" displayname="Process NAVSTREETS™ Street Data" toolboxalias="" xmlns="">
+    <parameters>
+      <param name="input_streets_feature_class" displayname="Input Streets Feature Class" type="Required" direction="Input" datatype="Feature Class" expression="input_streets_feature_class">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The line feature class of your NAVTEQ NAVSTREETS data that represents the streets. This feature class is typically named "Streets".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_altstreets_feature_class" displayname="Input AltStreets Feature Class" type="Required" direction="Input" datatype="Feature Class" expression="input_altstreets_feature_class">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The line feature class of your NAVTEQ NAVSTREETS data that represents the alternate streets. This feature class is typically named "AltStreets".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_zlevels_feature_class" displayname="Input Z-Levels Feature Class" type="Required" direction="Input" datatype="Feature Class" expression="input_zlevels_feature_class">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The line feature class of your NAVTEQ NAVSTREETS data that indicates the Z-level values. This feature class is typically named "ZLevels".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_cdms_table" displayname="Input Condition/Driving Manoeuvres (CDMS) Table" type="Required" direction="Input" datatype="Table" expression="input_cdms_table">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your NAVTEQ NAVSTREETS data that represents the condition/driving manoeuvres. This table is typically named "Cdms".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_rdms_table" displayname="Input Restricted Driving Manoeuvres (RDMS) Table" type="Required" direction="Input" datatype="Table" expression="input_rdms_table">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your NAVTEQ NAVSTREETS data that represents the restricted driving manoeuvres. This table is typically named "Rdms".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_signs_table" displayname="Input Signs Table" type="Required" direction="Input" datatype="Table" expression="input_signs_table">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your NAVTEQ NAVSTREETS data that represents the highway signs. This table is typically named "Signs".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="output_file_geodatabase" displayname="Output File Geodatabase" type="Required" direction="Output" datatype="Workspace" expression="output_file_geodatabase">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The full path including the name of the file geodatabase to be created containing the resulting network dataset.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="output_file_geodatabase_version" displayname="Output File Geodatabase Version" type="Required" direction="Input" datatype="String" expression="output_file_geodatabase_version">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The ArcGIS version of the file geodatabase to create.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="feature_dataset_name" displayname="Feature Dataset Name" type="Required" direction="Input" datatype="String" expression="feature_dataset_name">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of the feature dataset to be created in the output file geodatabase.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="network_dataset_name" displayname="Network Dataset Name" type="Required" direction="Input" datatype="String" expression="network_dataset_name">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of the network dataset to be created in the output file geodatabase.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_create_network_attributes_in_metric" displayname="Create Network Attributes in Metric" type="Optional" direction="Input" datatype="Boolean" expression="{input_create_network_attributes_in_metric}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset contains attributes in metric or non-metric units of measure.&lt;/SPAN&gt;&lt;/P&gt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- The distance network attribute will be in kilometers, and the Transport network attributes will be in meters and kilograms.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- The distance network attribute will be in miles, and the Transport network attributes will be in feet and pounds.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_create_arcgis_online_network_attributes" displayname="Create ArcGIS Online Network Attributes" type="Optional" direction="Input" datatype="Boolean" expression="{input_create_arcgis_online_network_attributes}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset is created with all of the network attributes used in the ArcGIS Online datasets. This is useful when you need to create a network dataset for use in the Network Analysis services in ArcGIS Online.&lt;/SPAN&gt;&lt;/P&gt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- A network dataset with all ArcGIS Online network attributes will be created. Note that this option takes additional time for processing as compared to the Unchecked option.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- A network dataset will be created. This option creates as few fields on the Streets feature class as possible.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_time_zone_id_base_field_name" displayname="Input Time Zone ID Base Field Name" type="Optional" direction="Input" datatype="String" expression="{input_time_zone_id_base_field_name}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of the field in your Streets feature class that contains the time zone IDs. This parameter must be specified together with the Input Time Zone Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN&gt;If time zones are modeled for each direction of travel, then only specify the base name of the field. For example, if the fields are named FT_TimeZoneID and TF_TimeZoneID, then specify TimeZoneID for this parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_time_zone_table" displayname="Input Time Zone Table" type="Optional" direction="Input" datatype="Table" expression="{input_time_zone_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The time zone table created by the ProcessNavStreetsTimeZones tool. This parameter must be specified together with the Input Time Zone ID Base field Name parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_common_time_zone_for_the_entire_dataset" displayname="Input Time Zone for the Entire Dataset" type="Optional" direction="Input" datatype="String" expression="{input_common_time_zone_for_the_entire_dataset}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The time zone that is valid for the entire extent of the input data. This name is the official name of the time zone as defined by Microsoft. This parameter is ignored Input Time Zone Table parameter is specified.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_traffic_table" displayname="Input Traffic Table" type="Optional" direction="Input" datatype="Table" expression="{input_traffic_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your NAVTEQ NAVSTREETS data that contains the traffic codes. This table is typically named "Traffic". This parameter must be specified if you specify the Input TMC Reference File or Input Live Traffic Feed parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_link_reference_file_fc1_4" displayname="Input Link Reference File covering Functional Classes 1-4" type="Optional" direction="Input" datatype="File" expression="{input_link_reference_file_fc1_4}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The .csv file of your NAVTEQ Traffic Patterns data that contains the link references for the roads in Functional Classes 1 through 4. This file has a name that typically contains "REF", "LINK", and "FC1-4" in it. If this parameter is specified, you must also specify the Input Link Reference File covering Functional Class 5 and Input Speed Patterns Dictionary (SPD) File parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_link_reference_file_fc5" displayname="Input Link Reference File covering Functional Class 5" type="Optional" direction="Input" datatype="File" expression="{input_link_reference_file_fc5}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The .csv file of your NAVTEQ Traffic Patterns data that contains the link references for the roads in Functional Class 5. This file has a name that typically contains "REF", "LINK", and "FC5" in it. If this parameter is specified, you must also specify the Input Link Reference File covering Functional Classes 1-4 and Input Speed Patterns Dictionary (SPD) File parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_tmc_reference_file" displayname="Input TMC Reference File" type="Optional" direction="Input" datatype="File" expression="{input_tmc_reference_file}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The .csv file of your NAVTEQ Traffic Patterns data that contains the TMC references. This file has a name that typically contains "REF" and "TMC" in it. If this parameter is specified, you must also specify the Input Traffic Table and Input Speed Patterns Dictionary (SPD) File parameters. This parameter is ignored if the Input Link Reference File parameters are specified.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_spd_file" displayname="Input Speed Patterns Dictionary (SPD) File" type="Optional" direction="Input" datatype="File" expression="{input_spd_file}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The .csv file of your NAVTEQ Traffic Patterns data that contains the 15-minute granular Speed Patterns Dictionary (SPD) in kilometers per hour (KPH). This file has a name that typically contains "SPD" and "15MIN_KPH" in it. This parameter must be specified if you specify the Input Link Reference File parameters or the Input TMC Reference File parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_live_traffic_feed_folder" displayname="Input Live Traffic Feed Folder" type="Optional" direction="Input" datatype="String" expression="{input_live_traffic_feed_folder}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The folder of your live traffic feed files. This parameter must be specified together with the Input Traffic Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_live_traffic_feed_arcgis_server_connection" displayname="Input Live Traffic Feed ArcGIS Server Connection" type="Optional" direction="Input" datatype="Server Connection" expression="{input_live_traffic_feed_arcgis_server_connection}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The connection to your ArcGIS Server live traffic feed. This parameter must be specified together with the Input Traffic Table, Input Live Traffic Feed Geoprocessing Service Name, and Input Live Traffic Feed Geoprocessing Task Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_live_traffic_feed_geoprocessing_service_name" displayname="Input Live Traffic Feed Geoprocessing Service Name" type="Optional" direction="Input" datatype="String" expression="{input_live_traffic_feed_geoprocessing_service_name}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of your live traffic feed geoprocessing service. This parameter must be specified together with the Input Traffic Table, Input Live Traffic Feed ArcGIS Server Connection, and Input Live Traffic Feed Geoprocessing Task Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_live_traffic_feed_geoprocessing_task_name" displayname="Input Live Traffic Feed Geoprocessing Task Name" type="Optional" direction="Input" datatype="String" expression="{input_live_traffic_feed_geoprocessing_task_name}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of your live traffic feed geoprocessing task. This parameter must be specified together with the Input Traffic Table, Input Live Traffic Feed ArcGIS Server Connection, and Input Live Traffic Feed Geoprocessing Service Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_us_cndmod_table" displayname="Input US Condition Modifier (CndMod) Table" type="Optional" direction="Input" datatype="Table" expression="{input_us_cndmod_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your NAVTEQ NAVSTREETS Transport data that represents the condition modifiers within the United States. This table is typically named "CndMod".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_non_us_cndmod_table" displayname="Input Non-US Condition Modifier (CndMod) Table" type="Optional" direction="Input" datatype="Table" expression="{input_non_us_cndmod_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your NAVTEQ NAVSTREETS Transport data that represents the condition modifiers outside the United States. This table is typically named "CndMod".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+    </parameters>
+    <summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;This tool reads in NAVTEQ™ NAVSTREETS™ data (including NAVTEQ Transport™ attributes if provided) and NAVTEQ Traffic Patterns™ data (if provided) and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary>
+    <usage>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;The tool requires Network Analyst extension license.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;If you run the tool using an ArcInfo license, the tool spatially sorts the street features while converting them to feature classes in the file geodatabase. Spatially sorted street features result in faster route shape generation when perfoming network analysis.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Multiple regions of NAVTEQ NAVSTREETS data can be processed together to create a larger network dataset. First use the &lt;/SPAN&gt;&lt;A href="http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/Merge/001700000055000000/"&gt;&lt;SPAN&gt;Merge&lt;/SPAN&gt;&lt;/A&gt;&lt;SPAN&gt; tool to combine the similar layers of the NAVSTREETS data into common feature classes and tables, then pass these combined feature classes and tables as inputs to this tool. Be sure to keep the Condition Modifier (CndMod) records from the United States separate from the CndMod records from outside the United States, as the Transport attributes inside the United States use a different system of measurement.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;The restricted driving manoeuvres as modeled in the NAVSTREETS data do not coincide with the network dataset turn model as described in the section &lt;/SPAN&gt;&lt;A href="http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/Turns_in_the_network_dataset/00470000000p000000/"&gt;&lt;SPAN&gt;Properly defined turns&lt;/SPAN&gt;&lt;/A&gt;&lt;SPAN&gt; in the ArcGIS Desktop Help. As a result, build errors occur when the tool builds the network dataset. Those turn features that generate the errors are indicated by a value of 1 in the BuildError column of the turn feature class. You should edit the turn features at street intersections containing these errors so they comply with the network dataset model.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Notes on using this tool with NAVTEQ Traffic Patterns data:&lt;/SPAN&gt;&lt;/P&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;This tool works with either the Link-Referenced or TMC-Referenced Relational Formats of NAVTEQ Traffic Patterns. If both formats are specified, the Link-Referenced format will be used.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;The Link-Referenced format should only be used when creating a dataset covering the entire continent.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;When using the TMC-Referenced Relational Format, the TMC Reference Table (REF) .csv file typically covers the entire continent. Only pass into this tool a .csv file that contains only the TMC references corresponding to the region that you intend to process.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;This tool only makes use of the 15-minute granular Speed Patterns Dictionary (SPD) .csv file in KPH. Do not use the 60-minute granular and/or MPH files.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</usage>
+    <scriptExamples>
+      <scriptExample>
+        <title>ProcessNavStreetsData Python Example</title>
+        <para>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Create and build a network dataset from NAVSTREETS data&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</para>
+        <code>
+          # Name: ProcessNavStreetsData_nasample.py
+          # Description: Create and build a network dataset from NAVSTREETS data.
+          # Requirements: Network Analyst Extension
+          # Author: ESRI
+
+          #Import system modules
+          import arcpy
+          from arcpy import env
+
+          #Check out the Network Analyst extension license
+          arcpy.CheckOutExtension("Network")
+
+          #Import the toolbox containing the tool
+          arcpy.ImportToolbox("C:/MyTools/Vendor Data Processing Tools.tbx")
+
+          #Set environment settings
+          env.workspace = "C:/data/NAVSTREETS"
+
+          #Set local variables
+          inStreets = "Streets.shp"
+          inAltStreets = "AltStreets.shp"
+          inZLevels = "Zlevels.shp"
+          inCDMS = "Cdms.dbf"
+          inRDMS = "Rdms.dbf"
+          inSigns = "Signs.dbf"
+          outFileGDB = "Hawaii.gdb"
+          fdName = "Routing"
+          ndName = "Routing_ND"
+          inMetric = "False"
+          arcgisOnlineAttributes = "False"
+          inCommonTimeZone = "Hawaiian Standard Time"
+          inTraffic = "Traffic.dbf"
+          inTMC = "NTP_REF_Hawaii_TMC_09400.csv"
+          inSPD = "NTP_SPD_NA_15MIN_KPH_09400.csv"
+          inCndMod = "CndMod.dbf"
+
+          #Create and build the network dataset
+          arcpy.ProcessNavStreetsData_nasample(inStreets, inAltStreets, inZLevels, inCDMS, inRDMS, inSigns,
+          outFileGDB, "10.1", fdName, ndName,
+          inMetric, arcgisOnlineAttributes, "#", "#", inCommonTimeZone,
+          inTraffic, "#", "#" inTMC, inSPD, "#", "#", "#", "#",
+          inCndMod, "#")
+
+          print "Script completed successfully."</code>
+      </scriptExample>
+    </scriptExamples>
+  </tool>
+  <dataIdInfo>
+    <idCitation>
+      <resTitle>Process NAVSTREETS™ Street Data</resTitle>
+    </idCitation>
+    <idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;This tool reads in NAVTEQ™ NAVSTREETS™ data (including NAVTEQ Transport™ attributes if provided) and NAVTEQ Traffic Patterns™ data (if provided) and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs>
+    <searchKeys>
+      <keyword>NAVTEQ</keyword>
+      <keyword>NAVSTREETS</keyword>
+      <keyword>Vendor data</keyword>
+      <keyword>Commercial data</keyword>
+      <keyword>Network dataset</keyword>
+      <keyword>NAVTEQ shapefiles</keyword>
+    </searchKeys>
+    <idCredit>Esri</idCredit>
+  </dataIdInfo>
+  <distInfo>
+    <distributor>
+      <distorFormat>
+        <formatName>ArcToolbox Tool</formatName>
+      </distorFormat>
+    </distributor>
+  </distInfo>
+  <mdDateSt>20150415</mdDateSt>
+</metadata>

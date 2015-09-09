@@ -1,0 +1,93 @@
+﻿<metadata xml:lang="en">
+  <Esri>
+    <CreaDate>20110301</CreaDate>
+    <CreaTime>12345600</CreaTime>
+    <ArcGISFormat>1.0</ArcGISFormat>
+    <SyncOnce>TRUE</SyncOnce>
+    <ModDate>20110301</ModDate>
+    <ModTime>12345600</ModTime>
+    <ArcGISProfile>ItemDescription</ArcGISProfile>
+  </Esri>
+  <tool name="ProcessMultiNetTimeZones" displayname="Process MultiNet® Time Zones" toolboxalias="" xmlns="">
+    <parameters>
+      <param name="input_ae_table" displayname="Input Administrative Area Extended Attributes (AE) Table" type="Required" direction="Input" datatype="Table" expression="input_ae_table">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet data that represents the administrative area extended attributes. This table has a name that typically ends in "AE".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_admin_area_feature_classes" displayname="Input Administrative Area (A0~A9) Feature Classes" type="Required" direction="Input" datatype="Multiple Value" expression="input_admin_area_feature_classes;input_admin_area_feature_classes...">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The polygon feature classes of your Tele Atlas MultiNet data that represent the administrative areas. These feature classes has a name that typically ends in "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", and "A9".&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN&gt;You only need to specify those feature classes that contain data for your area of interest. For example, in the United States, only the A0 (country), A1 (state), A8 (county), and A9 (minor civil division) feature classes contain data.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="output_file_geodatabase" displayname="Output File Geodatabase" type="Required" direction="Output" datatype="Workspace" expression="output_file_geodatabase">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The full path including the name of the file geodatabase to be created containing the resulting time zone feature classes and tables.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_ta_table" displayname="Input Transportation Element Belonging to Area (TA) Table" type="Optional" direction="Input" datatype="Table" expression="{input_ta_table}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet data that represents the transportation element belonging to area. This table has a name that typically ends in "TA". This parameter must be specified together with the Input Network Geometry (NW) Feature Class and Time Zone ID Base Field Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_nw_feature_class" displayname="Input Network Geometry (NW) Feature Class" type="Optional" direction="Input" datatype="Feature Class" expression="{input_nw_feature_class}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The line feature class of your Tele Atlas MultiNet data that represents the network geometries. This feature class has a name that typically ends in "NW". This parameter must be specified together with the Input Transportation Element Belonging to Area (TA) Table and Time Zone ID Base Field Name parameters.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="time_zone_id_base_field_name" displayname="Time Zone ID Base Field Name" type="Optional" direction="Input" datatype="String" expression="{time_zone_id_base_field_name}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Determines the name of the fields to be created in the output Streets feature class. The fields created in the Streets feature class will be named with "FT_" and "TF_" prefixed on the provided base field name.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+    </parameters>
+    <summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;This tool reads in Tele Atlas® MultiNet® data and creates a file geodatabase with a polygon feature class of the time zones. If the Network Geometry (NW) feature class is provided, then the output file geodatabase will also contain a Streets feature class and a TimeZones table for use in creating a network dataset with time zone information by using the ProcessMultiNetData tool.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary>
+    <usage>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Multiple regions of Tele Atlas MultiNet data can be processed together to create larger output feature classes. First use the &lt;/SPAN&gt;&lt;A href="http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/Merge/001700000055000000/"&gt;&lt;SPAN&gt;Merge&lt;/SPAN&gt;&lt;/A&gt;&lt;SPAN&gt; tool to combine the similar layers of the MultiNet data into common feature classes and tables, then pass these combined feature classes and tables as inputs to this tool.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;This tool works best when run using an ArcInfo license. If you run the tool without an ArcInfo license, the time zone information in the output Streets feature class will be correct, but the time zone polygons will not be trimmed properly.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</usage>
+    <scriptExamples>
+      <scriptExample>
+        <title>ProcessMultiNetTimeZones Python Example</title>
+        <para>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Create time zone data from MultiNet data&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</para>
+        <code># Name: ProcessMultiNetTimeZones_nasample.py
+# Description: Create time zone data from MultiNet data.
+# Author: ESRI
+
+#Import system modules
+import arcpy
+from arcpy import env
+
+#Import the toolbox containing the tool
+arcpy.ImportToolbox("C:/MyTools/Vendor Data Processing Tools.tbx")
+
+#Set environment settings
+env.workspace = "C:/data/MultiNet"
+
+#Set local variables
+inAE = "usaudc___________ae.dbf"
+inA0 = "usaudc___________a0.shp"
+inA1 = "usaudc___________a1.shp"
+inA8 = "usaudc___________a8.shp"
+inA9 = "usaudc___________a9.shp"
+outFileGDB = "DC.gdb"
+inTA = "usaudc___________ta.dbf"
+inNW = "usaudc___________nw.shp"
+baseFieldName = "TimeZoneID"
+
+#Create the time zone data
+arcpy.ProcessMultiNetTimeZones_nasample(inAE, [inA0, inA1, inA8, inA9], outFileGDB,
+                                        inTA, inNW, baseFieldName)</code>
+      </scriptExample>
+    </scriptExamples>
+  </tool>
+  <dataIdInfo>
+    <idCitation>
+      <resTitle>Process MultiNet® Time Zones</resTitle>
+    </idCitation>
+    <idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;This tool reads in Tele Atlas® MultiNet® data and creates a file geodatabase with a polygon feature class of the time zones. If the Network Geometry (NW) feature class is provided, then the output file geodatabase will also contain a Streets feature class and a TimeZones table for use in creating a network dataset with time zone information by using the ProcessMultiNetData tool.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs>
+    <idCredit>Esri</idCredit>
+    <searchKeys>
+      <keyword>Tele Atlas</keyword>
+      <keyword>MultiNet</keyword>
+      <keyword>Vendor data</keyword>
+      <keyword>Commercial data</keyword>
+      <keyword>Network dataset</keyword>
+      <keyword>MultiNet shapefiles</keyword>
+      <keyword>Time zone</keyword>
+    </searchKeys>
+  </dataIdInfo>
+  <distInfo>
+    <distributor>
+      <distorFormat>
+        <formatName>ArcToolbox Tool</formatName>
+      </distorFormat>
+    </distributor>
+  </distInfo>
+  <mdDateSt>20110301</mdDateSt>
+</metadata>
