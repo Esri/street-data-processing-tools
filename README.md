@@ -16,10 +16,11 @@ The tools process shapefile data from TomTom MultiNet or HERE NAVSTREETS into a 
 ## Installation
 To install the tools
 
-1. Extract the contents of the archive to a folder.
-2. Right-click `GPProcessVendorDataFunctions.dll` and select Properties.
-3. In the Properties dialog, click the General tab and then click Unblock button in the Security section. Click Ok to save the changes and close the properties dialog.
-4. Right-click the `InstallTools.bat` file and select Run as administrator.
+1. Download the latest version of [StreetDataProcessingTools_v*.zip](releases/latest) file.
+2. Extract the contents of the archive to a folder.
+3. Right-click `GPProcessVendorDataFunctions.dll` and select Properties.
+4. In the Properties dialog, click the General tab and then click Unblock button in the Security section. Click Ok to save the changes and close the properties dialog.
+5. Right-click the `InstallTools.bat` file and select Run as administrator.
 
 To use the tools, from the Catalog Window in ArcMap or the Catalog Tree in ArcCatalog, browse to the folder where you extracted the archive and run the tools within the Street Data Processing Tools toolbox. The tools require ArcGIS 10.3.1, however the tools can be used to create network datasets that can be used with ArcGIS 10.1 or later.
 
