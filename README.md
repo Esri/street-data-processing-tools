@@ -1,7 +1,7 @@
 # street-data-processing-tools
 When you purchase commercial street data with the intent of using it in ArcGIS Network Analyst, you’ll need to create a network dataset if one isn’t already provided. Creating a good network dataset takes time and requires a fairly thorough understanding of the process. For this reason, we have tried to simplify the process for many ArcGIS users by writing a set of tools that automatically creates a network dataset from two popular street data products: HERE™ NAVSTREETS™ and TomTom® MultiNet®.
 
-![Street Data Processing Tools](https://raw.github.com/Esri/street-data-processing-tools/master/street-data-processing-tools.png)
+![Street Data Processing Tools](street-data-processing-tools.png)
 
 The tools process shapefile data from TomTom MultiNet or HERE NAVSTREETS into a file geodatabase network dataset. The tools import the street feature classes into the file geodatabase and add the appropriate fields to these feature classes for modeling overpasses/underpasses, one-way streets, travel times, hierarchy, and driving directions. They also create feature classes and tables for modeling turn restrictions and signpost guidance. The tools can also processes advanced logistics attributes from data vendors and model them as restrictions and attribute parameters in the network dataset. If historical traffic data, such as TomTom Speed Profiles® or HERE Traffic Patterns™, is also provided, these tools can carry over this information to the network dataset so you can generate the best routes based on a particular time and day of the week. The historical traffic data can be based on TMC codes or LINK_IDs.
 
@@ -55,7 +55,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
-A copy of the license is available in the repository's [license.txt]( https://raw.github.com/Esri/street-data-processing-tools/master/license.txt) file.
+A copy of the license is available in the repository's [license.txt](license.txt) file.
 
 
 [](Esri Tags: ArcGIS Geoprocessing Toolbox)
