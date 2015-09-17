@@ -24,7 +24,7 @@ namespace GPProcessVendorDataFunctions
         //   Fourth character: DST present ({const}C = No DST; {north}N = DST in July; {south}S = DST in January)
         //   Fifth character: Preferred sorted order (zero-based index)
 
-        // The list of time zones below is current as of December 2014:
+        // The list of time zones below is current as of August 2015:
 
         // (UTC-12:00)
         private const string DatelineST         = "\"AA-C0 Dateline Standard Time\"";           // International Date Line West
@@ -47,7 +47,8 @@ namespace GPProcessVendorDataFunctions
         private const string CentralSTMexico    = "\"GA-N0 Central Standard Time (Mexico)\"";   // Guadalajara, Mexico City, Monterrey
         private const string CentralST          = "\"GA-N1 Central Standard Time\"";            // Central Time (US & Canada)
         // (UTC-05:00)
-        private const string SAPacificST        = "\"HA-C0 SA Pacific Standard Time\"";         // Bogota, Lima, Quito, Rio Branco
+        private const string EasternSTMexico    = "\"HA-C0 Eastern Standard Time (Mexico)\"";   // Chetumal
+        private const string SAPacificST        = "\"HA-C1 SA Pacific Standard Time\"";         // Bogota, Lima, Quito, Rio Branco
         private const string USEasternST        = "\"HA-N0 US Eastern Standard Time\"";         // Indiana (East) -- NOT USED (use Eastern instead)
         private const string EasternST          = "\"HA-N1 Eastern Standard Time\"";            // Eastern Time (US & Canada)
         // (UTC-04:30)
@@ -56,17 +57,17 @@ namespace GPProcessVendorDataFunctions
         private const string SAWesternST        = "\"IA-C0 SA Western Standard Time\"";         // Georgetown, La Paz, Manaus, San Juan
         private const string AtlanticST         = "\"IA-N0 Atlantic Standard Time\"";           // Atlantic Time (Canada)
         private const string CentralBrazilianST = "\"IA-S0 Central Brazilian Standard Time\"";  // Cuiaba
-        private const string PacificSAST        = "\"IA-S1 Pacific SA Standard Time\"";         // Santiago
-        private const string ParaguayST         = "\"IA-S2 Paraguay Standard Time\"";           // Asuncion
+        private const string ParaguayST         = "\"IA-S1 Paraguay Standard Time\"";           // Asuncion
         // (UTC-03:30)
         private const string NewfoundlandST     = "\"IM-N0 Newfoundland Standard Time\"";       // Newfoundland
         // (UTC-03:00)
-        private const string ArgentinaST        = "\"JA-C0 Argentina Standard Time\"";          // Buenos Aires
-        private const string SAEasternST        = "\"JA-C1 SA Eastern Standard Time\"";         // Cayenne, Fortaleza
-        private const string BahiaST            = "\"JA-C2 Bahia Standard Time\"";              // Salvador -- NOT USED (use SA Eastern instead)
+        private const string PacificSAST        = "\"JA-C0 Pacific SA Standard Time\"";         // Santiago
+        private const string ArgentinaST        = "\"JA-C1 Argentina Standard Time\"";          // Buenos Aires
+        private const string MontevideoST       = "\"JA-C2 Montevideo Standard Time\"";         // Montevideo
+        private const string SAEasternST        = "\"JA-C3 SA Eastern Standard Time\"";         // Cayenne, Fortaleza
+        private const string BahiaST            = "\"JA-C4 Bahia Standard Time\"";              // Salvador -- NOT USED (use SA Eastern instead)
         private const string GreenlandST        = "\"JA-N0 Greenland Standard Time\"";          // Greenland
         private const string ESouthAmericaST    = "\"JA-S0 E. South America Standard Time\"";   // Brasilia
-        private const string MontevideoST       = "\"JA-S1 Montevideo Standard Time\"";         // Montevideo
         // (UTC-02:00)
         private const string UTCMinus02         = "\"KA-C0 UTC-02\"";                           // Coordinated Universal Time-02
         private const string MidAtlanticST      = "\"KA-N0 Mid-Atlantic Standard Time\"";       // Mid-Atlantic
@@ -135,11 +136,11 @@ namespace GPProcessVendorDataFunctions
         private const string SEAsiaST           = "\"TA-C1 SE Asia Standard Time\"";            // Bangkok, Hanoi, Jakarta
         // (UTC+08:00)
         private const string NorthAsiaEastST    = "\"UA-C0 North Asia East Standard Time\"";    // Irkutsk (RTZ 7)
-        private const string UlaanbaatarST      = "\"UA-C1 Ulaanbaatar Standard Time\"";        // Ulaanbaatar
-        private const string ChinaST            = "\"UA-C2 China Standard Time\"";              // Beijing, Chongqing, Hong Kong, Urumqi
-        private const string TaipeiST           = "\"UA-C3 Taipei Standard Time\"";             // Taipei
-        private const string SingaporeST        = "\"UA-C4 Singapore Standard Time\"";          // Kuala Lumpur, Singapore
-        private const string WAustraliaST       = "\"UA-C5 W. Australia Standard Time\"";       // Perth
+        private const string ChinaST            = "\"UA-C1 China Standard Time\"";              // Beijing, Chongqing, Hong Kong, Urumqi
+        private const string TaipeiST           = "\"UA-C2 Taipei Standard Time\"";             // Taipei
+        private const string SingaporeST        = "\"UA-C3 Singapore Standard Time\"";          // Kuala Lumpur, Singapore
+        private const string WAustraliaST       = "\"UA-C4 W. Australia Standard Time\"";       // Perth
+        private const string UlaanbaatarST      = "\"UA-N0 Ulaanbaatar Standard Time\"";        // Ulaanbaatar
         // (UTC+09:00)
         private const string YakutskST          = "\"VA-C0 Yakutsk Standard Time\"";            // Yakutsk (RTZ 8)
         private const string KoreaST            = "\"VA-C1 Korea Standard Time\"";              // Seoul
@@ -200,16 +201,19 @@ namespace GPProcessVendorDataFunctions
                    "\n    z = " + CentralAmericaST + ": If [" + countryCodeFieldName + "] = \"CAN\" Then z = " + CanadaCentralST +
                    "\n  End If" +
                    "\nElseIf utcOffset < -285 Then" +    // UTC-05:00 == -300
-                   "\n  z = " + SAPacificST + ": If [DST] > 0 Then z = " + EasternST +
+                   "\n  If [DST] > 0 Then" +
+                   "\n    z = " + EasternST +
+                   "\n  Else" +
+                   "\n    z = " + SAPacificST + ": If [" + countryCodeFieldName + "] = \"MEX\" Then z = " + EasternSTMexico +
+                   "\n  End If" +
                    "\nElseIf utcOffset < -255 Then" +    // UTC-04:30 == -270
                    "\n  z = " + VenezuelaST +
                    "\nElseIf utcOffset < -225 Then" +    // UTC-04:00 == -240
                    "\n  If [DST] > 0 Then" +
                    "\n    Select Case [" + countryCodeFieldName + "]" +
                    "\n      Case \"CAN\", \"GRL\": z = " + AtlanticST +
-                   "\n      Case \"BRA\": z = " + CentralBrazilianST +
                    "\n      Case \"PRY\": z = " + ParaguayST +
-                   "\n      Case Else: z = " + PacificSAST +
+                   "\n      Case Else: z = " + CentralBrazilianST +
                    "\n    End Select" +
                    "\n  Else" +
                    "\n    z = " + SAWesternST +
@@ -220,11 +224,15 @@ namespace GPProcessVendorDataFunctions
                    "\n  If [DST] > 0 Then" +
                    "\n    Select Case [" + countryCodeFieldName + "]" +
                    "\n      Case \"SPM\", \"GRL\": z = " + GreenlandST +
-                   "\n      Case \"URY\": z = " + MontevideoST +
                    "\n      Case Else: z = " + ESouthAmericaST +
                    "\n    End Select" +
                    "\n  Else" +
-                   "\n    z = " + SAEasternST + ": If [" + countryCodeFieldName + "] = \"ARG\" Then z = " + ArgentinaST +
+                   "\n    Select Case [" + countryCodeFieldName + "]" +
+                   "\n      Case \"CHL\": z = " + PacificSAST +
+                   "\n      Case \"ARG\": z = " + ArgentinaST +
+                   "\n      Case \"URY\": z = " + MontevideoST +
+                   "\n      Case Else: z = " + SAEasternST +
+                   "\n    End Select" +
                    "\n  End If" +
                    "\nElseIf utcOffset < -90 Then" +    // UTC-02:00 == -120
                    "\n  z = " + UTCMinus02 + ": If [DST] > 0 Then z = " + MidAtlanticST +
@@ -316,14 +324,17 @@ namespace GPProcessVendorDataFunctions
                    "\nElseIf utcOffset < 450 Then" +    // UTC+07:00 == 420
                    "\n  z = " + SEAsiaST + ": If [" + countryCodeFieldName + "] = \"RUS\" Then z = " + NorthAsiaST +
                    "\nElseIf utcOffset < 510 Then" +    // UTC+08:00 == 480
-                   "\n  Select Case [" + countryCodeFieldName + "]" +
-                   "\n    Case \"RUS\": z = " + NorthAsiaEastST +
-                   "\n    Case \"MNG\": z = " + UlaanbaatarST +
-                   "\n    Case \"TWN\": z = " + TaipeiST +
-                   "\n    Case \"SGP\", \"MYS\": z = " + SingaporeST +
-                   "\n    Case \"AUS\": z = " + WAustraliaST +
-                   "\n    Case Else: z = " + ChinaST +
-                   "\n  End Select" +
+                   "\n  If [DST] > 0 Then" +
+                   "\n    z = " + UlaanbaatarST +
+                   "\n  Else" +
+                   "\n    Select Case [" + countryCodeFieldName + "]" +
+                   "\n      Case \"RUS\": z = " + NorthAsiaEastST +
+                   "\n      Case \"TWN\": z = " + TaipeiST +
+                   "\n      Case \"SGP\", \"MYS\": z = " + SingaporeST +
+                   "\n      Case \"AUS\": z = " + WAustraliaST +
+                   "\n      Case Else: z = " + ChinaST +
+                   "\n    End Select" +
+                   "\n  End If" +
                    "\nElseIf utcOffset < 555 Then" +    // UTC+09:00 == 540
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"RUS\": z = " + YakutskST +
