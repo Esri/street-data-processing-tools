@@ -1,3 +1,14 @@
+ï»¿/*
+ * Copyright 2015 Esri
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and limitations under the License.â€‹
+ */
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -121,32 +132,32 @@ namespace GPProcessVendorDataFunctions
                     gpName = functionName as IGPName;
                     gpName.Name = name;
                     gpName.Category = "Street Data Processing";
-                    gpName.Description = "This tool reads in Tele Atlas® MultiNet® data and Tele Atlas Speed Profiles® data (if provided) and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.";
-                    gpName.DisplayName = "Process MultiNet® Street Data";
+                    gpName.Description = "This tool reads in Tele AtlasÂ® MultiNetÂ® data and Tele Atlas Speed ProfilesÂ® data (if provided) and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.";
+                    gpName.DisplayName = "Process MultiNetÂ® Street Data";
                     gpName.Factory = functionFactory;
                     return gpName;
                 case "ProcessMultiNetTimeZones":
                     gpName = functionName as IGPName;
                     gpName.Name = name;
                     gpName.Category = "Street Data Processing";
-                    gpName.Description = "This tool reads in Tele Atlas® MultiNet® data and creates a file geodatabase with a polygon feature class of the time zones. If the Network Geometry (NW) feature class is provided, then the output file geodatabase will also contain a Streets feature class and a TimeZones table for use in creating a network dataset with time zone information by using the ProcessMultiNetData tool.";
-                    gpName.DisplayName = "Process MultiNet® Time Zone Data";
+                    gpName.Description = "This tool reads in Tele AtlasÂ® MultiNetÂ® data and creates a file geodatabase with a polygon feature class of the time zones. If the Network Geometry (NW) feature class is provided, then the output file geodatabase will also contain a Streets feature class and a TimeZones table for use in creating a network dataset with time zone information by using the ProcessMultiNetData tool.";
+                    gpName.DisplayName = "Process MultiNetÂ® Time Zone Data";
                     gpName.Factory = functionFactory;
                     return gpName;
                 case "ProcessNavStreetsData":
                     gpName = functionName as IGPName;
                     gpName.Name = name;
                     gpName.Category = "Street Data Processing";
-                    gpName.Description = "This tool reads in NAVTEQ™ NAVSTREETS™ data and NAVTEQ Traffic Patterns™ data (if provided) and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.";
-                    gpName.DisplayName = "Process NAVSTREETS™ Street Data";
+                    gpName.Description = "This tool reads in NAVTEQâ„¢ NAVSTREETSâ„¢ data and NAVTEQ Traffic Patternsâ„¢ data (if provided) and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.";
+                    gpName.DisplayName = "Process NAVSTREETSâ„¢ Street Data";
                     gpName.Factory = functionFactory;
                     return gpName;
                 case "ProcessNavStreetsTimeZones":
                     gpName = functionName as IGPName;
                     gpName.Name = name;
                     gpName.Category = "Street Data Processing";
-                    gpName.Description = "This tool reads in NAVTEQ™ NAVSTREETS™ data and creates a file geodatabase with a polygon feature class of the time zones. If the Streets feature class is provided, then the output file geodatabase will also contain a Streets feature class and a TimeZones table for use in creating a network dataset with time zone information by using the ProcessNavStreetsData tool.";
-                    gpName.DisplayName = "Process NAVSTREETS™ Time Zone Data";
+                    gpName.Description = "This tool reads in NAVTEQâ„¢ NAVSTREETSâ„¢ data and creates a file geodatabase with a polygon feature class of the time zones. If the Streets feature class is provided, then the output file geodatabase will also contain a Streets feature class and a TimeZones table for use in creating a network dataset with time zone information by using the ProcessNavStreetsData tool.";
+                    gpName.DisplayName = "Process NAVSTREETSâ„¢ Time Zone Data";
                     gpName.Factory = functionFactory;
                     return gpName;
             }
