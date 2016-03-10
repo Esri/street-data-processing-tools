@@ -1226,12 +1226,17 @@ namespace GPProcessVendorDataFunctions
                     return;
                 }
 
-                bool trafficIsEmpty = inputTrafficTableValue.IsEmpty();
+                bool usesHistoricalTraffic = !(inputSPDFileValue.IsEmpty());
                 bool usesNTPFullCoverage = !(inputLinkReferenceFileFC5Value.IsEmpty());
-                if ((trafficIsEmpty ^ (inputTMCReferenceFileValue.IsEmpty() & !usesNTPFullCoverage))
-                    | (trafficIsEmpty ^ inputSPDFileValue.IsEmpty()))
+                if ((inputTMCReferenceFileValue.IsEmpty() & !usesNTPFullCoverage) ^ inputSPDFileValue.IsEmpty())
                 {
-                    messages.AddError(1, "The Traffic table, the Traffic Patterns SPD .csv file, and the Traffic Patterns Link/TMC Reference .csv file(s) all must be specified together.");
+                    messages.AddError(1, "The Traffic Patterns SPD .csv file must be specified with the Traffic Patterns Link/TMC Reference .csv file(s).");
+                    return;
+                }
+
+                if (inputTrafficTableValue.IsEmpty() & !inputTMCReferenceFileValue.IsEmpty())
+                {
+                    messages.AddError(1, "If the TMC Reference .csv file is specified, then the Traffic table must also be specified.");
                     return;
                 }
 
@@ -1252,9 +1257,9 @@ namespace GPProcessVendorDataFunctions
                     return;
                 }
 
-                if (!(feedFolderIsEmpty & agsConnectionIsEmpty) & trafficIsEmpty)
+                if (inputTrafficTableValue.IsEmpty() & !(feedFolderIsEmpty & agsConnectionIsEmpty))
                 {
-                    messages.AddError(1, "Live traffic must be used together with Traffic Patterns.");
+                    messages.AddError(1, "The Traffic table must be specified to use Live Traffic.");
                     return;
                 }
 
@@ -1808,7 +1813,7 @@ namespace GPProcessVendorDataFunctions
 
                 #region Process Historical Traffic Tables
 
-                if (!trafficIsEmpty)
+                if (usesHistoricalTraffic)
                 {
                     // Create the Patterns table and index its PatternID field
 
@@ -2205,122 +2210,6 @@ namespace GPProcessVendorDataFunctions
 
                     OffsetDailyPatternFields(histTrafficJoinTablePath, patternsTablePath);
 
-                    // Create the live traffic table (for 10.1 or later)
-
-                    if (fgdbVersion >= 10.1)
-                    {
-                        // Copy over the Traffic table to the file geodatabase
-
-                        AddMessage("Copying Traffic table to the file geodatabase...", messages, trackcancel);
-
-                        importTableTool = new TableToTable();
-                        importTableTool.in_rows = inputTrafficTableValue.GetAsText();
-                        importTableTool.out_path = outputFileGdbPath;
-                        importTableTool.out_name = TMCJoinTableName;
-                        gp.Execute(importTableTool, trackcancel);
-
-                        string TMCJoinTablePath = outputFileGdbPath + "\\" + TMCJoinTableName;
-
-                        // Add the TMC field and calculate it
-
-                        AddMessage("Calculating TMC values for live traffic...", messages, trackcancel);
-
-                        addFieldTool = new AddField();
-                        addFieldTool.in_table = TMCJoinTablePath;
-                        addFieldTool.field_type = "TEXT";
-                        addFieldTool.field_length = 9;
-                        addFieldTool.field_name = "TMC";
-                        gp.Execute(addFieldTool, trackcancel);
-
-                        calcFieldTool = new CalculateField();
-                        calcFieldTool.in_table = TMCJoinTablePath;
-                        calcFieldTool.field = "TMC";
-                        calcFieldTool.expression = "Right([TRAFFIC_CD], 9)";
-                        calcFieldTool.expression_type = "VB";
-                        gp.Execute(calcFieldTool, trackcancel);
-
-                        AddMessage("Creating the live traffic join table...", messages, trackcancel);
-
-                        // Add FCID, FID, and position fields to the Streets_TMC table
-
-                        AddMessage("Creating fields on the live traffic join table...", messages, trackcancel);
-
-                        addFieldTool = new AddField();
-                        addFieldTool.in_table = TMCJoinTablePath;
-
-                        addFieldTool.field_type = "LONG";
-                        addFieldTool.field_name = "EdgeFCID";
-                        gp.Execute(addFieldTool, trackcancel);
-                        addFieldTool.field_name = "EdgeFID";
-                        gp.Execute(addFieldTool, trackcancel);
-
-                        addFieldTool.field_type = "DOUBLE";
-                        addFieldTool.field_name = "EdgeFrmPos";
-                        gp.Execute(addFieldTool, trackcancel);
-                        addFieldTool.field_name = "EdgeToPos";
-                        gp.Execute(addFieldTool, trackcancel);
-
-                        // Calculate the fields
-
-                        AddMessage("Calculating the EdgeFrmPos field for live traffic...", messages, trackcancel);
-
-                        calcFieldTool = new CalculateField();
-                        calcFieldTool.in_table = TMCJoinTablePath;
-
-                        calcFieldTool.field = "EdgeFrmPos";
-                        calcFieldTool.expression = "x";
-                        calcFieldTool.code_block = "Select Case Left([TRAFFIC_CD], 1)\n  Case \"+\": x = 0\n  Case \"-\": x = 1\nEnd Select";
-                        calcFieldTool.expression_type = "VB";
-                        gp.Execute(calcFieldTool, trackcancel);
-
-                        AddMessage("Calculating the EdgeToPos field for live traffic...", messages, trackcancel);
-
-                        calcFieldTool.field = "EdgeToPos";
-                        calcFieldTool.expression = "x";
-                        calcFieldTool.code_block = "Select Case Left([TRAFFIC_CD], 1)\n  Case \"-\": x = 0\n  Case \"+\": x = 1\nEnd Select";
-                        calcFieldTool.expression_type = "VB";
-                        gp.Execute(calcFieldTool, trackcancel);
-
-                        AddMessage("Calculating the EdgeFCID field for live traffic...", messages, trackcancel);
-
-                        calcFieldTool = new CalculateField();
-                        calcFieldTool.in_table = TMCJoinTablePath;
-                        calcFieldTool.field = "EdgeFCID";
-                        calcFieldTool.expression = "1";
-                        calcFieldTool.expression_type = "VB";
-                        gp.Execute(calcFieldTool, trackcancel);
-
-                        AddMessage("Calculating the EdgeFID field for live traffic...", messages, trackcancel);
-
-                        makeTableViewTool = new MakeTableView();
-                        makeTableViewTool.in_table = TMCJoinTablePath;
-                        makeTableViewTool.out_view = "Streets_TMC_View";
-                        gp.Execute(makeTableViewTool, trackcancel);
-
-                        addJoinTool = new AddJoin();
-                        addJoinTool.in_layer_or_view = "Streets_TMC_View";
-                        addJoinTool.in_field = "LINK_ID";
-                        addJoinTool.join_table = streetsFeatureClassPath;
-                        addJoinTool.join_field = "LINK_ID";
-                        gp.Execute(addJoinTool, trackcancel);
-
-                        calcFieldTool = new CalculateField();
-                        calcFieldTool.in_table = "Streets_TMC_View";
-                        calcFieldTool.field = TMCJoinTableName + ".EdgeFID";
-                        calcFieldTool.expression = "[" + StreetsFCName + ".OBJECTID]";
-                        calcFieldTool.expression_type = "VB";
-                        gp.Execute(calcFieldTool, trackcancel);
-
-                        removeJoinTool = new RemoveJoin();
-                        removeJoinTool.in_layer_or_view = "Streets_TMC_View";
-                        removeJoinTool.join_name = StreetsFCName;
-                        gp.Execute(removeJoinTool, trackcancel);
-
-                        deleteTool = new Delete();
-                        deleteTool.in_data = "Streets_TMC_View";
-                        gp.Execute(deleteTool, trackcancel);
-                    }
-
                     // Add an index to the Streets feature class's FUNC_CLASS field
 
                     AddMessage("Indexing the FUNC_CLASS field...", messages, trackcancel);
@@ -2349,6 +2238,201 @@ namespace GPProcessVendorDataFunctions
                     calcFieldTool.expression = "[Meters] * 0.06 / [KPH]";
                     calcFieldTool.expression_type = "VB";
                     gp.Execute(calcFieldTool, trackcancel);
+                }
+                #endregion
+
+                #region Process Live Traffic Table
+
+                // Create the live traffic table (for 10.1 or later)
+
+                if (fgdbVersion >= 10.1 && !inputTrafficTableValue.IsEmpty())
+                {
+                    // Copy over the Traffic table to the file geodatabase
+
+                    AddMessage("Copying Traffic table to the file geodatabase...", messages, trackcancel);
+
+                    importTableTool = new TableToTable();
+                    importTableTool.in_rows = inputTrafficTableValue.GetAsText();
+                    importTableTool.out_path = outputFileGdbPath;
+                    importTableTool.out_name = TMCJoinTableName;
+                    gp.Execute(importTableTool, trackcancel);
+
+                    string TMCJoinTablePath = outputFileGdbPath + "\\" + TMCJoinTableName;
+
+                    // Add the TMC field and calculate it
+
+                    AddMessage("Calculating TMC values for live traffic...", messages, trackcancel);
+
+                    addFieldTool = new AddField();
+                    addFieldTool.in_table = TMCJoinTablePath;
+                    addFieldTool.field_type = "TEXT";
+                    addFieldTool.field_length = 9;
+                    addFieldTool.field_name = "TMC";
+                    gp.Execute(addFieldTool, trackcancel);
+
+                    calcFieldTool = new CalculateField();
+                    calcFieldTool.in_table = TMCJoinTablePath;
+                    calcFieldTool.field = "TMC";
+                    calcFieldTool.expression = "Right([TRAFFIC_CD], 9)";
+                    calcFieldTool.expression_type = "VB";
+                    gp.Execute(calcFieldTool, trackcancel);
+
+                    AddMessage("Creating the live traffic join table...", messages, trackcancel);
+
+                    // Add FCID, FID, and position fields to the Streets_TMC table
+
+                    AddMessage("Creating fields on the live traffic join table...", messages, trackcancel);
+
+                    addFieldTool = new AddField();
+                    addFieldTool.in_table = TMCJoinTablePath;
+
+                    addFieldTool.field_type = "LONG";
+                    addFieldTool.field_name = "EdgeFCID";
+                    gp.Execute(addFieldTool, trackcancel);
+                    addFieldTool.field_name = "EdgeFID";
+                    gp.Execute(addFieldTool, trackcancel);
+
+                    addFieldTool.field_type = "DOUBLE";
+                    addFieldTool.field_name = "EdgeFrmPos";
+                    gp.Execute(addFieldTool, trackcancel);
+                    addFieldTool.field_name = "EdgeToPos";
+                    gp.Execute(addFieldTool, trackcancel);
+
+                    // Calculate the fields
+
+                    AddMessage("Calculating the EdgeFrmPos field for live traffic...", messages, trackcancel);
+
+                    calcFieldTool = new CalculateField();
+                    calcFieldTool.in_table = TMCJoinTablePath;
+
+                    calcFieldTool.field = "EdgeFrmPos";
+                    calcFieldTool.expression = "x";
+                    calcFieldTool.code_block = "Select Case Left([TRAFFIC_CD], 1)\n  Case \"+\": x = 0\n  Case \"-\": x = 1\nEnd Select";
+                    calcFieldTool.expression_type = "VB";
+                    gp.Execute(calcFieldTool, trackcancel);
+
+                    AddMessage("Calculating the EdgeToPos field for live traffic...", messages, trackcancel);
+
+                    calcFieldTool.field = "EdgeToPos";
+                    calcFieldTool.expression = "x";
+                    calcFieldTool.code_block = "Select Case Left([TRAFFIC_CD], 1)\n  Case \"-\": x = 0\n  Case \"+\": x = 1\nEnd Select";
+                    calcFieldTool.expression_type = "VB";
+                    gp.Execute(calcFieldTool, trackcancel);
+
+                    AddMessage("Calculating the EdgeFCID field for live traffic...", messages, trackcancel);
+
+                    calcFieldTool = new CalculateField();
+                    calcFieldTool.in_table = TMCJoinTablePath;
+                    calcFieldTool.field = "EdgeFCID";
+                    calcFieldTool.expression = "1";
+                    calcFieldTool.expression_type = "VB";
+                    gp.Execute(calcFieldTool, trackcancel);
+
+                    AddMessage("Calculating the EdgeFID field for live traffic...", messages, trackcancel);
+
+                    makeTableViewTool = new MakeTableView();
+                    makeTableViewTool.in_table = TMCJoinTablePath;
+                    makeTableViewTool.out_view = "Streets_TMC_View";
+                    gp.Execute(makeTableViewTool, trackcancel);
+
+                    addJoinTool = new AddJoin();
+                    addJoinTool.in_layer_or_view = "Streets_TMC_View";
+                    addJoinTool.in_field = "LINK_ID";
+                    addJoinTool.join_table = streetsFeatureClassPath;
+                    addJoinTool.join_field = "LINK_ID";
+                    gp.Execute(addJoinTool, trackcancel);
+
+                    calcFieldTool = new CalculateField();
+                    calcFieldTool.in_table = "Streets_TMC_View";
+                    calcFieldTool.field = TMCJoinTableName + ".EdgeFID";
+                    calcFieldTool.expression = "[" + StreetsFCName + ".OBJECTID]";
+                    calcFieldTool.expression_type = "VB";
+                    gp.Execute(calcFieldTool, trackcancel);
+
+                    removeJoinTool = new RemoveJoin();
+                    removeJoinTool.in_layer_or_view = "Streets_TMC_View";
+                    removeJoinTool.join_name = StreetsFCName;
+                    gp.Execute(removeJoinTool, trackcancel);
+
+                    deleteTool = new Delete();
+                    deleteTool.in_data = "Streets_TMC_View";
+                    gp.Execute(deleteTool, trackcancel);
+ 
+                    // If Historical Traffic is not being used, then we need to create placeholder historical traffic tables
+
+                    if (!usesHistoricalTraffic)
+                    {
+                        // Create the Streets_Patterns table by starting with a copy of the Streets_TMC table
+
+                        AddMessage("Creating the historical traffic join table...", messages, trackcancel);
+
+                        importTableTool = new TableToTable();
+                        importTableTool.in_rows = TMCJoinTablePath;
+                        importTableTool.out_path = outputFileGdbPath;
+                        importTableTool.out_name = HistTrafficJoinTableName;
+                        gp.Execute(importTableTool, trackcancel);
+
+                        string histTrafficJoinTablePath = outputFileGdbPath + "\\" + HistTrafficJoinTableName;
+
+                        AddMessage("Creating and calculating the KPH field on the historical traffic join table...", messages, trackcancel);
+
+                        addFieldTool = new AddField();
+                        addFieldTool.in_table = histTrafficJoinTablePath;
+                        addFieldTool.field_type = "FLOAT";
+                        addFieldTool.field_name = "KPH";
+                        gp.Execute(addFieldTool, trackcancel);
+
+                        makeTableViewTool = new MakeTableView();
+                        makeTableViewTool.in_table = histTrafficJoinTablePath;
+                        makeTableViewTool.out_view = "Streets_Patterns_View";
+                        gp.Execute(makeTableViewTool, trackcancel);
+
+                        addJoinTool = new AddJoin();
+                        addJoinTool.in_layer_or_view = "Streets_Patterns_View";
+                        addJoinTool.in_field = "EdgeFID";
+                        addJoinTool.join_table = streetsFeatureClassPath;
+                        addJoinTool.join_field = "OBJECTID";
+                        gp.Execute(addJoinTool, trackcancel);
+
+                        calcFieldTool = new CalculateField();
+                        calcFieldTool.in_table = "Streets_Patterns_View";
+                        calcFieldTool.field = HistTrafficJoinTableName + ".KPH";
+                        calcFieldTool.expression = "[" + StreetsFCName + ".KPH]";
+                        calcFieldTool.expression_type = "VB";
+                        gp.Execute(calcFieldTool, trackcancel);
+
+                        removeJoinTool = new RemoveJoin();
+                        removeJoinTool.in_layer_or_view = "Streets_Patterns_View";
+                        removeJoinTool.join_name = StreetsFCName;
+                        gp.Execute(removeJoinTool, trackcancel);
+
+                        deleteTool = new Delete();
+                        deleteTool.in_data = "Streets_Patterns_View";
+                        gp.Execute(deleteTool, trackcancel);
+
+                        AddMessage("Creating and calculating the daily patterns fields on the historical traffic join table...", messages, trackcancel);
+
+                        string[] fieldNames = new string[] { "S", "M", "T", "W", "R", "F", "S" };
+                        foreach (string f in fieldNames)
+                        {
+                            addFieldTool = new AddField();
+                            addFieldTool.in_table = histTrafficJoinTablePath;
+                            addFieldTool.field_type = "SHORT";
+                            addFieldTool.field_name = f;
+                            gp.Execute(addFieldTool, trackcancel);
+
+                            calcFieldTool = new CalculateField();
+                            calcFieldTool.in_table = histTrafficJoinTablePath;
+                            calcFieldTool.field = f;
+                            calcFieldTool.expression = "1";
+                            calcFieldTool.expression_type = "VB";
+                            gp.Execute(calcFieldTool, trackcancel);
+                        }
+
+                        // Create the Patterns table
+
+                        CreateNonHistoricalPatternsTable(outputFileGdbPath);
+                    }
                 }
                 #endregion
 
@@ -3054,7 +3138,7 @@ namespace GPProcessVendorDataFunctions
 
                 CreateAndBuildNetworkDataset(outputFileGdbPath, fgdbVersion, fdsName, ndsName, createNetworkAttributesInMetric,
                                              createArcGISOnlineNetworkAttributes, timeZoneIDBaseFieldName, directedTimeZoneIDFields, commonTimeZone,
-                                             !trafficIsEmpty, trafficFeedLocation, usesTransport);
+                                             usesHistoricalTraffic, trafficFeedLocation, usesTransport);
 
                 // Write the build errors to the turn feature class
 
@@ -3434,6 +3518,36 @@ namespace GPProcessVendorDataFunctions
                 listOfConstantPatterns = listOfConstantPatterns.Remove(listOfConstantPatterns.Length - 2);
 
             return listOfConstantPatterns;
+        }
+
+        private void CreateNonHistoricalPatternsTable(string outputFileGdbPath)
+        {
+            // Create the Patterns table in the output file geodatabase and open an InsertCursor on it
+
+            Type factoryType = Type.GetTypeFromProgID("esriDataSourcesGDB.FileGDBWorkspaceFactory");
+            var gdbWSF = Activator.CreateInstance(factoryType) as IWorkspaceFactory;
+            var gdbFWS = gdbWSF.OpenFromFile(outputFileGdbPath, 0) as IFeatureWorkspace;
+            var ocd = new ObjectClassDescriptionClass() as IObjectClassDescription;
+            var tableFields = ocd.RequiredFields as IFieldsEdit;
+            var newField = new FieldClass() as IFieldEdit;
+            newField = new FieldClass();
+            newField.Type_2 = esriFieldType.esriFieldTypeSingle;
+            newField.Name_2 = "SpeedFactor_AM";
+            tableFields.AddField(newField as IField);
+            newField = new FieldClass();
+            newField.Type_2 = esriFieldType.esriFieldTypeSingle;
+            newField.Name_2 = "SpeedFactor_PM";
+            tableFields.AddField(newField as IField);
+            ITable newTable = gdbFWS.CreateTable(ProfilesTableName, tableFields as IFields, ocd.InstanceCLSID, ocd.ClassExtensionCLSID, "");
+            IRowBuffer buff = newTable.CreateRowBuffer();
+            ICursor insertCursor = newTable.Insert(true);
+
+            int speedFactorAMField = newTable.FindField("SpeedFactor_AM");
+            int speedFactorPMField = newTable.FindField("SpeedFactor_PM");
+            buff.set_Value(speedFactorAMField, (float)1.0);
+            buff.set_Value(speedFactorPMField, (float)1.0);
+            insertCursor.InsertRow(buff);
+            insertCursor.Flush();
         }
 
         private void ConvertLinkReferenceFilesToFGDBTable(string linkReferenceFileFC14Path, string linkReferenceFileFC5Path, string outputFileGdbPath)
@@ -5189,15 +5303,23 @@ namespace GPProcessVendorDataFunctions
 
         private Hashtable CreateLanguageLookup()
         {
-            Hashtable lookupHash = new System.Collections.Hashtable(97);
+            Hashtable lookupHash = new System.Collections.Hashtable(128);
             lookupHash.Add("ALB", "sq");  // Albanian
+            lookupHash.Add("AMT", "hy");  // Armenian Transcribed
             lookupHash.Add("ARA", "ar");  // Arabic
             lookupHash.Add("ARE", "en");  // Arabic English
+            lookupHash.Add("ARM", "hy");  // Armenian
+            lookupHash.Add("ARX", "hy");  // Armenian Transliterated
+            lookupHash.Add("ASM", "as");  // Assamese
+            lookupHash.Add("ASX", "as");  // Assamese Transliterated
             lookupHash.Add("AZE", "az");  // Azerbaijan
+            lookupHash.Add("AZX", "az");  // Azerbaijan Transliterated
             lookupHash.Add("BAQ", "eu");  // Basque
             lookupHash.Add("BEL", "be");  // Belarusian
+            lookupHash.Add("BEN", "bn");  // Bengali
             lookupHash.Add("BET", "be");  // Belarusian Transcribed
             lookupHash.Add("BEX", "be");  // Belarusian Transliterated
+            lookupHash.Add("BGX", "bn");  // Bengali Transliterated
             lookupHash.Add("BOS", "bs");  // Bosnian
             lookupHash.Add("BOX", "bs");  // Bosnian Transliterated
             lookupHash.Add("BUL", "bg");  // Bulgarian
@@ -5213,18 +5335,21 @@ namespace GPProcessVendorDataFunctions
             lookupHash.Add("ENG", "en");  // English
             lookupHash.Add("EST", "et");  // Estonian
             lookupHash.Add("ESX", "et");  // Estonian Transliterated
+            lookupHash.Add("FAO", "fo");  // Faroese
             lookupHash.Add("FIN", "fi");  // Finnish
             lookupHash.Add("FRE", "fr");  // French
             lookupHash.Add("GEO", "ka");  // Georgian
             lookupHash.Add("GER", "de");  // German
             lookupHash.Add("GET", "ka");  // Georgian Transcribed
             lookupHash.Add("GEX", "ka");  // Georgian Transliterated
+            lookupHash.Add("GJX", "gu");  // Gujarati Transliterated
             lookupHash.Add("GLE", "ga");  // Irish Gaelic
             lookupHash.Add("GLG", "gl");  // Galician
             lookupHash.Add("GRE", "el");  // Greek
             lookupHash.Add("GRN", "gn");  // Guarani
             lookupHash.Add("GRT", "el");  // Greek Transcribed
             lookupHash.Add("GRX", "el");  // Greek Transliterated
+            lookupHash.Add("GUJ", "gu");  // Gujarati
             lookupHash.Add("HEB", "he");  // Hebrew
             lookupHash.Add("HIN", "hi");  // Hindi
             lookupHash.Add("HUN", "hu");  // Hungarian
@@ -5233,9 +5358,14 @@ namespace GPProcessVendorDataFunctions
             lookupHash.Add("IND", "id");  // Bahasa Indonesia
             lookupHash.Add("ITA", "it");  // Italian
             lookupHash.Add("JPN", "ja");  // Japanese
+            lookupHash.Add("KAN", "kn");  // Kannada
             lookupHash.Add("KAT", "kk");  // Kazakh Transcribed
             lookupHash.Add("KAX", "kk");  // Kazakh Transliterated
             lookupHash.Add("KAZ", "kk");  // Kazakh
+            lookupHash.Add("KIR", "ky");  // Kyrgyz
+            lookupHash.Add("KIT", "ky");  // Kyrgyz Transcribed
+            lookupHash.Add("KIX", "ky");  // Kyrgyz Transliterated
+            lookupHash.Add("KNX", "kn");  // Kannada Transliterated
             lookupHash.Add("KOR", "ko");  // Korean
             lookupHash.Add("KOX", "ko");  // Korean Transliterated
             lookupHash.Add("LAV", "lv");  // Latvian
@@ -5243,16 +5373,26 @@ namespace GPProcessVendorDataFunctions
             lookupHash.Add("LIT", "lt");  // Lithuanian
             lookupHash.Add("LIX", "lt");  // Lithuanian Transliterated
             lookupHash.Add("MAC", "mk");  // Macedonian
+            lookupHash.Add("MAL", "ml");  // Malayalam
+            lookupHash.Add("MAR", "mr");  // Marathi
             lookupHash.Add("MAT", "mk");  // Macedonian Transcribed
             lookupHash.Add("MAY", "ms");  // Malaysian
+            lookupHash.Add("MGX", "mn");  // Mongolian Transliterated
             lookupHash.Add("MLT", "mt");  // Maltese
             lookupHash.Add("MLX", "mt");  // Maltese Transliterated
             lookupHash.Add("MNE", "");  // Montenegrin
             lookupHash.Add("MNX", "");  // Montenegrin Transliterated
             lookupHash.Add("MOL", "mo");  // Moldovan
+            lookupHash.Add("MON", "mn");  // Mongolian
             lookupHash.Add("MOX", "mo");  // Moldovan Transliterated
+            lookupHash.Add("MRX", "mr");  // Marathi Transliterated
+            lookupHash.Add("MYX", "ml");  // Malayalam Transliterated
             lookupHash.Add("NOR", "no");  // Norwegian
+            lookupHash.Add("ORI", "or");  // Oriya
+            lookupHash.Add("ORX", "or");  // Oriya Transliterated
             lookupHash.Add("OTH", "");  // Other
+            lookupHash.Add("PAN", "pa");  // Punjabi
+            lookupHash.Add("PNX", "pa");  // Punjabi Transliterated
             lookupHash.Add("POL", "pl");  // Polish
             lookupHash.Add("POR", "pt");  // Portuguese
             lookupHash.Add("POX", "pl");  // Polish Transliterated
@@ -5273,9 +5413,13 @@ namespace GPProcessVendorDataFunctions
             lookupHash.Add("SRB", "sr");  // Serbian
             lookupHash.Add("SRX", "sh");  // Croatian Transliterated
             lookupHash.Add("SWE", "sv");  // Swedish
+            lookupHash.Add("TAM", "ta");  // Tamil
+            lookupHash.Add("TEL", "te");  // Telugu
             lookupHash.Add("THA", "th");  // Thai
             lookupHash.Add("THE", "en");  // Thai English
             lookupHash.Add("TKT", "tr");  // Turkish Transcribed
+            lookupHash.Add("TLX", "te");  // Telugu Transliterated
+            lookupHash.Add("TMX", "ta");  // Tamil Transliterated
             lookupHash.Add("TUR", "tr");  // Turkish
             lookupHash.Add("TUX", "tr");  // Turkish Transliterated
             lookupHash.Add("TWE", "en");  // Taiwan English
@@ -5284,6 +5428,7 @@ namespace GPProcessVendorDataFunctions
             lookupHash.Add("UKX", "uk");  // Ukranian Transliterated
             lookupHash.Add("UND", "");  // Undefined
             lookupHash.Add("URD", "ur");  // Urdu
+            lookupHash.Add("UZB", "uz");  // Uzbek
             lookupHash.Add("VIE", "vi");  // Vietnamese
             lookupHash.Add("WEL", "cy");  // Welsh
             lookupHash.Add("WEN", "en");  // World English
@@ -5443,7 +5588,7 @@ namespace GPProcessVendorDataFunctions
             // Add the traffic data tables (if applicable)
             //
             
-            if (usesHistoricalTraffic)
+            if (usesHistoricalTraffic || trafficFeedLocation != null)
             {
                 // Create a new TrafficData object and populate its historical and live traffic settings.
                 var traffData = new TrafficDataClass() as ITrafficData2;
@@ -5452,30 +5597,46 @@ namespace GPProcessVendorDataFunctions
                 // Populate the speed profile table settings.
                 var histTraff = traffData as IHistoricalTrafficData2;
                 histTraff.ProfilesTableName = ProfilesTableName;
-                if (fgdbVersion == 10.0)
+                if (usesHistoricalTraffic)
                 {
-                    histTraff.FirstTimeSliceFieldName = "TimeFactor_0000";
-                    histTraff.LastTimeSliceFieldName = "TimeFactor_2345";
+                    if (fgdbVersion == 10.0)
+                    {
+                        histTraff.FirstTimeSliceFieldName = "TimeFactor_0000";
+                        histTraff.LastTimeSliceFieldName = "TimeFactor_2345";
+                    }
+                    else
+                    {
+                        histTraff.FirstTimeSliceFieldName = "SpeedFactor_0000";
+                        histTraff.LastTimeSliceFieldName = "SpeedFactor_2345";
+                    }
                 }
                 else
                 {
-                    histTraff.FirstTimeSliceFieldName = "SpeedFactor_0000";
-                    histTraff.LastTimeSliceFieldName = "SpeedFactor_2345";
+                    histTraff.FirstTimeSliceFieldName = "SpeedFactor_AM";
+                    histTraff.LastTimeSliceFieldName = "SpeedFactor_PM";
                 }
-                histTraff.TimeSliceDurationInMinutes = 15;
+                histTraff.TimeSliceDurationInMinutes = usesHistoricalTraffic ? 15 : 720;
                 histTraff.FirstTimeSliceStartTime = new DateTime(1, 1, 1, 0, 0, 0); // 12 AM
                 // Note: the last time slice finish time is implied from the above settings and need not be specified.
 
                 // Populate the street-speed profile join table settings.
                 histTraff.JoinTableName = HistTrafficJoinTableName;
-                if (fgdbVersion == 10.0)
+                if (usesHistoricalTraffic)
                 {
-                    histTraff.JoinTableBaseTravelTimeFieldName = "BaseMinutes";
-                    histTraff.JoinTableBaseTravelTimeUnits = esriNetworkAttributeUnits.esriNAUMinutes;
+                    if (fgdbVersion == 10.0)
+                    {
+                        histTraff.JoinTableBaseTravelTimeFieldName = "BaseMinutes";
+                        histTraff.JoinTableBaseTravelTimeUnits = esriNetworkAttributeUnits.esriNAUMinutes;
+                    }
+                    else
+                    {
+                        histTraff.JoinTableBaseSpeedFieldName = "BaseSpeed";
+                        histTraff.JoinTableBaseSpeedUnits = esriNetworkAttributeUnits.esriNAUKilometersPerHour;
+                    }
                 }
                 else
                 {
-                    histTraff.JoinTableBaseSpeedFieldName = "BaseSpeed";
+                    histTraff.JoinTableBaseSpeedFieldName = "KPH";
                     histTraff.JoinTableBaseSpeedUnits = esriNetworkAttributeUnits.esriNAUKilometersPerHour;
                 }
                 IStringArray fieldNames = new NamesClass();
@@ -5489,7 +5650,7 @@ namespace GPProcessVendorDataFunctions
                 histTraff.JoinTableProfileIDFieldNames = fieldNames;
 
                 // For creating 10.1 and later, populate the dynamic traffic settings.
-                if (fgdbVersion >= 10.1)
+                if (fgdbVersion >= 10.1 && trafficFeedLocation != null)
                 {
                     var dynTraff = traffData as IDynamicTrafficData;
                     dynTraff.DynamicTrafficTableName = TMCJoinTableName;
@@ -5564,7 +5725,7 @@ namespace GPProcessVendorDataFunctions
             netAttr2.UsageType = esriNetworkAttributeUsageType.esriNAUTCost;
             netAttr2.DataType = esriNetworkAttributeDataType.esriNADTDouble;
             netAttr2.Units = esriNetworkAttributeUnits.esriNAUMinutes;
-            netAttr2.UseByDefault = createArcGISOnlineNetworkAttributes ? false : !usesHistoricalTraffic;
+            netAttr2.UseByDefault = createArcGISOnlineNetworkAttributes ? false : !(usesHistoricalTraffic || (trafficFeedLocation != null));
 
             if (usesHistoricalTraffic)
             {
@@ -5718,7 +5879,7 @@ namespace GPProcessVendorDataFunctions
                 attributeArray.Add(evalNetAttr);
             }
 
-            if (usesHistoricalTraffic)
+            if (usesHistoricalTraffic || trafficFeedLocation != null)
             {
                 //
                 // TravelTime network attribute

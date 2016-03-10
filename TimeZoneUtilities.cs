@@ -35,7 +35,7 @@ namespace GPProcessVendorDataFunctions
         //   Fourth character: DST present ({const}C = No DST; {north}N = DST in July; {south}S = DST in January)
         //   Fifth character: Preferred sorted order (zero-based index)
 
-        // The list of time zones below is current as of August 2015:
+        // The list of time zones below is current as of December 2015:
 
         // (UTC-12:00)
         private const string DatelineST         = "\"AA-C0 Dateline Standard Time\"";           // International Date Line West
@@ -152,6 +152,8 @@ namespace GPProcessVendorDataFunctions
         private const string SingaporeST        = "\"UA-C3 Singapore Standard Time\"";          // Kuala Lumpur, Singapore
         private const string WAustraliaST       = "\"UA-C4 W. Australia Standard Time\"";       // Perth
         private const string UlaanbaatarST      = "\"UA-N0 Ulaanbaatar Standard Time\"";        // Ulaanbaatar
+        // (UTC+08:30)
+        private const string NorthKoreaST       = "\"UM-C0 North Korea Standard Time\"";        // Pyongyang
         // (UTC+09:00)
         private const string YakutskST          = "\"VA-C0 Yakutsk Standard Time\"";            // Yakutsk (RTZ 8)
         private const string KoreaST            = "\"VA-C1 Korea Standard Time\"";              // Seoul
@@ -334,7 +336,7 @@ namespace GPProcessVendorDataFunctions
                    "\n  z = " + MyanmarST +
                    "\nElseIf utcOffset < 450 Then" +    // UTC+07:00 == 420
                    "\n  z = " + SEAsiaST + ": If [" + countryCodeFieldName + "] = \"RUS\" Then z = " + NorthAsiaST +
-                   "\nElseIf utcOffset < 510 Then" +    // UTC+08:00 == 480
+                   "\nElseIf utcOffset < 495 Then" +    // UTC+08:00 == 480
                    "\n  If [DST] > 0 Then" +
                    "\n    z = " + UlaanbaatarST +
                    "\n  Else" +
@@ -346,11 +348,13 @@ namespace GPProcessVendorDataFunctions
                    "\n      Case Else: z = " + ChinaST +
                    "\n    End Select" +
                    "\n  End If" +
+                   "\nElseIf utcOffset < 525 Then" +    // UTC+08:30 == 510
+                   "\n  z = " + NorthKoreaST +
                    "\nElseIf utcOffset < 555 Then" +    // UTC+09:00 == 540
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"RUS\": z = " + YakutskST +
-                   "\n    Case \"JPN\": z = " + TokyoST +
-                   "\n    Case Else: z = " + KoreaST +
+                   "\n    Case \"KOR\": z = " + KoreaST +
+                   "\n    Case Else: z = " + TokyoST +
                    "\n  End Select" +
                    "\nElseIf utcOffset < 585 Then" +    // UTC+09:30 == 570
                    "\n  z = " + AusCentralST + ": If [DST] > 0 Then z = " + CenAustraliaST +
