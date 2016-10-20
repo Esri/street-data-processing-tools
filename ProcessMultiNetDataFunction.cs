@@ -135,7 +135,7 @@ namespace GPProcessVendorDataFunctions
                                         { "ID", "SEQNR", "TRPELID", "TRPELTYP" };
         private static readonly esriFieldType[] MPFieldTypes = new esriFieldType[]
                                         { esriFieldType.esriFieldTypeDouble,
-                                          esriFieldType.esriFieldTypeSmallInteger,
+                                          esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeDouble,
                                           esriFieldType.esriFieldTypeSmallInteger };
         private static readonly string[] SIFieldNames = new string[] 
@@ -143,8 +143,8 @@ namespace GPProcessVendorDataFunctions
                                           "TXTCONT", "TXTCONTLC", "CONTYP", "AMBIG" };
         private static readonly esriFieldType[] SIFieldTypes = new esriFieldType[]
                                         { esriFieldType.esriFieldTypeDouble,
-                                          esriFieldType.esriFieldTypeSmallInteger,
-                                          esriFieldType.esriFieldTypeSmallInteger,
+                                          esriFieldType.esriFieldTypeInteger,
+                                          esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeString,
                                           esriFieldType.esriFieldTypeSmallInteger,
                                           esriFieldType.esriFieldTypeString,
@@ -155,14 +155,14 @@ namespace GPProcessVendorDataFunctions
                                         { "ID", "SEQNR", "TRPELID", "TRPELTYP" };
         private static readonly esriFieldType[] SPFieldTypes = new esriFieldType[]
                                         { esriFieldType.esriFieldTypeDouble,
-                                          esriFieldType.esriFieldTypeSmallInteger,
+                                          esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeDouble,
                                           esriFieldType.esriFieldTypeSmallInteger};
         private static readonly string[] RSFieldNames = new string[]
                                         { "ID", "SEQNR", "FEATTYP", "DIR_POS", "RESTRTYP", "RESTRVAL", "VT" };
         private static readonly esriFieldType[] RSFieldTypes = new esriFieldType[]
                                         { esriFieldType.esriFieldTypeDouble,
-                                          esriFieldType.esriFieldTypeSmallInteger,
+                                          esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeSmallInteger,
                                           esriFieldType.esriFieldTypeSmallInteger,
                                           esriFieldType.esriFieldTypeString,
@@ -2660,19 +2660,19 @@ namespace GPProcessVendorDataFunctions
                 turnBuffer.set_Value(turnFCJnctIDField, mpRow.get_Value(mpJnctIDField));
 
                 // Write the AltID values to the buffer
-                short seq = (short)(mpRow.get_Value(seqNrField));
-                short lastEntry;
+                int seq = (int)(mpRow.get_Value(seqNrField));
+                int lastEntry;
                 do
                 {
                     lastEntry = seq;
                     turnBuffer.set_Value(altIDFields[lastEntry - 1], mpRow.get_Value(trpElIDField));
                     mpRow = mpCursor.NextRow();
                     if (mpRow == null) break;
-                    seq = (short)(mpRow.get_Value(seqNrField));
+                    seq = (int)(mpRow.get_Value(seqNrField));
                 } while (seq != 1);
 
                 // Zero-out the unused fields
-                for (short i = lastEntry; i < numAltIDFields; i++)
+                for (int i = lastEntry; i < numAltIDFields; i++)
                     turnBuffer.set_Value(altIDFields[i], 0);
 
                 // Write the FCID and Pos field values to the buffer
@@ -2938,7 +2938,7 @@ namespace GPProcessVendorDataFunctions
             long currentID = Convert.ToInt64(inputTableRow.get_Value(idFieldOnMP));
 
             int streetsOID = Convert.ToInt32(inputTableRow.get_Value(StreetsOIDField));
-            short seqNr = Convert.ToInt16(inputTableRow.get_Value(seqNrField));
+            int seqNr = Convert.ToInt32(inputTableRow.get_Value(seqNrField));
             double frmPos = 0.0;
             double toPos = 1.0;
             if (seqNr == 1)
@@ -3016,7 +3016,7 @@ namespace GPProcessVendorDataFunctions
                 }
 
                 streetsOID = Convert.ToInt32(inputTableRow.get_Value(StreetsOIDField));
-                seqNr = Convert.ToInt16(inputTableRow.get_Value(seqNrField));
+                seqNr = Convert.ToInt32(inputTableRow.get_Value(seqNrField));
                 frmPos = 0.0;
                 toPos = 1.0;
                 if (seqNr == 1)
@@ -5702,7 +5702,8 @@ namespace GPProcessVendorDataFunctions
 
                 string truckSpeedExpression = "sp = [RecommendedSpeed_KPH_AllTrucks]\n" +
                                               "If IsNull(sp) Then sp = [MaximumSpeed_KPH_AllTrucks]\n" +
-                                              "If IsNull(sp) Then sp = [KPH]";
+                                              "If IsNull(sp) Then sp = [KPH]\n" +
+                                              "If sp > [KPH] Then sp = [KPH]";
 
                 // Create evaluator objects and set them on the EvaluatedNetworkAttribute object.
                 netFieldEval = new NetworkFieldEvaluatorClass();

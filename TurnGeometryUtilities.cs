@@ -196,7 +196,9 @@ namespace GPProcessVendorDataFunctions
             string s, leftTrimmedString, oidString;
             int leftTrimAmt = 24 + turnFCName.Length;
             IFeature feat = null;
-            System.IO.StreamReader f = new System.IO.StreamReader(Environment.GetEnvironmentVariable("TEMP") + "\\BuildErrors.txt");
+            string[] buildErrorsFiles = System.IO.Directory.GetFiles(Environment.GetEnvironmentVariable("TEMP"), "BuildErrors.txt", System.IO.SearchOption.AllDirectories);
+            string buildErrorsFile = buildErrorsFiles[0];
+            System.IO.StreamReader f = new System.IO.StreamReader(buildErrorsFile);
             
             // Loop through the BuildErrors.txt file and write the value 1 for each entry found.
             

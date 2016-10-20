@@ -165,7 +165,7 @@ namespace GPProcessVendorDataFunctions
         private static readonly esriFieldType[] CdmsFieldTypes = new esriFieldType[]
                                         { esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeInteger,
-                                          esriFieldType.esriFieldTypeSmallInteger,
+                                          esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeString,
                                           esriFieldType.esriFieldTypeString,
                                           esriFieldType.esriFieldTypeString,
@@ -215,7 +215,7 @@ namespace GPProcessVendorDataFunctions
         private static readonly esriFieldType[] CndModFieldTypes = new esriFieldType[]
                                         { esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeString,
-                                          esriFieldType.esriFieldTypeSmallInteger,
+                                          esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeString };
         #endregion
 
@@ -2473,7 +2473,7 @@ namespace GPProcessVendorDataFunctions
                 addFieldTool = new AddField();
                 addFieldTool.in_table = rdmsTablePath;
                 addFieldTool.field_name = "COND_TYPE";
-                addFieldTool.field_type = "SHORT";
+                addFieldTool.field_type = "LONG";
                 gp.Execute(addFieldTool, trackcancel);
 
                 addFieldTool.field_name = "END_OF_LK";
@@ -2556,7 +2556,7 @@ namespace GPProcessVendorDataFunctions
                 addFieldTool = new AddField();
                 addFieldTool.in_table = pathToTurnFC;
                 addFieldTool.field_name = "COND_TYPE";
-                addFieldTool.field_type = "SHORT";
+                addFieldTool.field_type = "LONG";
                 gp.Execute(addFieldTool, trackcancel);
 
                 AddMessage("Creating access restriction fields on the turn feature class...", messages, trackcancel);
@@ -6637,6 +6637,8 @@ namespace GPProcessVendorDataFunctions
                 IStringArray restrictionsArray;
                 IArray paramValuesArray;
                 INetworkTravelModeParameterValue tmParamValue;
+                string preferredTruckRoutesAttributeName = createArcGISOnlineNetworkAttributes ? 
+                                                           "Use Preferred Truck Routes" : "National STAA and State Truck Designated and Locally Preferred Routes";
 
                 //
                 // Driving Time travel mode
@@ -6783,7 +6785,7 @@ namespace GPProcessVendorDataFunctions
                 // Create a NetworkTravelMode object and populate its settings.
                 travelMode = new NetworkTravelModeClass();
                 travelMode.Name = "Trucking Time";
-                timeAttributeName = "TruckTravelTime";
+                timeAttributeName = ((usesTransport || createArcGISOnlineNetworkAttributes) ? "TruckTravelTime" : "Minutes");
                 distanceAttributeName = (createNetworkAttributesInMetric ? "Kilometers" : "Miles");
                 travelMode.ImpedanceAttributeName = timeAttributeName;
                 travelMode.TimeAttributeName = timeAttributeName;
@@ -6816,9 +6818,9 @@ namespace GPProcessVendorDataFunctions
                     restrictionsArray.Add("Oneway");    // For ArcGIS Online, the Oneway information is rolled into the Driving restrictions.
                 if (usesTransport)
                 {
-                    restrictionsArray.Add("Use Preferred Truck Routes");
+                    restrictionsArray.Add(preferredTruckRoutesAttributeName);
                     tmParamValue = new NetworkTravelModeParameterValueClass();
-                    tmParamValue.AttributeName = "Use Preferred Truck Routes";
+                    tmParamValue.AttributeName = preferredTruckRoutesAttributeName;
                     tmParamValue.ParameterName = "Restriction Usage";
                     tmParamValue.Value = PreferHighFactor;
                     paramValuesArray.Add(tmParamValue);
@@ -6837,7 +6839,7 @@ namespace GPProcessVendorDataFunctions
                 // Create a NetworkTravelMode object and populate its settings.
                 travelMode = new NetworkTravelModeClass();
                 travelMode.Name = "Trucking Distance";
-                timeAttributeName = "TruckTravelTime";
+                timeAttributeName = ((usesTransport || createArcGISOnlineNetworkAttributes) ? "TruckTravelTime" : "Minutes");
                 distanceAttributeName = (createNetworkAttributesInMetric ? "Kilometers" : "Miles");
                 travelMode.ImpedanceAttributeName = distanceAttributeName;
                 travelMode.TimeAttributeName = timeAttributeName;
@@ -6870,9 +6872,9 @@ namespace GPProcessVendorDataFunctions
                     restrictionsArray.Add("Oneway");    // For ArcGIS Online, the Oneway information is rolled into the Driving restrictions.
                 if (usesTransport)
                 {
-                    restrictionsArray.Add("Use Preferred Truck Routes");
+                    restrictionsArray.Add(preferredTruckRoutesAttributeName);
                     tmParamValue = new NetworkTravelModeParameterValueClass();
-                    tmParamValue.AttributeName = "Use Preferred Truck Routes";
+                    tmParamValue.AttributeName = preferredTruckRoutesAttributeName;
                     tmParamValue.ParameterName = "Restriction Usage";
                     tmParamValue.Value = PreferHighFactor;
                     paramValuesArray.Add(tmParamValue);
