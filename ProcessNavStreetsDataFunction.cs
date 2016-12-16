@@ -5254,45 +5254,49 @@ namespace GPProcessVendorDataFunctions
 
             }  // each input table record
 
+            // Assuming the table wasn't empty to begin with (detected by the Currents no longer being -1.0),
             // add the last signpost feature and detail records (same code as above)
 
-            // clean up unused parts of the row and pack toward/branch items
+            if (currentSrcLinkID != -1.0 && currentDstLinkID != -1.0)
+            {
+                // clean up unused parts of the row and pack toward/branch items
 
-            SignpostUtilities.CleanUpSignpostFeatureValues(featureBuffer, nextBranchNum - 1, nextTowardNum - 1,
-                                                           outBranchXFI, outBranchXDirFI, outBranchXLngFI,
-                                                           outTowardXFI, outTowardXLngFI);
+                SignpostUtilities.CleanUpSignpostFeatureValues(featureBuffer, nextBranchNum - 1, nextTowardNum - 1,
+                                                               outBranchXFI, outBranchXDirFI, outBranchXLngFI,
+                                                               outTowardXFI, outTowardXLngFI);
 
-            // save sign feature record
+                // save sign feature record
 
-            newOID = featureInsertCursor.InsertFeature(featureBuffer);
+                newOID = featureInsertCursor.InsertFeature(featureBuffer);
 
-            // set streets table values
+                // set streets table values
 
-            tableRowBuffer.set_Value(outTblSignpostIDFI, newOID);
-            tableRowBuffer.set_Value(outTblSequenceFI, 1);
-            tableRowBuffer.set_Value(outTblEdgeFCIDFI, refLinesFCID);
-            tableRowBuffer.set_Value(outTblEdgeFIDFI, fromFeatureData.OID);
-            tableRowBuffer.set_Value(outTblEdgeFrmPosFI, fromEdgeFromPos);
-            tableRowBuffer.set_Value(outTblEdgeToPosFI, fromEdgeToPos);
+                tableRowBuffer.set_Value(outTblSignpostIDFI, newOID);
+                tableRowBuffer.set_Value(outTblSequenceFI, 1);
+                tableRowBuffer.set_Value(outTblEdgeFCIDFI, refLinesFCID);
+                tableRowBuffer.set_Value(outTblEdgeFIDFI, fromFeatureData.OID);
+                tableRowBuffer.set_Value(outTblEdgeFrmPosFI, fromEdgeFromPos);
+                tableRowBuffer.set_Value(outTblEdgeToPosFI, fromEdgeToPos);
 
-            // insert first detail record
+                // insert first detail record
 
-            tableInsertCursor.InsertRow(tableRowBuffer);
+                tableInsertCursor.InsertRow(tableRowBuffer);
 
-            tableRowBuffer.set_Value(outTblSequenceFI, 0);
-            tableRowBuffer.set_Value(outTblEdgeFIDFI, toFeatureData.OID);
-            tableRowBuffer.set_Value(outTblEdgeFrmPosFI, toEdgeFromPos);
-            tableRowBuffer.set_Value(outTblEdgeToPosFI, toEdgeToPos);
+                tableRowBuffer.set_Value(outTblSequenceFI, 0);
+                tableRowBuffer.set_Value(outTblEdgeFIDFI, toFeatureData.OID);
+                tableRowBuffer.set_Value(outTblEdgeFrmPosFI, toEdgeFromPos);
+                tableRowBuffer.set_Value(outTblEdgeToPosFI, toEdgeToPos);
 
-            // insert second detail record
+                // insert second detail record
 
-            tableInsertCursor.InsertRow(tableRowBuffer);
+                tableInsertCursor.InsertRow(tableRowBuffer);
 
-            numOutput++;
+                numOutput++;
 
-            // Flush any outstanding writes to the feature class and table
-            featureInsertCursor.Flush();
-            tableInsertCursor.Flush();
+                // Flush any outstanding writes to the feature class and table
+                featureInsertCursor.Flush();
+                tableInsertCursor.Flush();
+            }
 
             // add a summary message
 
@@ -6631,7 +6635,7 @@ namespace GPProcessVendorDataFunctions
                 IArray travelModeArray = new ArrayClass();
 
                 // Initialize variables reused when creating travel modes:
-                INetworkTravelMode travelMode;
+                INetworkTravelMode2 travelMode;
                 string timeAttributeName;
                 string distanceAttributeName;
                 IStringArray restrictionsArray;
@@ -6656,6 +6660,10 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBAtDeadEndsAndIntersections;
                 travelMode.OutputGeometryPrecision = 10;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "AUTOMOBILE";
+                travelMode.Description = "Models the movement of cars and other similar small automobiles, such as pickup trucks, and finds solutions that optimize travel time. " +
+                                         "Travel obeys one-way roads, avoids illegal turns, and follows other rules that are specific to cars. " +
+                                         "Dynamic travel speeds based on traffic are used where it is available when you specify a start time.";
 
                 // Populate the restriction attributes to use.
                 restrictionsArray = new StrArrayClass();
@@ -6691,6 +6699,9 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBAtDeadEndsAndIntersections;
                 travelMode.OutputGeometryPrecision = 10;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "AUTOMOBILE";
+                travelMode.Description = "Models the movement of cars and other similar small automobiles, such as pickup trucks, and finds solutions that optimize travel distance. " +
+                                         "Travel obeys one-way roads, avoids illegal turns, and follows other rules that are specific to cars.";
 
                 // Populate the restriction attributes to use.
                 restrictionsArray = new StrArrayClass();
@@ -6726,6 +6737,10 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBAtDeadEndsAndIntersections;
                 travelMode.OutputGeometryPrecision = 10;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "AUTOMOBILE";
+                travelMode.Description = "Models the movement of cars and other similar small automobiles, such as pickup trucks, and finds solutions that optimize travel time. " +
+                                         "Travel obeys one-way roads, avoids illegal turns, and follows other rules that are specific to cars, but does not discourage travel on unpaved roads. " +
+                                         "Dynamic travel speeds based on traffic are used where it is available when you specify a start time.";
 
                 // Populate the restriction attributes to use.
                 restrictionsArray = new StrArrayClass();
@@ -6760,6 +6775,9 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBAtDeadEndsAndIntersections;
                 travelMode.OutputGeometryPrecision = 10;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "AUTOMOBILE";
+                travelMode.Description = "Models the movement of cars and other similar small automobiles, such as pickup trucks, and finds solutions that optimize travel distance. " +
+                                         "Travel obeys one-way roads, avoids illegal turns, and follows other rules that are specific to cars, but does not discourage travel on unpaved roads.";
 
                 // Populate the restriction attributes to use.
                 restrictionsArray = new StrArrayClass();
@@ -6794,6 +6812,9 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBNoBacktrack;
                 travelMode.OutputGeometryPrecision = 10;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "TRUCK";
+                travelMode.Description = "Models basic truck travel by preferring designated truck routes, and finds solutions that optimize travel time. " +
+                                         "Routes must obey one-way roads, avoid illegal turns, and so on.";
 
                 // Populate attribute parameter values to use.
                 paramValuesArray = new ArrayClass();
@@ -6807,7 +6828,6 @@ namespace GPProcessVendorDataFunctions
                 restrictionsArray = new StrArrayClass();
                 restrictionsArray.Add("Driving a Truck");
                 restrictionsArray.Add("Avoid Truck Restricted Roads");
-                restrictionsArray.Add("Through Traffic Prohibited");
                 restrictionsArray.Add("Avoid Unpaved Roads");
                 restrictionsArray.Add("Avoid Express Lanes");
                 restrictionsArray.Add("Avoid Carpool Roads");
@@ -6848,6 +6868,9 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBNoBacktrack;
                 travelMode.OutputGeometryPrecision = 10;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "TRUCK";
+                travelMode.Description = "Models basic truck travel by preferring designated truck routes, and finds solutions that optimize travel distance. " +
+                                         "Routes must obey one-way roads, avoid illegal turns, and so on.";
 
                 // Populate attribute parameter values to use.
                 paramValuesArray = new ArrayClass();
@@ -6861,7 +6884,6 @@ namespace GPProcessVendorDataFunctions
                 restrictionsArray = new StrArrayClass();
                 restrictionsArray.Add("Driving a Truck");
                 restrictionsArray.Add("Avoid Truck Restricted Roads");
-                restrictionsArray.Add("Through Traffic Prohibited");
                 restrictionsArray.Add("Avoid Unpaved Roads");
                 restrictionsArray.Add("Avoid Express Lanes");
                 restrictionsArray.Add("Avoid Carpool Roads");
@@ -6902,10 +6924,19 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBAllowBacktrack;
                 travelMode.OutputGeometryPrecision = 2;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "WALK";
+
+                string walkDescription = "Follows paths and roads that allow pedestrian traffic and finds solutions that optimize travel time. ";
+                if (createArcGISOnlineNetworkAttributes)
+                    walkDescription += "The walking speed is set to 5 kilometers per hour.";
+                else
+                    walkDescription += "By default, the walking speed is set to 5 kilometers per hour.";
+                travelMode.Description = walkDescription;
 
                 // Populate the restriction attributes to use.
                 restrictionsArray = new StrArrayClass();
                 restrictionsArray.Add("Walking");
+                restrictionsArray.Add("Avoid Private Roads");
                 travelMode.RestrictionAttributeNames = restrictionsArray;
 
                 // Add the travel mode to the array.
@@ -6927,10 +6958,13 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBAllowBacktrack;
                 travelMode.OutputGeometryPrecision = 2;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "WALK";
+                travelMode.Description = "Follows paths and roads that allow pedestrian traffic and finds solutions that optimize travel distance.";
 
                 // Populate the restriction attributes to use.
                 restrictionsArray = new StrArrayClass();
                 restrictionsArray.Add("Walking");
+                restrictionsArray.Add("Avoid Private Roads");
                 travelMode.RestrictionAttributeNames = restrictionsArray;
 
                 // Add the travel mode to the array.
