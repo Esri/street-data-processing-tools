@@ -198,12 +198,11 @@ namespace GPProcessVendorDataFunctions
                                           esriFieldType.esriFieldTypeInteger,
                                           esriFieldType.esriFieldTypeSingle };
         private static readonly string[] RDFieldNames = new string[]
-                                        { "ID", "RDSTMC", "TMCPATHID", "TMCMPATHID" };
+                                        { "ID", "RDSTMC", "TMCPATHID" };
         private static readonly esriFieldType[] RDFieldTypes = new esriFieldType[]
                                         { esriFieldType.esriFieldTypeDouble,
                                           esriFieldType.esriFieldTypeString,
-                                          esriFieldType.esriFieldTypeDouble,
-                                          esriFieldType.esriFieldTypeString};
+                                          esriFieldType.esriFieldTypeDouble};
         private static readonly string[] LTRFieldNames = new string[]
                                         { "ID", "SEQNR", "FEATTYP", "PREFERRED", "RESTRICTED" };
         private static readonly esriFieldType[] LTRFieldTypes = new esriFieldType[]
@@ -5746,7 +5745,7 @@ namespace GPProcessVendorDataFunctions
                 IArray travelModeArray = new ArrayClass();
 
                 // Initialize variables reused when creating travel modes:
-                INetworkTravelMode travelMode;
+                INetworkTravelMode2 travelMode;
                 string timeAttributeName;
                 string distanceAttributeName;
                 IStringArray restrictionsArray;
@@ -5769,6 +5768,10 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBAtDeadEndsAndIntersections;
                 travelMode.OutputGeometryPrecision = 10;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "AUTOMOBILE";
+                travelMode.Description = "Models the movement of cars and other similar small automobiles, such as pickup trucks, and finds solutions that optimize travel time. " + 
+                                         "Travel obeys one-way roads, avoids illegal turns, and follows other rules that are specific to cars. " +
+                                         "Dynamic travel speeds based on traffic are used where it is available when you specify a start time.";
 
                 // Populate the restriction attributes to use.
                 restrictionsArray = new StrArrayClass();
@@ -5810,6 +5813,9 @@ namespace GPProcessVendorDataFunctions
                 travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBAtDeadEndsAndIntersections;
                 travelMode.OutputGeometryPrecision = 10;
                 travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                travelMode.Type = "AUTOMOBILE";
+                travelMode.Description = "Models the movement of cars and other similar small automobiles, such as pickup trucks, and finds solutions that optimize travel distance. " +
+                                         "Travel obeys one-way roads, avoids illegal turns, and follows other rules that are specific to cars.";
 
                 // Populate the restriction attributes to use.
                 restrictionsArray = new StrArrayClass();
@@ -5854,6 +5860,9 @@ namespace GPProcessVendorDataFunctions
                     travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBNoBacktrack;
                     travelMode.OutputGeometryPrecision = 10;
                     travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                    travelMode.Type = "TRUCK";
+                    travelMode.Description = "Models basic truck travel by preferring designated truck routes, and finds solutions that optimize travel time. " +
+                                             "Routes must obey one-way roads, avoid illegal turns, and so on.";
 
                     // Populate attribute parameter values to use.
                     paramValuesArray = new ArrayClass();
@@ -5908,6 +5917,9 @@ namespace GPProcessVendorDataFunctions
                     travelMode.RestrictUTurns = esriNetworkForwardStarBacktrack.esriNFSBNoBacktrack;
                     travelMode.OutputGeometryPrecision = 10;
                     travelMode.OutputGeometryPrecisionUnits = esriUnits.esriMeters;
+                    travelMode.Type = "TRUCK";
+                    travelMode.Description = "Models basic truck travel by preferring designated truck routes, and finds solutions that optimize travel distance. " +
+                                             "Routes must obey one-way roads, avoid illegal turns, and so on.";
 
                     // Populate attribute parameter values to use.
                     paramValuesArray = new ArrayClass();

@@ -35,7 +35,7 @@ namespace GPProcessVendorDataFunctions
         //   Fourth character: DST present ({const}C = No DST; {north}N = DST in July; {south}S = DST in January)
         //   Fifth character: Preferred sorted order (zero-based index)
 
-        // The list of time zones below is current as of October 2016:
+        // The list of time zones below is current as of November 2016:
 
         // (UTC-12:00)
         private const string DatelineST         = "\"AA-C0 Dateline Standard Time\"";           // International Date Line West
@@ -313,7 +313,7 @@ namespace GPProcessVendorDataFunctions
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"FIN\", \"EST\", \"LVA\", \"LTU\", \"UKR\", \"BGR\": z = " + FLEST +
                    "\n    Case \"GRC\", \"ROU\": z = " + GTBST +
-                   "\n    Case \"CYP\", \"BSB\", \"CUN\", \"NCY\", \"MDA\": z = " + EEuropeST +
+                   "\n    Case \"CYP\", \"BSB\", \"CUN\", \"MDA\": z = " + EEuropeST +
                    "\n    Case \"RUS\": z = " + KaliningradST +
                    "\n    Case \"LBY\": z = " + LibyaST +
                    "\n    Case \"EGY\": z = " + EgyptST +
@@ -328,7 +328,7 @@ namespace GPProcessVendorDataFunctions
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"BLR\": z = " + BelarusST +
                    "\n    Case \"RUS\": z = " + RussianST +
-                   "\n    Case \"TUR\": z = " + TurkeyST +
+                   "\n    Case \"TUR\", \"NCY\": z = " + TurkeyST +
                    "\n    Case \"IRQ\": z = " + ArabicST +
                    "\n    Case \"SAU\", \"KWT\", \"BHR\", \"QAT\", \"YEM\": z = " + ArabST +
                    "\n    Case Else: z = " + EAfricaST +

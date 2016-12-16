@@ -200,11 +200,9 @@
     </PostBuildEvent>
   </PropertyGroup>
   <Target Name="BeforeClean">
-    <Exec WorkingDirectory="$(CommonProgramFiles)\ArcGIS\bin" Command="esriRegasm.exe &quot;$(TargetPath)&quot; /p:Engine /u /s" Condition="Exists('$(TargetPath)')" ContinueOnError="true" />
-    <Exec WorkingDirectory="$(CommonProgramFiles)\ArcGIS\bin" Command="esriRegasm.exe &quot;$(TargetPath)&quot; /p:Desktop /u /s" Condition="Exists('$(TargetPath)')" ContinueOnError="true" />
+    <Exec WorkingDirectory="$(CommonProgramFiles)\ArcGIS\bin" Command="esriRegasm.exe &quot;$(TargetPath)&quot; /p:Desktop /u" Condition="Exists('$(TargetPath)')" ContinueOnError="true" />
   </Target>
   <Target Name="AfterBuild">
-    <Exec ContinueOnError="true" WorkingDirectory="$(CommonProgramFiles)\ArcGIS\bin" Command="esriRegasm.exe &quot;$(TargetPath)&quot; /p:Engine /s" />
-    <Exec ContinueOnError="true" WorkingDirectory="$(CommonProgramFiles)\ArcGIS\bin" Command="esriRegasm.exe &quot;$(TargetPath)&quot; /p:Desktop /s" />
+    <Exec ContinueOnError="true" WorkingDirectory="$(CommonProgramFiles)\ArcGIS\bin" Command="esriRegasm.exe &quot;$(TargetPath)&quot; /p:Desktop" />
   </Target>
 </Project>
