@@ -7,7 +7,7 @@ The tools process shapefile data from TomTom MultiNet or HERE NAVSTREETS into a 
 
 
 ## Software Requirements
-* ArcGIS 10.4.1 or later
+* ArcGIS 10.6
 * ArcView (Basic) license or higher
 * ArcGIS Network Analyst Extension
 * If you have installed ArcGIS for Desktop Background Geoprocessing (64 Bit) update, the tools will run only if background geoprocessing is disabled.
@@ -22,7 +22,7 @@ To install the tools
 4. In the Properties dialog, click the General tab and then click Unblock button in the Security section. Click Ok to save the changes and close the properties dialog.
 5. Right-click the `InstallTools.bat` file and select Run as administrator.
 
-To use the tools, from the Catalog Window in ArcMap or the Catalog Tree in ArcCatalog, browse to the folder where you extracted the archive and run the tools within the Street Data Processing Tools toolbox. The tools require ArcGIS 10.4.1, however the tools can be used to create network datasets that can be used with ArcGIS 10.1 or later.
+To use the tools, from the Catalog Window in ArcMap or the Catalog Tree in ArcCatalog, browse to the folder where you extracted the archive and run the tools within the Street Data Processing Tools toolbox. The tools require ArcGIS 10.6, however the tools can be used to create network datasets that can be used with ArcGIS 10.1 or later.
 
 
 ## Issues
