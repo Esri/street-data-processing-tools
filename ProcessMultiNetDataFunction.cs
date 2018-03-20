@@ -5168,39 +5168,7 @@ namespace GPProcessVendorDataFunctions
                 // TravelTime network attribute
                 //
 
-                // Create an EvaluatedNetworkAttribute object and populate its settings.
-                evalNetAttr = new EvaluatedNetworkAttributeClass();
-                netAttr2 = (INetworkAttribute2)evalNetAttr;
-                netAttr2.Name = "TravelTime";
-                netAttr2.UsageType = esriNetworkAttributeUsageType.esriNAUTCost;
-                netAttr2.DataType = esriNetworkAttributeDataType.esriNADTDouble;
-                netAttr2.Units = esriNetworkAttributeUnits.esriNAUMinutes;
-                netAttr2.UseByDefault = true;
-
-                // Create evaluator objects and set them on the EvaluatedNetworkAttribute object.
-                IHistoricalTravelTimeEvaluator histTravelTimeEval = new NetworkEdgeTrafficEvaluatorClass();
-                histTravelTimeEval.WeekdayFallbackAttributeName = "WeekdayFallbackTravelTime";
-                histTravelTimeEval.WeekendFallbackAttributeName = "WeekendFallbackTravelTime";
-                histTravelTimeEval.TimeNeutralAttributeName = "AverageTravelTime";
-                evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAlongDigitized, (INetworkEvaluator)histTravelTimeEval);
-
-                histTravelTimeEval = new NetworkEdgeTrafficEvaluatorClass();
-                histTravelTimeEval.WeekdayFallbackAttributeName = "WeekdayFallbackTravelTime";
-                histTravelTimeEval.WeekendFallbackAttributeName = "WeekendFallbackTravelTime";
-                histTravelTimeEval.TimeNeutralAttributeName = "AverageTravelTime";
-                evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAgainstDigitized, (INetworkEvaluator)histTravelTimeEval);
-
-                netConstEval = new NetworkConstantEvaluatorClass();
-                netConstEval.ConstantValue = 0;
-                evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETEdge, (INetworkEvaluator)netConstEval);
-
-                netConstEval = new NetworkConstantEvaluatorClass();
-                netConstEval.ConstantValue = 0;
-                evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETJunction, (INetworkEvaluator)netConstEval);
-
-                netConstEval = new NetworkConstantEvaluatorClass();
-                netConstEval.ConstantValue = 0;
-                evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETTurn, (INetworkEvaluator)netConstEval);
+                evalNetAttr = CreateTrafficAttrWSpeedCapParam("TravelTime", edgeNetworkSource, "WeekdayFallbackTravelTime", "WeekendFallbackTravelTime", "AverageTravelTime", true);
 
                 // Add the attribute to the array.
                 attributeArray.Add(evalNetAttr);
@@ -5211,39 +5179,7 @@ namespace GPProcessVendorDataFunctions
                 // TravelTime network attribute
                 //
 
-                // Create an EvaluatedNetworkAttribute object and populate its settings.
-                evalNetAttr = new EvaluatedNetworkAttributeClass();
-                netAttr2 = (INetworkAttribute2)evalNetAttr;
-                netAttr2.Name = "TravelTime";
-                netAttr2.UsageType = esriNetworkAttributeUsageType.esriNAUTCost;
-                netAttr2.DataType = esriNetworkAttributeDataType.esriNADTDouble;
-                netAttr2.Units = esriNetworkAttributeUnits.esriNAUMinutes;
-                netAttr2.UseByDefault = true;
-
-                // Create evaluator objects and set them on the EvaluatedNetworkAttribute object.
-                IHistoricalTravelTimeEvaluator histTravelTimeEval = new NetworkEdgeTrafficEvaluatorClass();
-                histTravelTimeEval.WeekdayFallbackAttributeName = "Minutes";
-                histTravelTimeEval.WeekendFallbackAttributeName = "Minutes";
-                histTravelTimeEval.TimeNeutralAttributeName = "Minutes";
-                evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAlongDigitized, (INetworkEvaluator)histTravelTimeEval);
-
-                histTravelTimeEval = new NetworkEdgeTrafficEvaluatorClass();
-                histTravelTimeEval.WeekdayFallbackAttributeName = "Minutes";
-                histTravelTimeEval.WeekendFallbackAttributeName = "Minutes";
-                histTravelTimeEval.TimeNeutralAttributeName = "Minutes";
-                evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAgainstDigitized, (INetworkEvaluator)histTravelTimeEval);
-
-                netConstEval = new NetworkConstantEvaluatorClass();
-                netConstEval.ConstantValue = 0;
-                evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETEdge, (INetworkEvaluator)netConstEval);
-
-                netConstEval = new NetworkConstantEvaluatorClass();
-                netConstEval.ConstantValue = 0;
-                evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETJunction, (INetworkEvaluator)netConstEval);
-
-                netConstEval = new NetworkConstantEvaluatorClass();
-                netConstEval.ConstantValue = 0;
-                evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETTurn, (INetworkEvaluator)netConstEval);
+                evalNetAttr = CreateTrafficAttrWSpeedCapParam("TravelTime", edgeNetworkSource, "Minutes", "Minutes", "Minutes", true);
 
                 // Add the attribute to the array.
                 attributeArray.Add(evalNetAttr);
@@ -5687,13 +5623,13 @@ namespace GPProcessVendorDataFunctions
                 }
 
                 //
-                // TruckTravelTime attribute
+                // TruckMinutes attribute
                 //
 
                 // Create an EvaluatedNetworkAttribute object and populate its settings.
                 evalNetAttr = new EvaluatedNetworkAttributeClass();
                 netAttr2 = (INetworkAttribute2)evalNetAttr;
-                netAttr2.Name = "TruckTravelTime";
+                netAttr2.Name = "TruckMinutes";
                 netAttr2.UsageType = esriNetworkAttributeUsageType.esriNAUTCost;
                 netAttr2.DataType = esriNetworkAttributeDataType.esriNADTDouble;
                 netAttr2.Units = esriNetworkAttributeUnits.esriNAUMinutes;
@@ -5727,6 +5663,55 @@ namespace GPProcessVendorDataFunctions
 
                 // Add the attribute to the array.
                 attributeArray.Add(evalNetAttr);
+
+                if (usesHistoricalTraffic)
+                {
+                    //
+                    // TruckTravelTime network attribute
+                    //
+
+                    evalNetAttr = CreateTrafficAttrWSpeedCapParam("TruckTravelTime", edgeNetworkSource, "TruckMinutes", "TruckMinutes", "TruckMinutes", false);
+
+                    // Add the attribute to the array.
+                    attributeArray.Add(evalNetAttr);
+
+                    //
+                    // TruckTravelTime Speed Limit (km/h) network attribute
+                    //
+
+                    // Create an EvaluatedNetworkAttribute object and populate its settings.
+                    evalNetAttr = new EvaluatedNetworkAttributeClass();
+                    netAttr2 = (INetworkAttribute2)evalNetAttr;
+                    netAttr2.Name = "TruckTravelTime Speed Limit (km/h)";
+                    netAttr2.UsageType = esriNetworkAttributeUsageType.esriNAUTDescriptor;
+                    netAttr2.DataType = esriNetworkAttributeDataType.esriNADTDouble;
+                    netAttr2.Units = esriNetworkAttributeUnits.esriNAUUnknown;
+                    netAttr2.UseByDefault = false;
+
+                    // Create evaluator objects and set them on the EvaluatedNetworkAttribute object.
+                    netFieldEval = new NetworkFieldEvaluatorClass();
+                    netFieldEval.SetExpression("[MaximumSpeed_KPH_AllTrucks]", "");
+                    evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAlongDigitized, (INetworkEvaluator)netFieldEval);
+
+                    netFieldEval = new NetworkFieldEvaluatorClass();
+                    netFieldEval.SetExpression("[MaximumSpeed_KPH_AllTrucks]", "");
+                    evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAgainstDigitized, (INetworkEvaluator)netFieldEval);
+
+                    netConstEval = new NetworkConstantEvaluatorClass();
+                    netConstEval.ConstantValue = 0;
+                    evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETEdge, (INetworkEvaluator)netConstEval);
+
+                    netConstEval = new NetworkConstantEvaluatorClass();
+                    netConstEval.ConstantValue = 0;
+                    evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETJunction, (INetworkEvaluator)netConstEval);
+
+                    netConstEval = new NetworkConstantEvaluatorClass();
+                    netConstEval.ConstantValue = 0;
+                    evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETTurn, (INetworkEvaluator)netConstEval);
+
+                    // Add the attribute to the array.
+                    attributeArray.Add(evalNetAttr);
+                }            
             }
             #endregion
 
@@ -5851,7 +5836,7 @@ namespace GPProcessVendorDataFunctions
                     // Create a NetworkTravelMode object and populate its settings.
                     travelMode = new NetworkTravelModeClass();
                     travelMode.Name = "Trucking Time";
-                    timeAttributeName = "TruckTravelTime";
+                    timeAttributeName = (usesHistoricalTraffic ? "TruckTravelTime" : "TruckMinutes");
                     distanceAttributeName = (createNetworkAttributesInMetric ? "Kilometers" : "Miles");
                     travelMode.ImpedanceAttributeName = timeAttributeName;
                     travelMode.TimeAttributeName = timeAttributeName;
@@ -5908,7 +5893,7 @@ namespace GPProcessVendorDataFunctions
                     // Create a NetworkTravelMode object and populate its settings.
                     travelMode = new NetworkTravelModeClass();
                     travelMode.Name = "Trucking Distance";
-                    timeAttributeName = "TruckTravelTime";
+                    timeAttributeName = (usesHistoricalTraffic ? "TruckTravelTime" : "TruckMinutes");
                     distanceAttributeName = (createNetworkAttributesInMetric ? "Kilometers" : "Miles");
                     travelMode.ImpedanceAttributeName = distanceAttributeName;
                     travelMode.TimeAttributeName = timeAttributeName;
@@ -6267,6 +6252,60 @@ namespace GPProcessVendorDataFunctions
                 // Add the parameter(s) to the network attribute.
                 netAttr2.Parameters = paramArray;
             }
+
+            return evalNetAttr;
+        }
+
+        private IEvaluatedNetworkAttribute CreateTrafficAttrWSpeedCapParam(string attrName, INetworkSource edgeNetworkSource,
+                                                                           string weekdayFallbackAttrName,
+                                                                           string weekendFallbackAttrName,
+                                                                           string timeNeutralAttrName, bool useByDefault)
+        {
+            // Create an EvaluatedNetworkAttribute object and populate its settings.
+            IEvaluatedNetworkAttribute evalNetAttr = new EvaluatedNetworkAttributeClass();
+            INetworkAttribute2 netAttr2 = (INetworkAttribute2)evalNetAttr;
+            netAttr2.Name = attrName;
+            netAttr2.UsageType = esriNetworkAttributeUsageType.esriNAUTCost;
+            netAttr2.DataType = esriNetworkAttributeDataType.esriNADTDouble;
+            netAttr2.Units = esriNetworkAttributeUnits.esriNAUMinutes;
+            netAttr2.UseByDefault = useByDefault;
+
+            // Create evaluator objects and set them on the EvaluatedNetworkAttribute object.
+            IHistoricalTravelTimeEvaluator histTravelTimeEval = new NetworkEdgeTrafficEvaluatorClass();
+            histTravelTimeEval.WeekdayFallbackAttributeName = weekdayFallbackAttrName;
+            histTravelTimeEval.WeekendFallbackAttributeName = weekendFallbackAttrName;
+            histTravelTimeEval.TimeNeutralAttributeName = timeNeutralAttrName;
+            evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAlongDigitized, (INetworkEvaluator)histTravelTimeEval);
+
+            histTravelTimeEval = new NetworkEdgeTrafficEvaluatorClass();
+            histTravelTimeEval.WeekdayFallbackAttributeName = weekdayFallbackAttrName;
+            histTravelTimeEval.WeekendFallbackAttributeName = weekendFallbackAttrName;
+            histTravelTimeEval.TimeNeutralAttributeName = timeNeutralAttrName;
+            evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAgainstDigitized, (INetworkEvaluator)histTravelTimeEval);
+
+            INetworkConstantEvaluator netConstEval = new NetworkConstantEvaluatorClass();
+            netConstEval.ConstantValue = 0;
+            evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETEdge, (INetworkEvaluator)netConstEval);
+
+            netConstEval = new NetworkConstantEvaluatorClass();
+            netConstEval.ConstantValue = 0;
+            evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETJunction, (INetworkEvaluator)netConstEval);
+
+            netConstEval = new NetworkConstantEvaluatorClass();
+            netConstEval.ConstantValue = 0;
+            evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETTurn, (INetworkEvaluator)netConstEval);
+
+            INetworkAttributeParameter2 netAttrParam = null;
+            IArray paramArray = new ArrayClass();
+            netAttrParam = new NetworkAttributeParameterClass();
+            netAttrParam.Name = "Vehicle Maximum Speed (km/h)";
+            netAttrParam.VarType = (int)(VarEnum.VT_R8);
+            netAttrParam.DefaultValue = 0;
+            netAttrParam.ParameterUsageType = esriNetworkAttributeParameterUsageType.esriNAPUTGeneral;
+            paramArray.Add(netAttrParam);
+
+            // Add the parameter to the network attribute.
+            netAttr2.Parameters = paramArray;
 
             return evalNetAttr;
         }

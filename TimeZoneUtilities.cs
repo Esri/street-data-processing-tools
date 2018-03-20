@@ -35,7 +35,7 @@ namespace GPProcessVendorDataFunctions
         //   Fourth character: DST present ({const}C = No DST; {north}N = DST in July; {south}S = DST in January)
         //   Fifth character: Preferred sorted order (zero-based index)
 
-        // The list of time zones below is current as of November 2016:
+        // The list of time zones below is current as of February 2018:
 
         // (UTC-12:00)
         private const string DatelineST         = "\"AA-C0 Dateline Standard Time\"";           // International Date Line West
@@ -70,10 +70,10 @@ namespace GPProcessVendorDataFunctions
         private const string USEasternST        = "\"HA-N0 US Eastern Standard Time\"";         // Indiana (East) -- NOT USED (use Eastern instead)
         private const string EasternST          = "\"HA-N1 Eastern Standard Time\"";            // Eastern Time (US & Canada)
         private const string CubaST             = "\"HA-N2 Cuba Standard Time\"";               // Havana
+        private const string TurksAndCaicosST   = "\"HA-N3 Turks And Caicos Standard Time\"";   // Turks and Caicos
         // (UTC-04:00)
-        private const string TurksAndCaicosST   = "\"IA-C0 Turks And Caicos Standard Time\"";   // Turks and Caicos
-        private const string VenezuelaST        = "\"IA-C1 Venezuela Standard Time\"";          // Caracas
-        private const string SAWesternST        = "\"IA-C2 SA Western Standard Time\"";         // Georgetown, La Paz, Manaus, San Juan
+        private const string VenezuelaST        = "\"IA-C0 Venezuela Standard Time\"";          // Caracas
+        private const string SAWesternST        = "\"IA-C1 SA Western Standard Time\"";         // Georgetown, La Paz, Manaus, San Juan
         private const string AtlanticST         = "\"IA-N0 Atlantic Standard Time\"";           // Atlantic Time (Canada)
         private const string CentralBrazilianST = "\"IA-S0 Central Brazilian Standard Time\"";  // Cuiaba
         private const string ParaguayST         = "\"IA-S1 Paraguay Standard Time\"";           // Asuncion
@@ -81,11 +81,12 @@ namespace GPProcessVendorDataFunctions
         // (UTC-03:30)
         private const string NewfoundlandST     = "\"IM-N0 Newfoundland Standard Time\"";       // Newfoundland
         // (UTC-03:00)
-        private const string ArgentinaST        = "\"JA-C0 Argentina Standard Time\"";          // City of Buenos Aires
-        private const string MontevideoST       = "\"JA-C1 Montevideo Standard Time\"";         // Montevideo
-        private const string SAEasternST        = "\"JA-C2 SA Eastern Standard Time\"";         // Cayenne, Fortaleza
-        private const string TocantinsST        = "\"JA-C3 Tocantins Standard Time\"";          // Araguaina -- NOT USED (use SA Eastern instead)
-        private const string BahiaST            = "\"JA-C4 Bahia Standard Time\"";              // Salvador -- NOT USED (use SA Eastern instead)
+        private const string MagallanesST       = "\"JA-C0 Magallanes Standard Time\"";         // Punta Arenas
+        private const string ArgentinaST        = "\"JA-C1 Argentina Standard Time\"";          // City of Buenos Aires
+        private const string MontevideoST       = "\"JA-C2 Montevideo Standard Time\"";         // Montevideo
+        private const string SAEasternST        = "\"JA-C3 SA Eastern Standard Time\"";         // Cayenne, Fortaleza
+        private const string TocantinsST        = "\"JA-C4 Tocantins Standard Time\"";          // Araguaina -- NOT USED (use SA Eastern instead)
+        private const string BahiaST            = "\"JA-C5 Bahia Standard Time\"";              // Salvador -- NOT USED (use SA Eastern instead)
         private const string GreenlandST        = "\"JA-N0 Greenland Standard Time\"";          // Greenland
         private const string SaintPierreST      = "\"JA-N1 Saint Pierre Standard Time\"";       // Saint Pierre and Miquelon
         private const string ESouthAmericaST    = "\"JA-S0 E. South America Standard Time\"";   // Brasilia
@@ -106,12 +107,13 @@ namespace GPProcessVendorDataFunctions
         private const string WEuropeST          = "\"NA-N1 W. Europe Standard Time\"";          // Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna
         private const string CentralEuropeST    = "\"NA-N2 Central Europe Standard Time\"";     // Belgrade, Bratislava, Budapest, Ljubljana, Prague
         private const string CentralEuropeanST  = "\"NA-N3 Central European Standard Time\"";   // Sarajevo, Skopje, Warsaw, Zagreb
-        private const string NamibiaST          = "\"NA-S0 Namibia Standard Time\"";            // Windhoek
         // (UTC+02:00)
-        private const string SouthAfricaST      = "\"OA-C0 South Africa Standard Time\"";       // Harare, Pretoria
-        private const string LibyaST            = "\"OA-C1 Libya Standard Time\"";              // Tripoli
-        private const string KaliningradST      = "\"OA-C2 Kaliningrad Standard Time\"";        // Kaliningrad
-        private const string EgyptST            = "\"OA-C3 Egypt Standard Time\"";              // Cairo
+        private const string NamibiaST          = "\"OA-C0 Namibia Standard Time\"";            // Windhoek
+        private const string SouthAfricaST      = "\"OA-C1 South Africa Standard Time\"";       // Harare, Pretoria
+        private const string LibyaST            = "\"OA-C2 Libya Standard Time\"";              // Tripoli
+        private const string KaliningradST      = "\"OA-C3 Kaliningrad Standard Time\"";        // Kaliningrad
+        private const string EgyptST            = "\"OA-C4 Egypt Standard Time\"";              // Cairo
+        private const string SudanST            = "\"OA-C5 Sudan Standard Time\"";              // Khartoum
         private const string FLEST              = "\"OA-N0 FLE Standard Time\"";                // Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius
         private const string GTBST              = "\"OA-N1 GTB Standard Time\"";                // Athens, Bucharest
         private const string EEuropeST          = "\"OA-N2 E. Europe Standard Time\"";          // Chisinau
@@ -135,8 +137,9 @@ namespace GPProcessVendorDataFunctions
         private const string GeorgianST         = "\"QA-C2 Georgian Standard Time\"";           // Tbilisi
         private const string CaucasusST         = "\"QA-C3 Caucasus Standard Time\"";           // Yerevan
         private const string AzerbaijanST       = "\"QA-C4 Azerbaijan Standard Time\"";         // Baku
-        private const string AstrakhanST        = "\"QA-C5 Astrakhan Standard Time\"";          // Astrakhan, Ulyanovsk -- NOT USED (use Russia Time Zone 3 instead)
-        private const string RussiaTimeZone3    = "\"QA-C6 Russia Time Zone 3\"";               // Izhevsk, Samara
+        private const string SaratovST          = "\"QA-C5 Saratov Standard Time\"";            // Saratov -- NOT USED (use Russia Time Zone 3 instead)
+        private const string AstrakhanST        = "\"QA-C6 Astrakhan Standard Time\"";          // Astrakhan, Ulyanovsk -- NOT USED (use Russia Time Zone 3 instead)
+        private const string RussiaTimeZone3    = "\"QA-C7 Russia Time Zone 3\"";               // Izhevsk, Samara
         // (UTC+04:30)
         private const string AfghanistanST      = "\"QM-C0 Afghanistan Standard Time\"";        // Kabul
         // (UTC+05:00)
@@ -203,7 +206,8 @@ namespace GPProcessVendorDataFunctions
         // (UTC+12:45)
         private const string ChathamIslandsST   = "\"YS-S0 Chatham Islands Standard Time\"";    // Chatham Islands
         // (UTC+13:00)
-        private const string TongaST            = "\"ZA-C0 Tonga Standard Time\"";              // Nuku'alofa
+        private const string UTCPlus13          = "\"ZA-C0 UTC+13\"";                           // Coordinated Universal Time+13    
+        private const string TongaST            = "\"ZA-C1 Tonga Standard Time\"";              // Nuku'alofa
         private const string SamoaST            = "\"ZA-S0 Samoa Standard Time\"";              // Samoa
         // (UTC+14:00)
         private const string LineIslandsST      = "\"ZY-C0 Line Islands Standard Time\"";       // Kiritimati Island
@@ -260,6 +264,7 @@ namespace GPProcessVendorDataFunctions
                    "\n    Case \"MEX\": z = " + EasternSTMexico +
                    "\n    Case \"CUB\": z = " + CubaST +
                    "\n    Case \"HTI\": z = " + HaitiST +
+                   "\n    Case \"TCA\": z = " + TurksAndCaicosST +
                    "\n    Case Else: z = " + SAPacificST +
                    "\n  End Select" +
                    "\nElseIf utcOffset < -225 Then" +    // UTC-04:00 == -240
@@ -267,7 +272,6 @@ namespace GPProcessVendorDataFunctions
                    "\n    Case \"CAN\"" +
                    "\n      If [DST] > 0 Then z = " + AtlanticST + " Else z = " + SAWesternST +
                    "\n    Case \"GRL\", \"BMU\": z = " + AtlanticST +
-                   "\n    Case \"TCA\": z = " + TurksAndCaicosST +
                    "\n    Case \"BRA\"" +
                    "\n      If [DST] > 0 Then z = " + CentralBrazilianST + " Else z = " + SAWesternST +
                    "\n    Case \"VEN\": z = " + VenezuelaST +
@@ -283,6 +287,7 @@ namespace GPProcessVendorDataFunctions
                    "\n    Case \"SPM\": z = " + SaintPierreST +
                    "\n    Case \"BRA\"" +
                    "\n      If [DST] > 0 Then z = " + ESouthAmericaST + " Else z = " + SAEasternST +
+                   "\n    Case \"CHL\": z = " + MagallanesST +
                    "\n    Case \"ARG\": z = " + ArgentinaST +
                    "\n    Case \"URY\": z = " + MontevideoST +
                    "\n    Case Else: z = " + SAEasternST +
@@ -306,22 +311,23 @@ namespace GPProcessVendorDataFunctions
                    "\n    Case \"ESP\", \"GIB\", \"FRA\", \"AND\", \"MCO\", \"BEL\", \"LUX\", \"DNK\": z = " + RomanceST +
                    "\n    Case \"CZE\", \"SVK\", \"HUN\", \"SVN\", \"SRB\", \"KOS\", \"MNE\": z = " + CentralEuropeST +
                    "\n    Case \"POL\", \"HRV\", \"BIH\", \"ALB\", \"MKD\": z = " + CentralEuropeanST +
-                   "\n    Case \"NAM\": z = " + NamibiaST +
                    "\n    Case Else: z = " + WCentralAfricaST +
                    "\n  End Select" +
                    "\nElseIf utcOffset < 150 Then" +    // UTC+02:00 == 120
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"FIN\", \"EST\", \"LVA\", \"LTU\", \"UKR\", \"BGR\": z = " + FLEST +
-                   "\n    Case \"GRC\", \"ROU\": z = " + GTBST +
-                   "\n    Case \"CYP\", \"BSB\", \"CUN\", \"MDA\": z = " + EEuropeST +
+                   "\n    Case \"GRC\", \"ROU\", \"CYP\", \"BSB\", \"CUN\": z = " + GTBST +
+                   "\n    Case \"MDA\": z = " + EEuropeST +
                    "\n    Case \"RUS\": z = " + KaliningradST +
                    "\n    Case \"LBY\": z = " + LibyaST +
                    "\n    Case \"EGY\": z = " + EgyptST +
+                   "\n    Case \"SDN\": z = " + SudanST +
                    "\n    Case \"SYR\": z = " + SyriaST +
                    "\n    Case \"LBN\": z = " + MiddleEastST +
                    "\n    Case \"JOR\": z = " + JordanST +
                    "\n    Case \"ISR\": z = " + IsraelST +
                    "\n    Case \"PSE\", \"WEB\", \"GAS\": z = " + WestBankST +
+                   "\n    Case \"NAM\": z = " + NamibiaST +
                    "\n    Case Else: z = " + SouthAfricaST +
                    "\n  End Select" +
                    "\nElseIf utcOffset < 195 Then" +    // UTC+03:00 == 180
@@ -417,7 +423,11 @@ namespace GPProcessVendorDataFunctions
                    "\nElseIf utcOffset < 773 Then" +    // UTC+12:45 == 765
                    "\n  z = " + ChathamIslandsST +
                    "\nElseIf utcOffset < 810 Then" +    // UTC+13:00 == 780
-                   "\n  z = " + TongaST + ": If [" + countryCodeFieldName + "] = \"WSM\" Then z = " + SamoaST +
+                   "\n  Select Case [" + countryCodeFieldName + "]" +
+                   "\n    Case \"TON\": z = " + TongaST +
+                   "\n    Case \"WSM\": z = " + SamoaST +
+                   "\n    Case Else: z = " + UTCPlus13 +
+                   "\n  End Select" +
                    "\nElse" +    // UTC+14:00 == 840
                    "\n  z = " + LineIslandsST +
                    "\nEnd If";
