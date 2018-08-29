@@ -1243,6 +1243,26 @@ namespace GPProcessVendorDataFunctions
                 addIndexTool.index_name = "ID";
                 gp.Execute(addIndexTool, trackcancel);
 
+                // Add a new field to the streets feature class for TOLLRDDIR and
+                // calculate it to use the values of B/FT/TF.
+
+                AddMessage("Creating and calculating the TOLLRDDIR field...", messages, trackcancel);
+
+                AddField addFieldTool = new AddField();
+                addFieldTool.in_table = streetsFeatureClassPath;
+                addFieldTool.field_type = "TEXT";
+                addFieldTool.field_length = 2;
+                addFieldTool.field_name = "TOLLRDDIR";
+                gp.Execute(addFieldTool, trackcancel);
+
+                CalculateField calcFieldTool = new CalculateField();
+                calcFieldTool.in_table = streetsFeatureClassPath;
+                calcFieldTool.field = "TOLLRDDIR";
+                calcFieldTool.code_block = "d = \"\"\nSelect Case [TOLLRD]\n  Case 11, 21: d = \"B\"\n  Case 12, 22: d = \"FT\"\n  Case 13, 23: d = \"TF\"\nEnd Select"; 
+                calcFieldTool.expression = "d";
+                calcFieldTool.expression_type = "VB";
+                gp.Execute(calcFieldTool, trackcancel);
+
                 // Copy the time zones table to the file geodatabase
 
                 TableToTable importTableTool = null;
@@ -1259,10 +1279,8 @@ namespace GPProcessVendorDataFunctions
 
                 // Initialize common variables that will be used for both
                 // processing historical traffic and maneuvers
-                AddField addFieldTool = null;
                 AddJoin addJoinTool = null;
                 RemoveJoin removeJoinTool = null;
-                CalculateField calcFieldTool = null;
                 TableSelect tableSelectTool = null;
                 MakeTableView makeTableViewTool = null;
 
@@ -3213,6 +3231,7 @@ namespace GPProcessVendorDataFunctions
             gp.Execute(makeFeatureLayerTool, trackcancel);
 
             // Create fields for the maximum and recommended speeds for all trucks
+            // and a field for TruckMinutes
 
             AddField addFieldTool = new AddField();
             addFieldTool.in_table = "Streets_Layer";
@@ -3220,6 +3239,8 @@ namespace GPProcessVendorDataFunctions
             addFieldTool.field_name = "MaximumSpeed_KPH_AllTrucks";
             gp.Execute(addFieldTool, trackcancel);
             addFieldTool.field_name = "RecommendedSpeed_KPH_AllTrucks";
+            gp.Execute(addFieldTool, trackcancel);
+            addFieldTool.field_name = "TruckMinutes";
             gp.Execute(addFieldTool, trackcancel);
             
             // Initialize the Delete tool for use later
@@ -3379,6 +3400,20 @@ namespace GPProcessVendorDataFunctions
                 deleteTool.in_data = outputTablePath;
                 gp.Execute(deleteTool, trackcancel);
             }
+
+            // Calculate the TruckMinutes field
+
+            string truckSpeedExpression = "sp = [RecommendedSpeed_KPH_AllTrucks]\n" +
+                                          "If IsNull(sp) Then sp = [MaximumSpeed_KPH_AllTrucks]\n" +
+                                          "If IsNull(sp) Then sp = [KPH]\n" +
+                                          "If sp > [KPH] Then sp = [KPH]";
+            calcFieldTool = new CalculateField();
+            calcFieldTool.in_table = "Streets_Layer";
+            calcFieldTool.field = "TruckMinutes";
+            calcFieldTool.code_block = truckSpeedExpression;
+            calcFieldTool.expression = "[METERS] * 0.06 / sp";
+            calcFieldTool.expression_type = "VB";
+            gp.Execute(calcFieldTool, trackcancel);
 
             // Remove the streets layer before exiting
 
@@ -4924,8 +4959,8 @@ namespace GPProcessVendorDataFunctions
                                                       false, fgdbVersion, AvoidMediumFactor, edgeNetworkSource);
             attributeArray.Add(evalNetAttr);
 
-            evalNetAttr = CreateAvoidTollRoadsNetworkAttribute("Avoid Toll Roads", "TOLLRD",
-                                                               false, fgdbVersion, AvoidMediumFactor, edgeNetworkSource);
+            evalNetAttr = CreateDirectionalAvoidNetworkAttribute("Avoid Toll Roads", "TOLLRDDIR",
+                                                                 false, fgdbVersion, AvoidMediumFactor, edgeNetworkSource);
             attributeArray.Add(evalNetAttr);
 
             evalNetAttr = CreateAvoidNetworkAttribute("Avoid Unpaved Roads", "[RDCOND] = 2",
@@ -5635,18 +5670,13 @@ namespace GPProcessVendorDataFunctions
                 netAttr2.Units = esriNetworkAttributeUnits.esriNAUMinutes;
                 netAttr2.UseByDefault = false;
 
-                string truckSpeedExpression = "sp = [RecommendedSpeed_KPH_AllTrucks]\n" +
-                                              "If IsNull(sp) Then sp = [MaximumSpeed_KPH_AllTrucks]\n" +
-                                              "If IsNull(sp) Then sp = [KPH]\n" +
-                                              "If sp > [KPH] Then sp = [KPH]";
-
                 // Create evaluator objects and set them on the EvaluatedNetworkAttribute object.
                 netFieldEval = new NetworkFieldEvaluatorClass();
-                netFieldEval.SetExpression("[METERS] * 0.06 / sp", truckSpeedExpression);
+                netFieldEval.SetExpression("[TruckMinutes]", "");
                 evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAlongDigitized, (INetworkEvaluator)netFieldEval);
 
                 netFieldEval = new NetworkFieldEvaluatorClass();
-                netFieldEval.SetExpression("[METERS] * 0.06 / sp", truckSpeedExpression);
+                netFieldEval.SetExpression("[TruckMinutes]", "");
                 evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAgainstDigitized, (INetworkEvaluator)netFieldEval);
 
                 netConstEval = new NetworkConstantEvaluatorClass();
@@ -6089,43 +6119,6 @@ namespace GPProcessVendorDataFunctions
 
             netFieldEval = new NetworkFieldEvaluatorClass();
             netFieldEval.SetExpression(fieldEvalExpression, "");
-            evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAgainstDigitized, (INetworkEvaluator)netFieldEval);
-
-            INetworkConstantEvaluator netConstEval = new NetworkConstantEvaluatorClass();
-            netConstEval.ConstantValue = false;
-            evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETEdge, (INetworkEvaluator)netConstEval);
-
-            netConstEval = new NetworkConstantEvaluatorClass();
-            netConstEval.ConstantValue = false;
-            evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETJunction, (INetworkEvaluator)netConstEval);
-
-            netConstEval = new NetworkConstantEvaluatorClass();
-            netConstEval.ConstantValue = false;
-            evalNetAttr.set_DefaultEvaluator(esriNetworkElementType.esriNETTurn, (INetworkEvaluator)netConstEval);
-
-            return evalNetAttr;
-        }
-
-        private IEvaluatedNetworkAttribute CreateAvoidTollRoadsNetworkAttribute(string attrName, string fieldName,
-                                                                                bool useByDefault, double fgdbVersion,
-                                                                                double restrUsageFactor, INetworkSource edgeNetworkSource)
-        {
-            // Create an EvaluatedNetworkAttribute object and populate its settings.
-            IEvaluatedNetworkAttribute evalNetAttr = CreateRestrAttrNoEvals(attrName, fgdbVersion, restrUsageFactor, useByDefault, "");
-
-            // Create evaluator objects and set them on the EvaluatedNetworkAttribute object.
-            INetworkFieldEvaluator netFieldEval = new NetworkFieldEvaluatorClass();
-            netFieldEval.SetExpression("restricted", "restricted = False\n\r" +
-                                       "Select Case UCase([" + fieldName + "])\n\r" +
-                                       "  Case 11, 12, 21, 22: restricted = True\n\r" +
-                                       "End Select");
-            evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAlongDigitized, (INetworkEvaluator)netFieldEval);
-
-            netFieldEval = new NetworkFieldEvaluatorClass();
-            netFieldEval.SetExpression("restricted", "restricted = False\n\r" +
-                                       "Select Case UCase([" + fieldName + "])\n\r" +
-                                       "  Case 11, 13, 21, 23: restricted = True\n\r" +
-                                       "End Select");
             evalNetAttr.set_Evaluator(edgeNetworkSource, esriNetworkEdgeDirection.esriNEDAgainstDigitized, (INetworkEvaluator)netFieldEval);
 
             INetworkConstantEvaluator netConstEval = new NetworkConstantEvaluatorClass();
