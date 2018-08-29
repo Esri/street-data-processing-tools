@@ -35,7 +35,7 @@ namespace GPProcessVendorDataFunctions
         //   Fourth character: DST present ({const}C = No DST; {north}N = DST in July; {south}S = DST in January)
         //   Fifth character: Preferred sorted order (zero-based index)
 
-        // The list of time zones below is current as of February 2018:
+        // The list of time zones below is current as of July 2018:
 
         // (UTC-12:00)
         private const string DatelineST         = "\"AA-C0 Dateline Standard Time\"";           // International Date Line West
@@ -102,7 +102,8 @@ namespace GPProcessVendorDataFunctions
         private const string MoroccoST          = "\"MA-N0 Morocco Standard Time\"";            // Casablanca
         private const string GMTST              = "\"MA-N1 GMT Standard Time\"";                // Dublin, Edinburgh, Lisbon, London
         // (UTC+01:00)
-        private const string WCentralAfricaST   = "\"NA-C0 W. Central Africa Standard Time\"";  // West Central Africa
+        private const string SaoTomeST          = "\"NA-C0 Sao Tome Standard Time\"";           // Sao Tome
+        private const string WCentralAfricaST   = "\"NA-C1 W. Central Africa Standard Time\"";  // West Central Africa
         private const string RomanceST          = "\"NA-N0 Romance Standard Time\"";            // Brussels, Copenhagen, Madrid, Paris
         private const string WEuropeST          = "\"NA-N1 W. Europe Standard Time\"";          // Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna
         private const string CentralEuropeST    = "\"NA-N2 Central Europe Standard Time\"";     // Belgrade, Bratislava, Budapest, Ljubljana, Prague
@@ -171,15 +172,14 @@ namespace GPProcessVendorDataFunctions
         private const string SingaporeST        = "\"UA-C3 Singapore Standard Time\"";          // Kuala Lumpur, Singapore
         private const string WAustraliaST       = "\"UA-C4 W. Australia Standard Time\"";       // Perth
         private const string UlaanbaatarST      = "\"UA-N0 Ulaanbaatar Standard Time\"";        // Ulaanbaatar
-        // (UTC+08:30)
-        private const string NorthKoreaST       = "\"UM-C0 North Korea Standard Time\"";        // Pyongyang
         // (UTC+08:45)
         private const string AusCentralWST      = "\"US-C0 Aus Central W. Standard Time\"";     // Eucla
         // (UTC+09:00)
         private const string TransbaikalST      = "\"VA-C0 Transbaikal Standard Time\"";        // Chita -- NOT USED (use Yakutsk instead)
         private const string YakutskST          = "\"VA-C1 Yakutsk Standard Time\"";            // Yakutsk
-        private const string KoreaST            = "\"VA-C2 Korea Standard Time\"";              // Seoul
-        private const string TokyoST            = "\"VA-C3 Tokyo Standard Time\"";              // Osaka, Sapporo, Tokyo
+        private const string NorthKoreaST       = "\"VA-C2 North Korea Standard Time\"";        // Pyongyang
+        private const string KoreaST            = "\"VA-C3 Korea Standard Time\"";              // Seoul
+        private const string TokyoST            = "\"VA-C4 Tokyo Standard Time\"";              // Osaka, Sapporo, Tokyo
         // (UTC+09:30)
         private const string AusCentralST       = "\"VM-C0 AUS Central Standard Time\"";        // Darwin
         private const string CenAustraliaST     = "\"VM-S0 Cen. Australia Standard Time\"";     // Adelaide
@@ -311,6 +311,7 @@ namespace GPProcessVendorDataFunctions
                    "\n    Case \"ESP\", \"GIB\", \"FRA\", \"AND\", \"MCO\", \"BEL\", \"LUX\", \"DNK\": z = " + RomanceST +
                    "\n    Case \"CZE\", \"SVK\", \"HUN\", \"SVN\", \"SRB\", \"KOS\", \"MNE\": z = " + CentralEuropeST +
                    "\n    Case \"POL\", \"HRV\", \"BIH\", \"ALB\", \"MKD\": z = " + CentralEuropeanST +
+                   "\n    Case \"STP\": z = " + SaoTomeST +
                    "\n    Case Else: z = " + WCentralAfricaST +
                    "\n  End Select" +
                    "\nElseIf utcOffset < 150 Then" +    // UTC+02:00 == 120
@@ -376,7 +377,7 @@ namespace GPProcessVendorDataFunctions
                    "\n    Case \"MNG\": z = " + WMongoliaST +
                    "\n    Case Else: z = " + SEAsiaST +
                    "\n  End Select" +
-                   "\nElseIf utcOffset < 495 Then" +    // UTC+08:00 == 480
+                   "\nElseIf utcOffset < 503 Then" +    // UTC+08:00 == 480
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"RUS\": z = " + NorthAsiaEastST +
                    "\n    Case \"MNG\": z = " + UlaanbaatarST +
@@ -385,13 +386,12 @@ namespace GPProcessVendorDataFunctions
                    "\n    Case \"AUS\": z = " + WAustraliaST +
                    "\n    Case Else: z = " + SingaporeST +
                    "\n  End Select" +
-                   "\nElseIf utcOffset < 518 Then" +    // UTC+08:30 == 510
-                   "\n  z = " + NorthKoreaST +
                    "\nElseIf utcOffset < 533 Then" +    // UTC+08:45 == 525
                    "\n  z = " + AusCentralWST +
                    "\nElseIf utcOffset < 555 Then" +    // UTC+09:00 == 540
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"RUS\": z = " + YakutskST +
+                   "\n    Case \"PRK\": z = " + NorthKoreaST +
                    "\n    Case \"KOR\": z = " + KoreaST +
                    "\n    Case Else: z = " + TokyoST +
                    "\n  End Select" +
