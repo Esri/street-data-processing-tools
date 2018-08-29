@@ -96,11 +96,12 @@ namespace GPProcessVendorDataFunctions
                                         { "LINK_ID", "ST_NAME", "ST_LANGCD", "ST_NM_PREF", "ST_TYP_BEF",
                                           "ST_NM_BASE", "ST_NM_SUFF", "ST_TYP_AFT", "FUNC_CLASS", "SPEED_CAT",
                                           "DIR_TRAVEL", "AR_AUTO", "AR_BUS", "AR_TAXIS", "AR_CARPOOL", "AR_PEDEST",
-                                          "AR_TRUCKS", "AR_TRAFF", "AR_DELIV", "AR_EMERVEH", "AR_MOTOR",
-                                          "PAVED", "RAMP", "TOLLWAY", "CONTRACC", "ROUNDABOUT", "INTERINTER", 
-                                          "FERRY_TYPE", "MANOEUVRE", "DIRONSIGN", "EXPR_LANE", "CARPOOLRD", "PUB_ACCESS" };
+                                          "AR_TRUCKS", "AR_TRAFF", "AR_DELIV", "AR_EMERVEH", "AR_MOTOR", "PAVED",
+                                          "RAMP", "TOLLWAY", "CONTRACC", "ROUNDABOUT", "INTERINTER", "FERRY_TYPE",
+                                          "SPECTRFIG", "MANOEUVRE", "DIRONSIGN", "EXPR_LANE", "CARPOOLRD", "PUB_ACCESS" };
         private static readonly esriFieldType[] StreetsFieldTypes = new esriFieldType[]
                                         { esriFieldType.esriFieldTypeInteger,
+                                          esriFieldType.esriFieldTypeString,
                                           esriFieldType.esriFieldTypeString,
                                           esriFieldType.esriFieldTypeString,
                                           esriFieldType.esriFieldTypeString,
@@ -5805,7 +5806,7 @@ namespace GPProcessVendorDataFunctions
             string roadClassExpression = "rc = 1          'Local road\n\r" +
                                          "If UCase([FERRY_TYPE]) = \"B\" Then\n\r" +
                                          "  rc = 4          'Ferry\n\r" +
-                                         "ElseIf UCase([ROUNDABOUT]) = \"Y\" Then\n\r" +
+                                         "ElseIf UCase([ROUNDABOUT]) = \"Y\" Or UCase([SPECTRFIG]) = \"Y\" Then\n\r" +
                                          "  rc = 5          'Roundabout\n\r" +
                                          "ElseIf UCase([RAMP]) = \"Y\" Then\n\r" +
                                          "  rc = 3          'Ramp\n\r" +
