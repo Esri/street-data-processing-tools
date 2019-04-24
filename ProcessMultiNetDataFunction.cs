@@ -3243,8 +3243,9 @@ namespace GPProcessVendorDataFunctions
             addFieldTool.field_name = "TruckMinutes";
             gp.Execute(addFieldTool, trackcancel);
             
-            // Initialize the Delete tool for use later
+            // Initialize the CalculateField tool and Delete tool for use later
 
+            CalculateField calcFieldTool = new CalculateField();
             Delete deleteTool = new Delete();
 
             // Open the lrsStatsTable and find the fields we need
@@ -3347,7 +3348,7 @@ namespace GPProcessVendorDataFunctions
                 addJoinTool.join_type = "KEEP_COMMON";
                 gp.Execute(addJoinTool, trackcancel);
 
-                CalculateField calcFieldTool = new CalculateField();
+                calcFieldTool = new CalculateField();
                 calcFieldTool.in_table = "Streets_Layer";
                 calcFieldTool.field = StreetsFCName + "." + fieldName;
                 switch (restrTyp)
