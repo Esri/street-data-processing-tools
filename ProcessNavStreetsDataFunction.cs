@@ -2689,7 +2689,7 @@ namespace GPProcessVendorDataFunctions
                             tableSelectTool.where_clause = "MOD_TYPE IN (41, 42, 43, 44, 45, 48, 81)";
                             gp.Execute(tableSelectTool, trackcancel);
 
-                            // Create a new field to hold the dimension in a common unit (m or kg)
+                            // Create a new field to hold the dimension in a common unit (m or kg or KPH)
 
                             addFieldTool = new AddField();
                             addFieldTool.in_table = tempDimensionalCndModTablePath;
@@ -2700,7 +2700,7 @@ namespace GPProcessVendorDataFunctions
                             AddMessage("Calculating common units of measure...", messages, trackcancel);
 
                             calcFieldTool = new CalculateField();
-                            calcFieldTool.in_table = dimensionalCndModTablePath;
+                            calcFieldTool.in_table = tempDimensionalCndModTablePath;
                             calcFieldTool.field = "MetersOrKilogramsOrKPH";
                             calcFieldTool.code_block = "x = CLng([MOD_VAL])\nSelect Case [MOD_TYPE]\n" +
                                                        "  Case 41, 44, 45, 81: x = x * 0.01\nEnd Select";
@@ -2744,7 +2744,7 @@ namespace GPProcessVendorDataFunctions
                         tableSelectTool.where_clause = "MOD_TYPE IN (41, 42, 43, 44, 45, 48, 81)";
                         gp.Execute(tableSelectTool, trackcancel);
 
-                        // Create a new field to hold the dimension in a common unit (m or kg)
+                        // Create a new field to hold the dimension in a common unit (m or kg or KPH)
 
                         addFieldTool = new AddField();
                         addFieldTool.in_table = dimensionalCndModTablePath;
@@ -2773,7 +2773,7 @@ namespace GPProcessVendorDataFunctions
                     tableSelectTool = new TableSelect();
                     tableSelectTool.in_table = inputCdmsTableValue.GetAsText();
                     tableSelectTool.out_table = preferredLinkIDLookupTablePath;
-                    tableSelectTool.where_clause = "COND_TYPE = 27";
+                    tableSelectTool.where_clause = "COND_TYPE IN (25, 27)";
                     gp.Execute(tableSelectTool, trackcancel);
 
                     addIndexTool = new AddIndex();
