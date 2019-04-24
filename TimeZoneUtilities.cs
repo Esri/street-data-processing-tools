@@ -35,7 +35,7 @@ namespace GPProcessVendorDataFunctions
         //   Fourth character: DST present ({const}C = No DST; {north}N = DST in July; {south}S = DST in January)
         //   Fifth character: Preferred sorted order (zero-based index)
 
-        // The list of time zones below is current as of July 2018:
+        // The list of time zones below is current as of April 2019:
 
         // (UTC-12:00)
         private const string DatelineST         = "\"AA-C0 Dateline Standard Time\"";           // International Date Line West
@@ -99,11 +99,11 @@ namespace GPProcessVendorDataFunctions
         private const string UTC                = "\"MA-00 UTC\"";                              // Coordinated Universal Time -- NOT USED
         // (UTC+00:00)
         private const string GreenwichST        = "\"MA-C0 Greenwich Standard Time\"";          // Monrovia, Reykjavik
+        private const string SaoTomeST          = "\"MA-C1 Sao Tome Standard Time\"";           // Sao Tome
         private const string MoroccoST          = "\"MA-N0 Morocco Standard Time\"";            // Casablanca
         private const string GMTST              = "\"MA-N1 GMT Standard Time\"";                // Dublin, Edinburgh, Lisbon, London
         // (UTC+01:00)
-        private const string SaoTomeST          = "\"NA-C0 Sao Tome Standard Time\"";           // Sao Tome
-        private const string WCentralAfricaST   = "\"NA-C1 W. Central Africa Standard Time\"";  // West Central Africa
+        private const string WCentralAfricaST   = "\"NA-C0 W. Central Africa Standard Time\"";  // West Central Africa
         private const string RomanceST          = "\"NA-N0 Romance Standard Time\"";            // Brussels, Copenhagen, Madrid, Paris
         private const string WEuropeST          = "\"NA-N1 W. Europe Standard Time\"";          // Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna
         private const string CentralEuropeST    = "\"NA-N2 Central Europe Standard Time\"";     // Belgrade, Bratislava, Budapest, Ljubljana, Prague
@@ -138,15 +138,17 @@ namespace GPProcessVendorDataFunctions
         private const string GeorgianST         = "\"QA-C2 Georgian Standard Time\"";           // Tbilisi
         private const string CaucasusST         = "\"QA-C3 Caucasus Standard Time\"";           // Yerevan
         private const string AzerbaijanST       = "\"QA-C4 Azerbaijan Standard Time\"";         // Baku
-        private const string SaratovST          = "\"QA-C5 Saratov Standard Time\"";            // Saratov -- NOT USED (use Russia Time Zone 3 instead)
-        private const string AstrakhanST        = "\"QA-C6 Astrakhan Standard Time\"";          // Astrakhan, Ulyanovsk -- NOT USED (use Russia Time Zone 3 instead)
-        private const string RussiaTimeZone3    = "\"QA-C7 Russia Time Zone 3\"";               // Izhevsk, Samara
+        private const string VolgogradST        = "\"QA-C5 Volgograd Standard Time\"";          // Volgograd -- NOT USED (use Russia Time Zone 3 instead)
+        private const string SaratovST          = "\"QA-C6 Saratov Standard Time\"";            // Saratov -- NOT USED (use Russia Time Zone 3 instead)
+        private const string AstrakhanST        = "\"QA-C7 Astrakhan Standard Time\"";          // Astrakhan, Ulyanovsk -- NOT USED (use Russia Time Zone 3 instead)
+        private const string RussiaTimeZone3    = "\"QA-C8 Russia Time Zone 3\"";               // Izhevsk, Samara
         // (UTC+04:30)
         private const string AfghanistanST      = "\"QM-C0 Afghanistan Standard Time\"";        // Kabul
         // (UTC+05:00)
         private const string EkaterinburgST     = "\"RA-C0 Ekaterinburg Standard Time\"";       // Ekaterinburg
         private const string WestAsiaST         = "\"RA-C1 West Asia Standard Time\"";          // Ashgabat, Tashkent
-        private const string PakistanST         = "\"RA-C2 Pakistan Standard Time\"";           // Islamabad, Karachi
+        private const string QyzylordaST        = "\"RA-C2 Qyzylorda Standard Time\"";          // Qyzylorda
+        private const string PakistanST         = "\"RA-C3 Pakistan Standard Time\"";           // Islamabad, Karachi
         // (UTC+05:30)
         private const string IndiaST            = "\"RM-C0 India Standard Time\"";              // Chennai, Kolkata, Mumbai, New Delhi
         private const string SriLankaST         = "\"RM-C1 Sri Lanka Standard Time\"";          // Sri Jayawardenepura
@@ -303,6 +305,7 @@ namespace GPProcessVendorDataFunctions
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"GBR\", \"IRL\", \"IMN\", \"JEY\", \"GGY\", \"FRO\", \"PRT\", \"ESP\": z = " + GMTST +
                    "\n    Case \"MAR\", \"ESH\": z = " + MoroccoST +
+                   "\n    Case \"STP\": z = " + SaoTomeST +
                    "\n    Case Else: z = " + GreenwichST +
                    "\n  End Select" +
                    "\nElseIf utcOffset < 90 Then" +    // UTC+01:00 == 60
@@ -311,7 +314,6 @@ namespace GPProcessVendorDataFunctions
                    "\n    Case \"ESP\", \"GIB\", \"FRA\", \"AND\", \"MCO\", \"BEL\", \"LUX\", \"DNK\": z = " + RomanceST +
                    "\n    Case \"CZE\", \"SVK\", \"HUN\", \"SVN\", \"SRB\", \"KOS\", \"MNE\": z = " + CentralEuropeST +
                    "\n    Case \"POL\", \"HRV\", \"BIH\", \"ALB\", \"MKD\": z = " + CentralEuropeanST +
-                   "\n    Case \"STP\": z = " + SaoTomeST +
                    "\n    Case Else: z = " + WCentralAfricaST +
                    "\n  End Select" +
                    "\nElseIf utcOffset < 150 Then" +    // UTC+02:00 == 120
@@ -356,6 +358,7 @@ namespace GPProcessVendorDataFunctions
                    "\nElseIf utcOffset < 315 Then" +    // UTC+05:00 == 300
                    "\n  Select Case [" + countryCodeFieldName + "]" +
                    "\n    Case \"RUS\": z = " + EkaterinburgST +
+                   "\n    Case \"KAZ\": z = " + QyzylordaST +
                    "\n    Case \"PAK\": z = " + PakistanST +
                    "\n    Case Else: z = " + WestAsiaST +
                    "\n  End Select" +
