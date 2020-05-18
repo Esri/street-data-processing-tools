@@ -89,6 +89,7 @@ namespace GPProcessVendorDataFunctions
         private const int InputLRSTable = 23;
         private const int InputLVCTable = 24;
         private const int OutputNetworkDataset = 25;
+        private const int BuildNetworkDataset = 26;
 
         // field names and types
         private static readonly string[] NWFieldNames = new string[]
@@ -693,6 +694,21 @@ namespace GPProcessVendorDataFunctions
 
                 paramArray.Add(paramEdit as object);
 
+                // 26 - build_network_dataset
+                paramEdit = new GPParameterClass();
+                paramEdit.DataType = new GPBooleanTypeClass() as IGPDataType;
+                gpBool = new GPBooleanClass();
+                gpBool.Value = true;
+                paramEdit.Value = gpBool as IGPValue;
+                paramEdit.Direction = esriGPParameterDirection.esriGPParameterDirectionInput;
+                paramEdit.DisplayName = "Build Network Dataset";
+                paramEdit.DisplayOrder = BuildNetworkDataset;
+                paramEdit.Enabled = true;
+                paramEdit.Name = "build_network_dataset";
+                paramEdit.ParameterType = esriGPParameterType.esriGPParameterTypeRequired;
+
+                paramArray.Add(paramEdit as object);
+
                 return paramArray;
             }
         }
@@ -1070,6 +1086,8 @@ namespace GPProcessVendorDataFunctions
                 IGPValue inputLRSTableValue = m_gpUtils.UnpackGPValue(gpParam);
                 gpParam = paramvalues.get_Element(InputLVCTable) as IGPParameter;
                 IGPValue inputLVCTableValue = m_gpUtils.UnpackGPValue(gpParam);
+                gpParam = paramvalues.get_Element(BuildNetworkDataset) as IGPParameter;
+                IGPValue buildNetworkDatasetValue = m_gpUtils.UnpackGPValue(gpParam);
 
                 double fgdbVersion = 0.0;
                 if (!(outputFileGDBVersionValue.IsEmpty()))
@@ -2315,11 +2333,15 @@ namespace GPProcessVendorDataFunctions
 
                 // Create and build the network dataset, then pack it in a GPValue
 
+                bool buildNetworkDataset = true;
+                if (!(buildNetworkDatasetValue.IsEmpty()))
+                    buildNetworkDataset = ((buildNetworkDatasetValue.GetAsText()).ToUpper() == "TRUE");
+
                 AddMessage("Creating and building the network dataset...", messages, trackcancel);
 
                 CreateAndBuildNetworkDataset(outputFileGdbPath, fgdbVersion, fdsName, ndsName, createNetworkAttributesInMetric,
                                              createTwoDistanceAttributes, timeZoneIDBaseFieldName, directedTimeZoneIDFields, commonTimeZone,
-                                             usesHistoricalTraffic, trafficFeedLocation, usesRSTable, usesLTRTable, usesLRSTable, "lrs_Stats");
+                                             usesHistoricalTraffic, trafficFeedLocation, usesRSTable, usesLTRTable, usesLRSTable, "lrs_Stats", buildNetworkDataset);
 
                 // Once the network dataset is built, we can delete the stats table
 
@@ -2330,9 +2352,15 @@ namespace GPProcessVendorDataFunctions
                     gp.Execute(deleteTool, trackcancel);
                 }
 
-                // Write the build errors to the turn feature class
-
-                TurnGeometryUtilities.WriteBuildErrorsToTurnFC(outputFileGdbPath, fdsName, TurnFCName, messages, trackcancel);
+                // Write the build errors to the turn feature class if select build network dataset
+                if (buildNetworkDataset)
+                {
+                    TurnGeometryUtilities.WriteBuildErrorsToTurnFC(outputFileGdbPath, fdsName, TurnFCName, messages, trackcancel);
+                }
+                else
+                {
+                    AddMessage("Do not write the build errors to the turn feature class", messages, trackcancel);
+                }
 
                 // Compact the output file geodatabase
 
@@ -4603,7 +4631,7 @@ namespace GPProcessVendorDataFunctions
                                                   bool createNetworkAttributesInMetric, bool createTwoDistanceAttributes,
                                                   string timeZoneIDBaseFieldName, bool directedTimeZoneIDFields, string commonTimeZone,
                                                   bool usesHistoricalTraffic, ITrafficFeedLocation trafficFeedLocation,
-                                                  bool usesRSTable, bool usesLTRTable, bool usesLRSTable, string lrsStatsTableName)
+                                                  bool usesRSTable, bool usesLTRTable, bool usesLRSTable, string lrsStatsTableName, bool buildNetworkDataset)
         {
             // This code is modified from "How to create a network dataset" in the ArcObjects SDK.
 
@@ -6029,8 +6057,11 @@ namespace GPProcessVendorDataFunctions
             var networkDataset = (INetworkDataset)datasetContainer2.CreateDataset(deDataset);
 
             // Once the network dataset is created, build it.
-            var networkBuild = (INetworkBuild)networkDataset;
-            networkBuild.BuildNetwork(geoDataset.Extent);
+            if (buildNetworkDataset)
+            {
+                var networkBuild = (INetworkBuild)networkDataset;
+                networkBuild.BuildNetwork(geoDataset.Extent);
+            }
 
             return;
         }

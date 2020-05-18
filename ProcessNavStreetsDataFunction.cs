@@ -90,6 +90,7 @@ namespace GPProcessVendorDataFunctions
         private const int InputUSCndModTable = 24;
         private const int InputNonUSCndModTable = 25;
         private const int OutputNetworkDataset = 26;
+        private const int BuildNetworkDataset = 27;
 
         // field names and types
         private static readonly string[] StreetsFieldNames = new string[]
@@ -261,6 +262,7 @@ namespace GPProcessVendorDataFunctions
             // 24 - Input US Condition Modifiers Table (optional)
             // 25 - Input Non-US Condition Modifiers Table (optional)
             // 26 - Output Network Dataset (derived parameter)
+            // 27 - Build Netowrk dataset
 
             get
             {
@@ -691,6 +693,21 @@ namespace GPProcessVendorDataFunctions
                 paramEdit.Enabled = true;
                 paramEdit.Name = "output_network_dataset";
                 paramEdit.ParameterType = esriGPParameterType.esriGPParameterTypeDerived;
+
+                paramArray.Add(paramEdit as object);
+
+                // 27 - build_network_dataset
+                paramEdit = new GPParameterClass();
+                paramEdit.DataType = new GPBooleanTypeClass() as IGPDataType;
+                gpBool = new GPBooleanClass();
+                gpBool.Value = true;
+                paramEdit.Value = gpBool as IGPValue;
+                paramEdit.Direction = esriGPParameterDirection.esriGPParameterDirectionInput;
+                paramEdit.DisplayName = "Build Network Dataset";
+                paramEdit.DisplayOrder = BuildNetworkDataset;
+                paramEdit.Enabled = true;
+                paramEdit.Name = "build_network_dataset";
+                paramEdit.ParameterType = esriGPParameterType.esriGPParameterTypeRequired;
 
                 paramArray.Add(paramEdit as object);
 
@@ -1181,6 +1198,9 @@ namespace GPProcessVendorDataFunctions
                 IGPValue inputUSCndModTableValue = m_gpUtils.UnpackGPValue(gpParam);
                 gpParam = paramvalues.get_Element(InputNonUSCndModTable) as IGPParameter;
                 IGPValue inputNonUSCndModTableValue = m_gpUtils.UnpackGPValue(gpParam);
+                gpParam = paramvalues.get_Element(BuildNetworkDataset) as IGPParameter;
+                IGPValue buildNetworkDatasetValue = m_gpUtils.UnpackGPValue(gpParam);
+
 
                 double fgdbVersion = 0.0;
                 if (!(outputFileGDBVersionValue.IsEmpty()))
@@ -3133,18 +3153,29 @@ namespace GPProcessVendorDataFunctions
                     gp.Execute(upgradeGdbTool, trackcancel);
                 }
 
+
+                bool buildNetworkDataset = true;
+                if (!(buildNetworkDatasetValue.IsEmpty()))
+                    buildNetworkDataset = ((buildNetworkDatasetValue.GetAsText()).ToUpper() == "TRUE");
+
                 // Create and build the network dataset, then pack it in a GPValue
 
                 AddMessage("Creating and building the network dataset...", messages, trackcancel);
 
                 CreateAndBuildNetworkDataset(outputFileGdbPath, fgdbVersion, fdsName, ndsName, createNetworkAttributesInMetric,
                                              createArcGISOnlineNetworkAttributes, timeZoneIDBaseFieldName, directedTimeZoneIDFields, commonTimeZone,
-                                             usesHistoricalTraffic, trafficFeedLocation, usesTransport);
+                                             usesHistoricalTraffic, trafficFeedLocation, usesTransport, buildNetworkDataset);
 
-                // Write the build errors to the turn feature class
-
-                TurnGeometryUtilities.WriteBuildErrorsToTurnFC(outputFileGdbPath, fdsName, TurnFCName, messages, trackcancel);
-
+                // Write the build errors to the turn feature class if select build network dataset
+                if (buildNetworkDataset)
+                {
+                    TurnGeometryUtilities.WriteBuildErrorsToTurnFC(outputFileGdbPath, fdsName, TurnFCName, messages, trackcancel);
+                }
+                else
+                {
+                    AddMessage("Do not write the build errors to the turn feature class", messages, trackcancel);
+                }
+                
                 // Compact the output file geodatabase
 
                 AddMessage("Compacting the output file geodatabase...", messages, trackcancel);
@@ -5482,7 +5513,7 @@ namespace GPProcessVendorDataFunctions
         private void CreateAndBuildNetworkDataset(string outputFileGdbPath, double fgdbVersion, string fdsName, string ndsName,
                                                   bool createNetworkAttributesInMetric, bool createArcGISOnlineNetworkAttributes,
                                                   string timeZoneIDBaseFieldName, bool directedTimeZoneIDFields, string commonTimeZone,
-                                                  bool usesHistoricalTraffic, ITrafficFeedLocation trafficFeedLocation, bool usesTransport)
+                                                  bool usesHistoricalTraffic, ITrafficFeedLocation trafficFeedLocation, bool usesTransport, bool buildNetworkDataset)
         {
             // This code is modified from "How to create a network dataset" in the ArcObjects SDK.
 
@@ -7093,9 +7124,12 @@ namespace GPProcessVendorDataFunctions
             var deDataset = (IDEDataset)deNetworkDataset;
             var networkDataset = (INetworkDataset)datasetContainer2.CreateDataset(deDataset);
 
-            // Once the network dataset is created, build it.
-            var networkBuild = (INetworkBuild)networkDataset;
-            networkBuild.BuildNetwork(geoDataset.Extent);
+            if (buildNetworkDataset)
+            {
+                // Once the network dataset is created, build it.
+                var networkBuild = (INetworkBuild)networkDataset;
+                networkBuild.BuildNetwork(geoDataset.Extent);
+            }
 
             return;
         }
