@@ -9,3 +9,6 @@
 *.suo
 /bin
 /obj
+/.vs/ProcessVendorData/v15/Server/sqlite3
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
