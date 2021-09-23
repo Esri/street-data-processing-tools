@@ -5177,7 +5177,7 @@ namespace GPProcessVendorDataFunctions
 
                 // Populate Branch items from BR_RTEID and BR_RTEDIR 
 
-                branchText = (inputTableRow.get_Value(inBranchRteIDFI) as string).Trim();
+                branchText = inputTableRow.get_Value(inBranchRteIDFI) is DBNull ? "": (inputTableRow.get_Value(inBranchRteIDFI) as string).Trim();
 
                 if (branchText.Length > 0)
                 {
@@ -5237,7 +5237,7 @@ namespace GPProcessVendorDataFunctions
 
                 // Populate Toward items from TOW_RTEID
 
-                towardText = (inputTableRow.get_Value(inToLocaleFI) as string).Trim();
+                towardText = inputTableRow.get_Value(inToLocaleFI) is DBNull ? "" : (inputTableRow.get_Value(inToLocaleFI) as string).Trim();
 
                 if (towardText.Length > 0)
                 {
