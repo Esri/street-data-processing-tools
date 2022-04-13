@@ -53,7 +53,7 @@
         <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset contains attributes in metric or non-metric units of measure.&lt;/SPAN&gt;&lt;/P&gt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- The distance network attribute will be in kilometers, and the Logistics network attributes will be in meters and metric tons.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- The distance network attribute will be in miles, and the Logistics network attributes will be in feet and tons.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
       </param>
       <param name="input_create_two_distance_attributes" displayname="Create Two Distance Attributes" type="Optional" direction="Input" datatype="Boolean" expression="{input_create_two_distance_attributes}">
-        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset is created with two distance attributes -- Miles and Kilometers. This is useful when you need to create a network dataset that needs to report distances in both miles and kilometers.&lt;/SPAN&gt;&lt;/P&gt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- Two distance network attributes will be created -- Miles and Kilometers.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- Only one distance network attribute will be created -- it will be either Miles or Kilometers, depending on whether or not network attributes are to be created in metric units of measure.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset is created with two distance attributes -- Miles and Kilometers. This is useful when you need to create a network dataset that needs to report distances in both miles and kilometers.&lt;/SPAN&gt;&lt;/P&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- Two distance network attributes will be created -- Miles and Kilometers.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- Only one distance network attribute will be created -- it will be either Miles or Kilometers, depending on whether or not network attributes are to be created in metric units of measure.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
       </param>
       <param name="input_rs_table" displayname="Input Restrictions (RS) Table" type="Optional" direction="Input" datatype="Table" expression="{input_rs_table}">
         <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet data that represents the restrictions. This table has a name that typically ends in "RS".&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN&gt;If provided, the output network dataset will contain restriction attributes specific for passenger cars, residential vehicles, taxis, and public buses. Otherwise, the output network dataset will contain restriction attributes for general one-way and turn restrictions.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
@@ -96,6 +96,9 @@
       </param>
       <param name="input_lvc_table" displayname="Input Logistics Vehicle Characteristics (LVC) Table" type="Optional" direction="Input" datatype="Table" expression="{input_lvc_table}">
         <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your Tele Atlas MultiNet Logistics data that represents the logistics vehicle characteristics. This table has a name that typically ends in "LVC". This parameter must be specified together with the Input Logistics Restrictions (LRS) Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_build_the_network_dataset" displayname="Build the Network Dataset" type="Optional" direction="Input" datatype="Boolean" expression="{input_build_the_network_dataset}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset is built immediately after it is created. It is useful to uncheck this option when you need to make changes to the network dataset after it gets created and you'd like to postpone buiding the network dataset until after you've made these changes; otherwise leave this option checked on.&lt;/SPAN&gt;&lt;/P&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- The network dataset will be built immediately after it gets created. This is the default.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- The network dataset will be created but will not be built.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
       </param>
     </parameters>
     <summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;This tool reads in Tele Atlas® MultiNet® data, Tele Atlas Speed Profiles® data (if provided), and Tele Atlas MultiNet Logistics™ data (if provided), and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary>
@@ -141,13 +144,14 @@
           inLTR = "usaudc___________ltr.dbf"
           inLRS = "usaudc___________lrs.dbf"
           inLVC = "usaudc___________lvc.dbf"
+          inBuild = "True"
 
           #Create and build the network dataset
           arcpy.ProcessMultiNetData_nasample(inNW, inMN, inMP, inSI, inSP,
           outFileGDB, "10.1", fdName, ndName, inMetric,
           twoDistances, inRS, "#", "#", inCommonTimeZone,
           inHSNP, inHSPR, "#", "#", "#", "#", "#",
-          inLTR, inLRS, inLVC)</code>
+          inLTR, inLRS, inLVC, inBuild)</code>
       </scriptExample>
     </scriptExamples>
   </tool>

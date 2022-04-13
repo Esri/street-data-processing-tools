@@ -1,0 +1,12 @@
+VT,FieldNameComponent,AttributeNameComponent
+50,AllTrucks,All Trucks
+51,StraightTrucks,Straight Trucks
+52,TractorSemiTrailers,Tractor Semi Trailers
+53,StandardDoubles,Standard Doubles
+54,IntermediateDoubles,Intermediate Doubles
+55,LongDoubles,Long Doubles
+56,Triples,Triples
+57,OtherLongVehicles,Other Long Vehicles
+58,PublicTrucks,Public Trucks
+59,ResidentialTrucks,Residential Trucks
+60,DeliveryTrucks,Delivery Trucks

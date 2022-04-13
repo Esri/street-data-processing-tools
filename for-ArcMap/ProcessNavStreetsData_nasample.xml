@@ -53,10 +53,10 @@
         <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of the network dataset to be created in the output file geodatabase.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
       </param>
       <param name="input_create_network_attributes_in_metric" displayname="Create Network Attributes in Metric" type="Optional" direction="Input" datatype="Boolean" expression="{input_create_network_attributes_in_metric}">
-        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset contains attributes in metric or non-metric units of measure.&lt;/SPAN&gt;&lt;/P&gt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- The distance network attribute will be in kilometers, and the Transport network attributes will be in meters and kilograms.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- The distance network attribute will be in miles, and the Transport network attributes will be in feet and pounds.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset contains attributes in metric or non-metric units of measure.&lt;/SPAN&gt;&lt;/P&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- The distance network attribute will be in kilometers, and the Transport network attributes will be in meters and kilograms.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- The distance network attribute will be in miles, and the Transport network attributes will be in feet and pounds.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
       </param>
       <param name="input_create_arcgis_online_network_attributes" displayname="Create ArcGIS Online Network Attributes" type="Optional" direction="Input" datatype="Boolean" expression="{input_create_arcgis_online_network_attributes}">
-        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset is created with all of the network attributes used in the ArcGIS Online datasets. This is useful when you need to create a network dataset for use in the Network Analysis services in ArcGIS Online.&lt;/SPAN&gt;&lt;/P&gt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- A network dataset with all ArcGIS Online network attributes will be created. Note that this option takes additional time for processing as compared to the Unchecked option.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- A network dataset will be created. This option creates as few fields on the Streets feature class as possible.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset is created with all of the network attributes used in the ArcGIS Online datasets. This is useful when you need to create a network dataset for use in the Network Analysis services in ArcGIS Online.&lt;/SPAN&gt;&lt;/P&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- A network dataset with all ArcGIS Online network attributes will be created. Note that this option takes additional time for processing as compared to the Unchecked option.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- A network dataset will be created. This option creates as few fields on the Streets feature class as possible.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
       </param>
       <param name="input_time_zone_id_base_field_name" displayname="Input Time Zone ID Base Field Name" type="Optional" direction="Input" datatype="String" expression="{input_time_zone_id_base_field_name}">
         <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The name of the field in your Streets feature class that contains the time zone IDs. This parameter must be specified together with the Input Time Zone Table parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN&gt;If time zones are modeled for each direction of travel, then only specify the base name of the field. For example, if the fields are named FT_TimeZoneID and TF_TimeZoneID, then specify TimeZoneID for this parameter.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
@@ -99,6 +99,9 @@
       </param>
       <param name="input_non_us_cndmod_table" displayname="Input Non-US Condition Modifier (CndMod) Table" type="Optional" direction="Input" datatype="Table" expression="{input_non_us_cndmod_table}">
         <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;The table of your NAVTEQ NAVSTREETS Transport data that represents the condition modifiers outside the United States. This table is typically named "CndMod".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+      </param>
+      <param name="input_build_the_network_dataset" displayname="Build the Network Dataset" type="Optional" direction="Input" datatype="Boolean" expression="{input_build_the_network_dataset}">
+        <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Indicates if the output network dataset is built immediately after it is created. It is useful to uncheck this option when you need to make changes to the network dataset after it gets created and you'd like to postpone buiding the network dataset until after you've made these changes; otherwise leave this option checked on.&lt;/SPAN&gt;&lt;/P&gt;&lt;UL&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Checked -- The network dataset will be built immediately after it gets created. This is the default.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;LI&gt;&lt;P&gt;&lt;SPAN&gt;Unchecked -- The network dataset will be created but will not be built.&lt;/SPAN&gt;&lt;/P&gt;&lt;/LI&gt;&lt;/UL&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
       </param>
     </parameters>
     <summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;This tool reads in NAVTEQ™ NAVSTREETS™ data (including NAVTEQ Transport™ attributes if provided) and NAVTEQ Traffic Patterns™ data (if provided) and creates a file geodatabase with a network dataset that can be analyzed with ArcGIS Network Analyst. The tool first creates the feature classes and tables needed for the network dataset, then creates and builds the network dataset.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary>
@@ -143,13 +146,14 @@
           inTMC = "NTP_REF_Hawaii_TMC_09400.csv"
           inSPD = "NTP_SPD_NA_15MIN_KPH_09400.csv"
           inCndMod = "CndMod.dbf"
+          inBuild = "True"
 
           #Create and build the network dataset
           arcpy.ProcessNavStreetsData_nasample(inStreets, inAltStreets, inZLevels, inCDMS, inRDMS, inSigns,
           outFileGDB, "10.1", fdName, ndName,
           inMetric, arcgisOnlineAttributes, "#", "#", inCommonTimeZone,
           inTraffic, "#", "#" inTMC, inSPD, "#", "#", "#", "#",
-          inCndMod, "#")
+          inCndMod, "#", inBuild)
 
           print "Script completed successfully."</code>
       </scriptExample>

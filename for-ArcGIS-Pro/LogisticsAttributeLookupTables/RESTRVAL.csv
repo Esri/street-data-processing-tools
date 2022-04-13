@@ -1,0 +1,5 @@
+RESTRVAL,FieldNameSuffix,AttributeNameSuffix,RestrictionUsageText,RestrictionUsage
+1,_HardRestr, (Hard Prohibited),Prohibited,-1
+2,_Immediate, (Immediate Access Only),Avoid High,5.0
+3,_SoftRestr, (Soft Restricted),Avoid Medium,2.0
+4,_Preferred, (Preferred),Prefer Medium,0.5
