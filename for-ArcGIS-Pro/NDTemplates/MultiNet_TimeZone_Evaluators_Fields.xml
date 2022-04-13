@@ -1,0 +1,110 @@
+<DENetworkDataset xsi:type='typens:DENetworkDataset' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:typens='http://www.esri.com/schemas/ArcGIS/2.9.0'>
+        <NetworkAssignment xsi:type='typens:NetworkAssignment'>
+            <IsDefault>true</IsDefault>
+            <ID>-1</ID>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
+            <NetworkElementType>esriNETJunction</NetworkElementType>
+            <NetworkEvaluatorCLSID>{318C4B91-F5D2-467A-996C-0AB51B0D8FF2}</NetworkEvaluatorCLSID>
+            <NetworkEdgeDirection>esriNEDNone</NetworkEdgeDirection>
+            <NetworkEvaluatorData xsi:type='typens:PropertySet'>
+                <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Version</Key>
+                        <Value xsi:type='xs:short'>1</Value>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>ConstantValue</Key>
+                        <Value xsi:type='xs:int'>0</Value>
+                    </PropertySetProperty>
+                </PropertyArray>
+            </NetworkEvaluatorData>
+        </NetworkAssignment>
+        <NetworkAssignment xsi:type='typens:NetworkAssignment'>
+            <IsDefault>true</IsDefault>
+            <ID>-1</ID>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
+            <NetworkElementType>esriNETEdge</NetworkElementType>
+            <NetworkEvaluatorCLSID>{318C4B91-F5D2-467A-996C-0AB51B0D8FF2}</NetworkEvaluatorCLSID>
+            <NetworkEdgeDirection>esriNEDNone</NetworkEdgeDirection>
+            <NetworkEvaluatorData xsi:type='typens:PropertySet'>
+                <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Version</Key>
+                        <Value xsi:type='xs:short'>1</Value>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>ConstantValue</Key>
+                        <Value xsi:type='xs:int'>0</Value>
+                    </PropertySetProperty>
+                </PropertyArray>
+            </NetworkEvaluatorData>
+        </NetworkAssignment>
+        <NetworkAssignment xsi:type='typens:NetworkAssignment'>
+            <IsDefault>true</IsDefault>
+            <ID>-1</ID>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
+            <NetworkElementType>esriNETTurn</NetworkElementType>
+            <NetworkEvaluatorCLSID>{318C4B91-F5D2-467A-996C-0AB51B0D8FF2}</NetworkEvaluatorCLSID>
+            <NetworkEdgeDirection>esriNEDNone</NetworkEdgeDirection>
+            <NetworkEvaluatorData xsi:type='typens:PropertySet'>
+                <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Version</Key>
+                        <Value xsi:type='xs:short'>1</Value>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>ConstantValue</Key>
+                        <Value xsi:type='xs:int'>0</Value>
+                    </PropertySetProperty>
+                </PropertyArray>
+            </NetworkEvaluatorData>
+        </NetworkAssignment>
+        <NetworkAssignment xsi:type='typens:NetworkAssignment'>
+            <IsDefault>false</IsDefault>
+            <ID>-1</ID>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
+            <NetworkSourceName>Streets</NetworkSourceName>
+            <NetworkEvaluatorCLSID>{68055FC4-37D5-4BD0-81A5-CD177A29759C}</NetworkEvaluatorCLSID>
+            <NetworkEdgeDirection>esriNEDAlongDigitized</NetworkEdgeDirection>
+            <NetworkEvaluatorData xsi:type='typens:PropertySet'>
+                <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Version</Key>
+                        <Value xsi:type='xs:short'>1</Value>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Expression</Key>
+                        <Value xsi:type='xs:string'>[$FROMFIELD$]</Value>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>PreLogic</Key>
+                        <Value xsi:type='xs:string'/>
+                    </PropertySetProperty>
+                </PropertyArray>
+            </NetworkEvaluatorData>
+        </NetworkAssignment>
+        <NetworkAssignment xsi:type='typens:NetworkAssignment'>
+            <IsDefault>false</IsDefault>
+            <ID>-1</ID>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
+            <NetworkSourceName>Streets</NetworkSourceName>
+            <NetworkEvaluatorCLSID>{68055FC4-37D5-4BD0-81A5-CD177A29759C}</NetworkEvaluatorCLSID>
+            <NetworkEdgeDirection>esriNEDAgainstDigitized</NetworkEdgeDirection>
+            <NetworkEvaluatorData xsi:type='typens:PropertySet'>
+                <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Version</Key>
+                        <Value xsi:type='xs:short'>1</Value>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Expression</Key>
+                        <Value xsi:type='xs:string'>[$TOFIELD$]</Value>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>PreLogic</Key>
+                        <Value xsi:type='xs:string'/>
+                    </PropertySetProperty>
+                </PropertyArray>
+            </NetworkEvaluatorData>
+        </NetworkAssignment>
+</DENetworkDataset>

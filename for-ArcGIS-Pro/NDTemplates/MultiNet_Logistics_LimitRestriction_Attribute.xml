@@ -1,0 +1,28 @@
+<DENetworkDataset xsi:type='typens:DENetworkDataset' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:typens='http://www.esri.com/schemas/ArcGIS/2.9.0'>
+        <EvaluatedNetworkAttribute xsi:type='typens:EvaluatedNetworkAttribute'>
+            <ID>$ID$</ID>
+            <Name>$NAME$</Name>
+            <Units>Unknown</Units>
+            <DataType>esriNADTBoolean</DataType>
+            <UsageType>esriNAUTRestriction</UsageType>
+            <UserData xsi:nil='true'/>
+            <UseByDefault>false</UseByDefault>
+            <AttributeParameters xsi:type='typens:ArrayOfNetworkAttributeParameter'>
+                <NetworkAttributeParameter xsi:type='typens:NetworkAttributeParameter'>
+                    <Name>Restriction Usage</Name>
+                    <VarType>5</VarType>
+                    <Value xsi:type='xs:double'>$RESTRICTIONUSAGEVALUE$</Value>
+                    <DefaultValue xsi:type='xs:double'>$RESTRICTIONUSAGEVALUE$</DefaultValue>
+                    <ParameterUsageType>esriNAPUTRestriction</ParameterUsageType>
+                </NetworkAttributeParameter>
+                <NetworkAttributeParameter xsi:type='typens:NetworkAttributeParameter'>
+                    <Name>$PARAMETERNAME$</Name>
+                    <VarType>5</VarType>
+                    <Value xsi:type='xs:double'>0</Value>
+                    <DefaultValue xsi:type='xs:double'>0</DefaultValue>
+                    <ParameterUsageType>esriNAPUTGeneral</ParameterUsageType>
+                </NetworkAttributeParameter>
+            </AttributeParameters>
+            <TimeAware>true</TimeAware>
+        </EvaluatedNetworkAttribute>
+</DENetworkDataset>
