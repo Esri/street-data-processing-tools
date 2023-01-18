@@ -1274,7 +1274,7 @@ class MultiNetProcessor:
                 restriction_values = [None for _ in self.restriction_field_names]
                 try:
                     # Populate the basic restrictions fields
-                    subset_df = self.r_df.loc[id]
+                    subset_df = self.r_df[self.r_df["FEATTYP"].isin([2101, 2103])].loc[id]
                     # Loop through all records associated with this ID and update the appropriate restriction fields
                     if isinstance(subset_df, pd.Series):
                         # There was only one record with this ID, so pandas returns a series
