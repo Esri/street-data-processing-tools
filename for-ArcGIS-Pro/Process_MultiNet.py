@@ -258,6 +258,7 @@ class MultiNetInputData:
             ],
             self.rs: [
                 ("ID", "Double"),
+                ("FEATTYP", "SmallInteger"),
                 ("VT", "SmallInteger"),
                 ("DIR_POS", "SmallInteger"),
                 ("RESTRTYP", "String")
@@ -795,7 +796,7 @@ class MultiNetProcessor:
         """Read in the restrictions table and index it for quick lookups."""
         arcpy.AddMessage("Reading and grouping restrictions table...")
         where = f"VT IN ({', '.join([str(vt) for vt in self.vt_field_map])})"
-        fields = ["ID", "VT", "DIR_POS", "RESTRTYP"]
+        fields = ["ID", "FEATTYP", "VT", "DIR_POS", "RESTRTYP"]
         with arcpy.da.SearchCursor(self.in_multinet.rs, fields, where) as cur:
             self.r_df = pd.DataFrame(cur, columns=fields)
         # Cast the ID column from its original double to an explicit int64 so we can use it for indexing and lookups
@@ -958,6 +959,9 @@ class MultiNetProcessor:
         hsnp_df = self._read_and_index_historical_traffic()
         ltr_df = self._read_and_index_ltr()
 
+        # Subset the restrictions table to include only the restriction type we care about
+        r_df_streets_subset = self.r_df[self.r_df["RESTRTYP"] == "DF"]
+
         # Build a list of fields to retrieve in the Streets NW table, including the ID, all the restriction value
         # fields, and, optionally, historical traffic fields
         fields = ["ID", "TOLLRD", "TOLLRDDIR"]
@@ -1085,7 +1089,7 @@ class MultiNetProcessor:
                 # Populate the basic restrictions fields
                 try:
                     # Retrieve the restriction records for this ID
-                    subset_df = self.r_df[self.r_df["RESTRTYP"] == "DF"].loc[id]
+                    subset_df = r_df_streets_subset.loc[id]
                     # Loop through all records associated with this ID and update the appropriate restriction fields
                     if isinstance(subset_df, pd.Series):
                         # There was only one record with this ID, so pandas returns a series
@@ -1172,6 +1176,9 @@ class MultiNetProcessor:
 
         # Edge#Pos field values are intentionally hard-coded to 0.5
         edge_pos = 0.5
+
+        # Subset the restrictions table to include only the restriction type we care about
+        r_df_turns_subset = self.r_df[self.r_df["FEATTYP"].isin([2101, 2103])]
 
         # Create a list of turn fields based on the max turn edges and standard turn feature class schema
         turn_fields = ["SHAPE@", "ID", "Edge1End"]
@@ -1274,7 +1281,7 @@ class MultiNetProcessor:
                 restriction_values = [None for _ in self.restriction_field_names]
                 try:
                     # Populate the basic restrictions fields
-                    subset_df = self.r_df[self.r_df["FEATTYP"].isin([2101, 2103])].loc[id]
+                    subset_df = r_df_turns_subset.loc[id]
                     # Loop through all records associated with this ID and update the appropriate restriction fields
                     if isinstance(subset_df, pd.Series):
                         # There was only one record with this ID, so pandas returns a series
