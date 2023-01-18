@@ -1085,7 +1085,7 @@ class MultiNetProcessor:
                 # Populate the basic restrictions fields
                 try:
                     # Retrieve the restriction records for this ID
-                    subset_df = self.r_df.loc[id]
+                    subset_df = self.r_df[self.r_df["RESTRTYP"] == "DF"].loc[id]
                     # Loop through all records associated with this ID and update the appropriate restriction fields
                     if isinstance(subset_df, pd.Series):
                         # There was only one record with this ID, so pandas returns a series
