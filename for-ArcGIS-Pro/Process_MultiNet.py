@@ -637,7 +637,7 @@ class MultiNetProcessor:
         if not self.include_historical_traffic:
             return
         arcpy.AddMessage("Creating and populating Streets_DailyProfiles table...")
-        assert self.streets_df is not None  # Sanity check
+        assert self.streets_df is not None  # Confidence check
 
         # Create the table with desired schema
         arcpy.management.CreateTable(
@@ -753,7 +753,7 @@ class MultiNetProcessor:
         if not self.include_historical_traffic or not self.in_multinet.rd:
             return
         arcpy.AddMessage("Creating and populating Streets_TMC table...")
-        assert self.streets_df is not None  # Sanity check
+        assert self.streets_df is not None  # Confidence check
 
         arcpy.management.CreateTable(os.path.dirname(self.streets_tmc), os.path.basename(self.streets_tmc))
         field_defs = [
@@ -850,7 +850,7 @@ class MultiNetProcessor:
     def _read_and_index_historical_traffic(self):
         """Read and index historical traffic tables."""
         if not self.include_historical_traffic:
-            # Sanity check
+            # Confidence check
             return None
         fields = ["NETWORK_ID", "VAL_DIR", "SPWEEKDAY", "SPWEEKEND", "SPWEEK"]
         with arcpy.da.SearchCursor(self.in_multinet.hsnp, fields, "VAL_DIR IN (2, 3)") as cur:
@@ -874,7 +874,7 @@ class MultiNetProcessor:
     def _read_and_index_logistics_tables(self):
         """Read and index MultiNet Logistics tables."""
         if not self.include_logistics:
-            # Sanity check
+            # Confidence check
             return
 
         # Read in lookup tables
@@ -912,7 +912,7 @@ class MultiNetProcessor:
 
         # Join LVC to LRS and drop any rows that had a match and got transferred to LRS
         self.lrs_df = self.lrs_df.join(lvc_df, how="left")
-        self.lrs_df = self.lrs_df[self.lrs_df["DROP"] != True]
+        self.lrs_df = self.lrs_df[self.lrs_df["DROP"] is not True]
         self.lrs_df.reset_index(inplace=True)
         self.lrs_df.drop(columns=["DROP", "SEQNR"], inplace=True)
         del lvc_df
@@ -1000,7 +1000,7 @@ class MultiNetProcessor:
             arcpy.AddMessage("Populating restriction fields in streets...")
         else:
             arcpy.AddMessage("Populating restriction and historical traffic fields in streets...")
-        assert self.r_df is not None  # Sanity check
+        assert self.r_df is not None  # Confidence check
 
         # Read some additional tables if needed
         hsnp_df = self._read_and_index_historical_traffic()
@@ -1686,7 +1686,8 @@ class MultiNetProcessor:
                                 valid = False
                                 break
                             # Store the geometry for this segment
-                            edge_info.append((self._get_street_geometry(street_id, street["OID"]), record["SEQNR"], street["OID"]))
+                            edge_info.append(
+                                (self._get_street_geometry(street_id, street["OID"]), record["SEQNR"], street["OID"]))
                         if not valid:
                             # Something went wrong in constructing the signpost. Skip it and move on.
                             continue
