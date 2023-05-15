@@ -804,23 +804,11 @@ class MultiNetProcessor:
         fields = ["ID", "FEATTYP", "VT", "DIR_POS", "RESTRTYP"]
         with arcpy.da.SearchCursor(self.in_multinet.rs, fields, where) as cur:
             self.r_df = pd.DataFrame(cur, columns=fields)
-        ############
-        arcpy.AddMessage("Memory usage of self.r_df immediately after SearchCursor:")
-        arcpy.AddMessage(self.r_df.memory_usage(deep=True))
-        arcpy.AddMessage(self.r_df.memory_usage(deep=True).sum())
         # Cast the ID column from its original double to an explicit int64 so we can use it for indexing and lookups
         self.r_df = self.r_df.astype({"ID": np.int64})
-        ############
-        arcpy.AddMessage("Memory usage of self.r_df after converting ID to int64:")
-        arcpy.AddMessage(self.r_df.memory_usage(deep=True))
-        arcpy.AddMessage(self.r_df.memory_usage(deep=True).sum())
         # Index the dataframe by ID for quick retrieval later, and sort the index to make those lookups even faster
         self.r_df.set_index("ID", inplace=True)
         self.r_df.sort_index(inplace=True)
-        ############
-        arcpy.AddMessage("Memory usage of self.r_df after indexing and sorting:")
-        arcpy.AddMessage(self.r_df.memory_usage(deep=True))
-        arcpy.AddMessage(self.r_df.memory_usage(deep=True).sum())
 
     @timed_exec
     def _read_and_index_maneuver_paths(self):
@@ -830,18 +818,9 @@ class MultiNetProcessor:
         with arcpy.da.SearchCursor(self.in_multinet.mp, fields) as cur:
             # Explicitly read it in using int64 to convert the double-based ID field for easy indexing and lookups
             self.mp_df = pd.DataFrame(cur, columns=fields, dtype=np.int64)
-        ############
-        arcpy.AddMessage("Memory usage of self.mp_df immediately after SearchCursor:")
-        arcpy.AddMessage(self.mp_df.memory_usage(deep=True))
-        arcpy.AddMessage(self.mp_df.memory_usage(deep=True).sum())
         # Index the dataframe by ID for quick retrieval later, and sort the index to make those lookups even faster
         self.mp_df.set_index("ID", inplace=True)
         self.mp_df.sort_index(inplace=True)
-        ############
-        arcpy.AddMessage("Memory usage of self.mp_df after indexing and sorting:")
-        arcpy.AddMessage(self.mp_df.memory_usage(deep=True))
-        arcpy.AddMessage(self.mp_df.memory_usage(deep=True).sum())
-
         # Determine the max number of edges participating in a turn. This will be used when creating the turn feature
         # class to initialize the proper number of fields.
         self.max_turn_edges = int(self.mp_df["SEQNR"].max())
@@ -856,18 +835,10 @@ class MultiNetProcessor:
         with arcpy.da.SearchCursor(self.in_multinet.hsnp, fields, "VAL_DIR IN (2, 3)") as cur:
             # Explicitly read it in using int64 to convert the double-based ID field for easy indexing and lookups
             hsnp_df = pd.DataFrame(cur, columns=fields, dtype=np.int64)
-        ############
-        arcpy.AddMessage("Memory usage of hsnp_df immediately after SearchCursor:")
-        arcpy.AddMessage(hsnp_df.memory_usage(deep=True))
-        arcpy.AddMessage(hsnp_df.memory_usage(deep=True).sum())
         # Index the dataframe by NETWORK_ID for quick retrieval later,
         # and sort the index to make those lookups even faster
         hsnp_df.set_index("NETWORK_ID", inplace=True)
         hsnp_df.sort_index(inplace=True)
-        ############
-        arcpy.AddMessage("Memory usage of hsnp_df after sorting and indexing:")
-        arcpy.AddMessage(hsnp_df.memory_usage(deep=True))
-        arcpy.AddMessage(hsnp_df.memory_usage(deep=True).sum())
         return hsnp_df
 
     @timed_exec
@@ -902,10 +873,6 @@ class MultiNetProcessor:
         where = f"RESTRTYP IN ({', '.join(codes)})"
         with arcpy.da.SearchCursor(self.in_multinet.lrs, fields, where) as cur:
             self.lrs_df = pd.DataFrame(cur, columns=fields)
-        ############
-        arcpy.AddMessage("Memory usage of self.lrs_df immediately after SearchCursor:")
-        arcpy.AddMessage(self.lrs_df.memory_usage(deep=True))
-        arcpy.AddMessage(self.lrs_df.memory_usage(deep=True).sum())
         # Cast the ID field from its original double to an int64 for lookups and indexing
         self.lrs_df = self.lrs_df.astype({"ID": np.int64})
         self.lrs_df.set_index(["ID", "SEQNR"], inplace=True)
@@ -967,17 +934,9 @@ class MultiNetProcessor:
         with arcpy.da.SearchCursor(self.in_multinet.ltr, fields) as cur:
             # Explicitly read it in using int64 to convert the double-based ID field for easy indexing and lookups
             ltr_df = pd.DataFrame(cur, columns=fields, dtype=np.int64)
-        ############
-        arcpy.AddMessage("Memory usage of ltr_df immediately after SearchCursor:")
-        arcpy.AddMessage(ltr_df.memory_usage(deep=True))
-        arcpy.AddMessage(ltr_df.memory_usage(deep=True).sum())
         # Index the dataframe by ID for quick retrieval later, and sort the index to make those lookups even faster
         ltr_df.set_index("ID", inplace=True)
         ltr_df.sort_index(inplace=True)
-        ############
-        arcpy.AddMessage("Memory usage of ltr_df after sorting and indexing:")
-        arcpy.AddMessage(ltr_df.memory_usage(deep=True))
-        arcpy.AddMessage(ltr_df.memory_usage(deep=True).sum())
         return ltr_df
 
     @timed_exec
