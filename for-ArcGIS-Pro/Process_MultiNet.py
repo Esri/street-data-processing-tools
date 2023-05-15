@@ -26,102 +26,102 @@ import arcpy
 CURDIR = os.path.dirname(os.path.abspath(__file__))
 
 LNG_CODES = {
-    "ALB": "sq", # Albanian
-    "ALS": "", # Alsacian
-    "ARA": "ar", # Arabic
-    "BAQ": "eu", # Basque
-    "BAT": "", # Baltic (Other)
-    "BEL": "be", # Belarusian
-    "BET": "be", # Belarusian (Latin)
-    "BOS": "bs", # Bosnian
-    "BRE": "br", # Breton
-    "BUL": "bg", # Bulgarian
-    "BUN": "bg", # Bulgarian (Latin)
-    "BUR": "my", # Burmese
-    "CAT": "ca", # Catalan
-    "CEL": "", # Celtic (Other)
-    "CHI": "zh", # Chinese, Han Simplified
-    "CHL": "zh", # Chinese, Mandarin Pinyin
-    "CHT": "zh", # Chinese, Han Traditional
-    "CTN": "zh", # Chinese, Cantonese Pinyin
-    "CZE": "cs", # Czech
-    "DAN": "da", # Danish
-    "DUT": "nl", # Dutch
-    "ENG": "en", # English
-    "EST": "et", # Estonian
-    "FAO": "fo", # Faroese
-    "FIL": "", # Filipino
-    "FIN": "fi", # Finnish
-    "FRE": "fr", # French
-    "FRY": "fy", # Frisian
-    "FUR": "", # Friulian
-    "GEM": "", # Franco-Provencal
-    "GER": "de", # German
-    "GLA": "gd", # Gaelic (Scots)
-    "GLE": "ga", # Irish
-    "GLG": "gl", # Galician
-    "GRE": "el", # Greek (Modern)
-    "GRL": "el", # Greek (Latin Transcription)
-    "HEB": "he", # Hebrew
-    "HIN": "hi", # Hindi
-    "HUN": "hu", # Hungarian
-    "ICE": "is", # Icelandic
-    "IND": "id", # Indonesian
-    "ITA": "it", # Italian
-    "KHM": "km", # Khmer
-    "KOL": "ko", # Korean (Latin)
-    "KOR": "ko", # Korean
-    "LAD": "", # Ladin
-    "LAO": "lo", # Lao
-    "LAT": "la", # Latin
-    "LAV": "lv", # Latvian
-    "LIT": "lt", # Lithuanian
-    "LTZ": "lb", # Letzeburgesch
-    "MAC": "mk", # Macedonian
-    "MAP": "", # Austronesian (Other)
-    "MAT": "mk", # Macedonian (Latin Transcription)
-    "MAY": "ms", # Malaysian
-    "MLT": "mt", # Maltese
-    "MOL": "mo", # Moldavian
-    "MYN": "", # Mayan Languages
-    "NOR": "no", # Norwegian
-    "OCI": "oc", # Occitan
-    "PAA": "", # Papuan-Australian (Other)
-    "POL": "pl", # Polish
-    "POR": "pt", # Portuguese
-    "PRO": "", # Provencal
-    "ROA": "", # Romance (Other)
-    "ROH": "rm", # Raeto-Romance
-    "ROM": "", # Romani
-    "RUL": "ru", # Russian (Latin Transcription)
-    "RUM": "ro", # Romanian
-    "RUS": "ru", # Russian
-    "SCC": "sh", # Serbian (Latin)
-    "SCO": "gd", # Scots
-    "SCR": "sh", # Croatian
-    "SCY": "sh", # Serbian (Cyrillic)
-    "SLA": "cu", # Slavic
-    "SLO": "sk", # Slovak
-    "SLV": "sv", # Slovenian
-    "SMC": "", # Montenegrin (Cyrillic)
-    "SMI": "se", # Lapp (Sami)
-    "SML": "", # Montenegrin (Latin)
-    "SPA": "es", # Spanish
-    "SRD": "sc", # Sardinian
-    "SWE": "sv", # Swedish
-    "THA": "th", # Thai
-    "THL": "th", # Thai (Latin)
-    "TUR": "tr", # Turkish
-    "UKL": "uk", # Ukranian (Latin)
-    "UKR": "uk", # Ukranian
-    "UND": "", # Undefined
-    "VAL": "ca", # Valencian
-    "VIE": "vi", # Vietnamese
-    "WEL": "cy", # Welsh
-    "WEN": "", # Sorbian (Other)
+    "ALB": "sq",  # Albanian
+    "ALS": "",  # Alsacian
+    "ARA": "ar",  # Arabic
+    "BAQ": "eu",  # Basque
+    "BAT": "",  # Baltic (Other)
+    "BEL": "be",  # Belarusian
+    "BET": "be",  # Belarusian (Latin)
+    "BOS": "bs",  # Bosnian
+    "BRE": "br",  # Breton
+    "BUL": "bg",  # Bulgarian
+    "BUN": "bg",  # Bulgarian (Latin)
+    "BUR": "my",  # Burmese
+    "CAT": "ca",  # Catalan
+    "CEL": "",  # Celtic (Other)
+    "CHI": "zh",  # Chinese, Han Simplified
+    "CHL": "zh",  # Chinese, Mandarin Pinyin
+    "CHT": "zh",  # Chinese, Han Traditional
+    "CTN": "zh",  # Chinese, Cantonese Pinyin
+    "CZE": "cs",  # Czech
+    "DAN": "da",  # Danish
+    "DUT": "nl",  # Dutch
+    "ENG": "en",  # English
+    "EST": "et",  # Estonian
+    "FAO": "fo",  # Faroese
+    "FIL": "",  # Filipino
+    "FIN": "fi",  # Finnish
+    "FRE": "fr",  # French
+    "FRY": "fy",  # Frisian
+    "FUR": "",  # Friulian
+    "GEM": "",  # Franco-Provencal
+    "GER": "de",  # German
+    "GLA": "gd",  # Gaelic (Scots)
+    "GLE": "ga",  # Irish
+    "GLG": "gl",  # Galician
+    "GRE": "el",  # Greek (Modern)
+    "GRL": "el",  # Greek (Latin Transcription)
+    "HEB": "he",  # Hebrew
+    "HIN": "hi",  # Hindi
+    "HUN": "hu",  # Hungarian
+    "ICE": "is",  # Icelandic
+    "IND": "id",  # Indonesian
+    "ITA": "it",  # Italian
+    "KHM": "km",  # Khmer
+    "KOL": "ko",  # Korean (Latin)
+    "KOR": "ko",  # Korean
+    "LAD": "",  # Ladin
+    "LAO": "lo",  # Lao
+    "LAT": "la",  # Latin
+    "LAV": "lv",  # Latvian
+    "LIT": "lt",  # Lithuanian
+    "LTZ": "lb",  # Letzeburgesch
+    "MAC": "mk",  # Macedonian
+    "MAP": "",  # Austronesian (Other)
+    "MAT": "mk",  # Macedonian (Latin Transcription)
+    "MAY": "ms",  # Malaysian
+    "MLT": "mt",  # Maltese
+    "MOL": "mo",  # Moldavian
+    "MYN": "",  # Mayan Languages
+    "NOR": "no",  # Norwegian
+    "OCI": "oc",  # Occitan
+    "PAA": "",  # Papuan-Australian (Other)
+    "POL": "pl",  # Polish
+    "POR": "pt",  # Portuguese
+    "PRO": "",  # Provencal
+    "ROA": "",  # Romance (Other)
+    "ROH": "rm",  # Raeto-Romance
+    "ROM": "",  # Romani
+    "RUL": "ru",  # Russian (Latin Transcription)
+    "RUM": "ro",  # Romanian
+    "RUS": "ru",  # Russian
+    "SCC": "sh",  # Serbian (Latin)
+    "SCO": "gd",  # Scots
+    "SCR": "sh",  # Croatian
+    "SCY": "sh",  # Serbian (Cyrillic)
+    "SLA": "cu",  # Slavic
+    "SLO": "sk",  # Slovak
+    "SLV": "sv",  # Slovenian
+    "SMC": "",  # Montenegrin (Cyrillic)
+    "SMI": "se",  # Lapp (Sami)
+    "SML": "",  # Montenegrin (Latin)
+    "SPA": "es",  # Spanish
+    "SRD": "sc",  # Sardinian
+    "SWE": "sv",  # Swedish
+    "THA": "th",  # Thai
+    "THL": "th",  # Thai (Latin)
+    "TUR": "tr",  # Turkish
+    "UKL": "uk",  # Ukranian (Latin)
+    "UKR": "uk",  # Ukranian
+    "UND": "",  # Undefined
+    "VAL": "ca",  # Valencian
+    "VIE": "vi",  # Vietnamese
+    "WEL": "cy",  # Welsh
+    "WEN": "",  # Sorbian (Other)
 }
 
-PRINT_TIMINGS = True  # Set to True to log timings for various methods (primarily for debugging and development)
+PRINT_TIMINGS = False  # Set to True to log timings for various methods (primarily for debugging and development)
 
 
 def timed_exec(func):
@@ -384,6 +384,7 @@ class MultiNetProcessor:
         self.r_df = None  # Restrictions table indexed by ID for quick lookups
         self.mp_df = None  # Maneuver paths table indexed by ID for quick lookups
         self.streets_df = None  # Dataframe of output streets indexed by ID for quick lookups
+        self.streets_oid_field = None  # OID field name of the output streets feature class
         self.lrs_df = None  # Dataframe of logistics LRS table
         self.unique_lrs_df = None  # Dataframe holding unique combinations of logistics restriction data
         self.max_turn_edges = None  # Maximum number of edges participating in a turn
@@ -529,7 +530,9 @@ class MultiNetProcessor:
             nw_layer, self.feature_dataset, os.path.basename(self.streets), field_mapping=field_mappings)
 
         # Update the fc_id that will be used to relate back to this Streets feature class in Edge#FCID fields
-        self.fc_id = arcpy.Describe(self.streets).DSID
+        desc = arcpy.Describe(self.streets)
+        self.fc_id = desc.DSID
+        self.streets_oid_field = desc.oidFieldName
 
     @timed_exec
     def _detect_and_delete_duplicate_streets(self):
@@ -542,9 +545,8 @@ class MultiNetProcessor:
         # If there are any duplicates, delete them.
         if duplicate_streets:
             duplicate_streets = [str(oid) for oid in duplicate_streets]
-            oid_field = arcpy.Describe(self.streets).OIDFieldName
             arcpy.AddMessage("Duplicate streets were detected and will be removed.")
-            where = f"{oid_field} IN ({', '.join(duplicate_streets)})"
+            where = f"{self.streets_oid_field} IN ({', '.join(duplicate_streets)})"
             layer_name = "Temp_Streets"
             arcpy.management.MakeFeatureLayer(self.streets, layer_name, where)
             arcpy.management.DeleteRows(layer_name)
@@ -982,20 +984,14 @@ class MultiNetProcessor:
     def _read_and_index_streets(self):
         """Read in the streets table and index it for quick lookups."""
         arcpy.AddMessage("Reading and indexing Streets table...")
-        # Store street geometry and junction IDs in a dataframe for quick lookups
-        with arcpy.da.SearchCursor(self.streets, ["ID", "OID@", "SHAPE@", "F_JNCTID", "T_JNCTID"]) as cur:
-            self.streets_df = pd.DataFrame(cur, columns=["ID", "OID", "SHAPE", "F_JNCTID", "T_JNCTID"])
-        ############
-        arcpy.AddMessage("Memory usage of self.streets_df immediately after SearchCursor:")
-        arcpy.AddMessage(self.streets_df.memory_usage(deep=True))
-        arcpy.AddMessage(self.streets_df.memory_usage(deep=True).sum())
+        # Store street info in a dataframe for quick lookups
+        with arcpy.da.SearchCursor(self.streets, ["ID", "OID@", "F_JNCTID", "T_JNCTID"]) as cur:
+            self.streets_df = pd.DataFrame(cur, columns=["ID", "OID", "F_JNCTID", "T_JNCTID"])
         # Cast the ID field from its original double to an int64 for lookups and indexing
         self.streets_df = self.streets_df.astype({"ID": np.int64})
         self.streets_df.set_index("ID", inplace=True)
-        ############
-        arcpy.AddMessage("Memory usage of self.streets_df after converting ID to int64 and indexing:")
-        arcpy.AddMessage(self.streets_df.memory_usage(deep=True))
-        arcpy.AddMessage(self.streets_df.memory_usage(deep=True).sum())
+        # Add an empty field to store street geometries.  They'll be filled only as needed to conserve memory
+        self.streets_df["SHAPE"] = None
 
     @timed_exec
     def _populate_streets_fields(self):
@@ -1217,6 +1213,17 @@ class MultiNetProcessor:
                 # Update the row in the Streets table
                 cur.updateRow(updated_row)
 
+    def _get_street_geometry(self, street_id, oid):
+        """Return the geometry of the designated street feature."""
+        # Check to see if the geometry for this street is already stored
+        geom = self.streets_df.at[street_id, "SHAPE"]
+        if geom is None:
+            # If it's not stored already, get it from the dataset and store it in case it gets queried again
+            with arcpy.da.SearchCursor(self.streets, ["SHAPE@"], f"{self.streets_oid_field} = {oid}") as cur:
+                geom = next(cur)[0]
+            self.streets_df.at[street_id, "SHAPE"] = geom
+        return geom
+
     @timed_exec
     def _generate_turn_features(self):
         """Generate the turn features and insert them into the turn feature class."""
@@ -1310,7 +1317,7 @@ class MultiNetProcessor:
                     edge_fields += [self.fc_id, street["OID"], edge_pos]
                     num_edges += 1
                     # Store the geometry for this segment
-                    edge_geom.append(street["SHAPE"])
+                    edge_geom.append(self._get_street_geometry(street_id, street["OID"]))
                     # For the first edge in the sequence, determine the value of the Edge1End field
                     if num_edges == 1:
                         if jnctid == street["F_JNCTID"]:
@@ -1679,7 +1686,7 @@ class MultiNetProcessor:
                                 valid = False
                                 break
                             # Store the geometry for this segment
-                            edge_info.append((street["SHAPE"], record["SEQNR"], street["OID"]))
+                            edge_info.append((self._get_street_geometry(street_id, street["OID"]), record["SEQNR"], street["OID"]))
                         if not valid:
                             # Something went wrong in constructing the signpost. Skip it and move on.
                             continue
