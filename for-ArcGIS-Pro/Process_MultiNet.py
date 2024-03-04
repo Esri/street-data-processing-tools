@@ -1581,6 +1581,10 @@ class MultiNetProcessor:
                     # For each ID in the input sp table, grab the records and build the geometry
                     signpost_oid = 1
                     for id, group in grouped_sp_df:
+                        if isinstance(id, tuple):
+                            # In newer versions of pandas, groupby keys come back as tuples, so just get the first item
+                            # in the tuple
+                            id = id[0]
                         exit_name = None
                         branch_fields = []
                         toward_fields = []
