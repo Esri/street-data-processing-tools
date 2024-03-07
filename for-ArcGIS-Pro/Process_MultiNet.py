@@ -724,6 +724,11 @@ class MultiNetProcessor:
         with arcpy.da.InsertCursor(self.profiles, output_fields) as cur:
             # Loop through the records in the HSPR table and calculate the SpeedFactor fields accordingly
             for profile_id, group in hspr_df:
+                if isinstance(profile_id, tuple):
+                    # In newer versions of pandas, groupby keys come back as tuples, so just get the first item
+                    # in the tuple
+                    profile_id = profile_id[0]
+
                 # Initialize a new row with the ProfileID and defaulting all the SpeedFactor fields to None.
                 new_row = [profile_id] + [None] * (len(output_fields) - 1)
 
@@ -1581,6 +1586,10 @@ class MultiNetProcessor:
                     # For each ID in the input sp table, grab the records and build the geometry
                     signpost_oid = 1
                     for id, group in grouped_sp_df:
+                        if isinstance(id, tuple):
+                            # In newer versions of pandas, groupby keys come back as tuples, so just get the first item
+                            # in the tuple
+                            id = id[0]
                         exit_name = None
                         branch_fields = []
                         toward_fields = []
