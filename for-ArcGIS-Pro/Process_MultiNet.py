@@ -1,6 +1,6 @@
 """Class to process raw TomTom MultiNet data into a network dataset.
 
-   Copyright 2023 Esri
+   Copyright 2024 Esri
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -457,10 +457,10 @@ class MultiNetProcessor:
 
         # Do some simple checks
         if not os.path.exists(self.out_folder):
-            arcpy.AddMessage(f"Output folder {self.out_folder} does not exist.")
+            arcpy.AddError(f"Output folder {self.out_folder} does not exist.")
             return False
         if os.path.exists(os.path.join(self.out_folder, self.gdb_name)):
-            arcpy.AddMessage(f"Output geodatabase {os.path.join(self.out_folder, self.gdb_name)} already exists.")
+            arcpy.AddError(f"Output geodatabase {os.path.join(self.out_folder, self.gdb_name)} already exists.")
             return False
         if self.out_sr.name == "Unknown":
             arcpy.AddError("The input data has an unknown spatial reference.")
@@ -497,7 +497,9 @@ class MultiNetProcessor:
         arcpy.AddMessage("Copying input network geometry feature class to target feature dataset...")
 
         # Filter out address area boundary elements
-        nw_layer = arcpy.management.MakeFeatureLayer(self.in_multinet.nw, "NW layer", "FEATTYP <> 4165").getOutput(0)
+        with arcpy.EnvManager(overwriteOutput=True):
+            nw_layer = arcpy.management.MakeFeatureLayer(
+                self.in_multinet.nw, "NW layer", "FEATTYP <> 4165").getOutput(0)
 
         # Construct field mappings to use when copying the original data.
         field_mappings = arcpy.FieldMappings()
@@ -548,7 +550,8 @@ class MultiNetProcessor:
             arcpy.AddMessage("Duplicate streets were detected and will be removed.")
             where = f"{self.streets_oid_field} IN ({', '.join(duplicate_streets)})"
             layer_name = "Temp_Streets"
-            arcpy.management.MakeFeatureLayer(self.streets, layer_name, where)
+            with arcpy.EnvManager(overwriteOutput=True):
+                arcpy.management.MakeFeatureLayer(self.streets, layer_name, where)
             arcpy.management.DeleteRows(layer_name)
 
     @timed_exec
@@ -884,7 +887,7 @@ class MultiNetProcessor:
 
         # Join LVC to LRS and drop any rows that had a match and got transferred to LRS
         self.lrs_df = self.lrs_df.join(lvc_df, how="left")
-        self.lrs_df = self.lrs_df[self.lrs_df["DROP"] is not True]
+        self.lrs_df = self.lrs_df[self.lrs_df["DROP"] != True]
         self.lrs_df.reset_index(inplace=True)
         self.lrs_df.drop(columns=["DROP", "SEQNR"], inplace=True)
         del lvc_df
