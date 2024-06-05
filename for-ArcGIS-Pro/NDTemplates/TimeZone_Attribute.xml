@@ -1,0 +1,13 @@
+<DENetworkDataset xsi:type='typens:DENetworkDataset' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:typens='http://www.esri.com/schemas/ArcGIS/2.9.0'>
+        <EvaluatedNetworkAttribute xsi:type='typens:EvaluatedNetworkAttribute' >
+            <ID>4</ID>
+            <Name>TimeZoneID</Name>
+            <Units>Unknown</Units>
+            <DataType>esriNADTInteger</DataType>
+            <UsageType>esriNAUTDescriptor</UsageType>
+            <UserData xsi:nil='true'/>
+            <UseByDefault>false</UseByDefault>
+            <AttributeParameters xsi:type='typens:ArrayOfNetworkAttributeParameter'/>
+            <TimeAware>false</TimeAware>
+        </EvaluatedNetworkAttribute>
+</DENetworkDataset>

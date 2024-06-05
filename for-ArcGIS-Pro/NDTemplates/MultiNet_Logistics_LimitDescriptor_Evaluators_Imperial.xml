@@ -14,7 +14,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>ConstantValue</Key>
-                        <Value xsi:type='xs:boolean'>false</Value>
+                        <Value xsi:type='xs:double'>0</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
@@ -34,7 +34,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>ConstantValue</Key>
-                        <Value xsi:type='xs:boolean'>false</Value>
+                        <Value xsi:type='xs:double'>0</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
@@ -54,7 +54,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>ConstantValue</Key>
-                        <Value xsi:type='xs:boolean'>false</Value>
+                        <Value xsi:type='xs:double'>0</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
@@ -74,7 +74,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Expression</Key>
-                        <Value xsi:type='xs:string'>!$FIELDNAME$! == &quot;Y&quot;</Value>
+                        <Value xsi:type='xs:string'>!$FIELDNAME$!</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>PreLogic</Key>
@@ -102,7 +102,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Expression</Key>
-                        <Value xsi:type='xs:string'>!$FIELDNAME$! == &quot;Y&quot;</Value>
+                        <Value xsi:type='xs:string'>!$FIELDNAME$!</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>PreLogic</Key>
