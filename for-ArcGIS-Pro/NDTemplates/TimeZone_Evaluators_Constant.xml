@@ -2,7 +2,7 @@
         <NetworkAssignment xsi:type='typens:NetworkAssignment'>
             <IsDefault>true</IsDefault>
             <ID>-1</ID>
-            <NetworkAttributeName>$NAME$</NetworkAttributeName>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
             <NetworkElementType>esriNETJunction</NetworkElementType>
             <NetworkEvaluatorCLSID>{318C4B91-F5D2-467A-996C-0AB51B0D8FF2}</NetworkEvaluatorCLSID>
             <NetworkEdgeDirection>esriNEDNone</NetworkEdgeDirection>
@@ -14,7 +14,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>ConstantValue</Key>
-                        <Value xsi:type='xs:boolean'>false</Value>
+                        <Value xsi:type='xs:int'>0</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
@@ -22,7 +22,7 @@
         <NetworkAssignment xsi:type='typens:NetworkAssignment'>
             <IsDefault>true</IsDefault>
             <ID>-1</ID>
-            <NetworkAttributeName>$NAME$</NetworkAttributeName>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
             <NetworkElementType>esriNETEdge</NetworkElementType>
             <NetworkEvaluatorCLSID>{318C4B91-F5D2-467A-996C-0AB51B0D8FF2}</NetworkEvaluatorCLSID>
             <NetworkEdgeDirection>esriNEDNone</NetworkEdgeDirection>
@@ -34,7 +34,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>ConstantValue</Key>
-                        <Value xsi:type='xs:boolean'>false</Value>
+                        <Value xsi:type='xs:int'>0</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
@@ -42,7 +42,7 @@
         <NetworkAssignment xsi:type='typens:NetworkAssignment'>
             <IsDefault>true</IsDefault>
             <ID>-1</ID>
-            <NetworkAttributeName>$NAME$</NetworkAttributeName>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
             <NetworkElementType>esriNETTurn</NetworkElementType>
             <NetworkEvaluatorCLSID>{318C4B91-F5D2-467A-996C-0AB51B0D8FF2}</NetworkEvaluatorCLSID>
             <NetworkEdgeDirection>esriNEDNone</NetworkEdgeDirection>
@@ -54,7 +54,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>ConstantValue</Key>
-                        <Value xsi:type='xs:boolean'>false</Value>
+                        <Value xsi:type='xs:int'>0</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
@@ -62,27 +62,19 @@
         <NetworkAssignment xsi:type='typens:NetworkAssignment'>
             <IsDefault>false</IsDefault>
             <ID>-1</ID>
-            <NetworkAttributeName>$NAME$</NetworkAttributeName>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
             <NetworkSourceName>Streets</NetworkSourceName>
-            <NetworkEvaluatorCLSID>{68055FC4-37D5-4BD0-81A5-CD177A29759C}</NetworkEvaluatorCLSID>
+            <NetworkEvaluatorCLSID>{318C4B91-F5D2-467A-996C-0AB51B0D8FF2}</NetworkEvaluatorCLSID>
             <NetworkEdgeDirection>esriNEDAlongDigitized</NetworkEdgeDirection>
             <NetworkEvaluatorData xsi:type='typens:PropertySet'>
                 <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Version</Key>
-                        <Value xsi:type='xs:short'>2</Value>
+                        <Value xsi:type='xs:short'>1</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
-                        <Key>Expression</Key>
-                        <Value xsi:type='xs:string'>!$FIELDNAME$! == &quot;Y&quot;</Value>
-                    </PropertySetProperty>
-                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
-                        <Key>PreLogic</Key>
-                        <Value xsi:type='xs:string'/>
-                    </PropertySetProperty>
-                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
-                        <Key>Language</Key>
-                        <Value xsi:type='xs:string'>Python</Value>
+                        <Key>ConstantValue</Key>
+                        <Value xsi:type='xs:int'>1</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
@@ -90,27 +82,19 @@
         <NetworkAssignment xsi:type='typens:NetworkAssignment'>
             <IsDefault>false</IsDefault>
             <ID>-1</ID>
-            <NetworkAttributeName>$NAME$</NetworkAttributeName>
+            <NetworkAttributeName>TimeZoneID</NetworkAttributeName>
             <NetworkSourceName>Streets</NetworkSourceName>
-            <NetworkEvaluatorCLSID>{68055FC4-37D5-4BD0-81A5-CD177A29759C}</NetworkEvaluatorCLSID>
+            <NetworkEvaluatorCLSID>{318C4B91-F5D2-467A-996C-0AB51B0D8FF2}</NetworkEvaluatorCLSID>
             <NetworkEdgeDirection>esriNEDAgainstDigitized</NetworkEdgeDirection>
             <NetworkEvaluatorData xsi:type='typens:PropertySet'>
                 <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Version</Key>
-                        <Value xsi:type='xs:short'>2</Value>
+                        <Value xsi:type='xs:short'>1</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
-                        <Key>Expression</Key>
-                        <Value xsi:type='xs:string'>!$FIELDNAME$! == &quot;Y&quot;</Value>
-                    </PropertySetProperty>
-                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
-                        <Key>PreLogic</Key>
-                        <Value xsi:type='xs:string'/>
-                    </PropertySetProperty>
-                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
-                        <Key>Language</Key>
-                        <Value xsi:type='xs:string'>Python</Value>
+                        <Key>ConstantValue</Key>
+                        <Value xsi:type='xs:int'>1</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
