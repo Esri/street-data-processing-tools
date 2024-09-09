@@ -3,7 +3,7 @@
 The tools process shapefile data from TomTom® MultiNet® or HERE™ NAVSTREETS™ into a file geodatabase network dataset.  This version of the toolbox must be run in ArcGIS Pro.
 
 ## Software Requirements
-* ArcGIS Pro 2.9 or later (The tool may run successfully on earlier version of ArcGIS Pro but has not been tested.)
+* ArcGIS Pro 2.9 or later (The tool may run successfully on earlier versions of ArcGIS Pro but has not been tested.)
 * Basic license or higher
 * ArcGIS Network Analyst Extension
 

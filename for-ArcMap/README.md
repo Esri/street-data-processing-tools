@@ -5,6 +5,9 @@ The tools process shapefile data from TomTom® MultiNet® or HERE™ NAVSTREETS�
 ![Street Data Processing Tools](street-data-processing-tools.png)
 
 ## Software Requirements
+
+DEPRECATION NOTICE: This version of the tool is deprecated because a version of this tool for ArcGIS Pro is now available and ArcMap is in the mature support phase and will be retired in 2026.  No further updates will be made to this tool, and only minimal support will be provided.  Please migrate your workflows to ArcGIS Pro.
+
 * ArcGIS 10.8 or later
 * ArcView (Basic) license or higher
 * ArcGIS Network Analyst Extension

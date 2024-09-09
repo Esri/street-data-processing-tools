@@ -4,18 +4,27 @@ When you purchase commercial street data with the intent of using it in ArcGIS N
 The tools process shapefile data from TomTom® MultiNet® or HERE™ NAVSTREETS™ into a file geodatabase network dataset. The tools import the street feature classes into the file geodatabase and add the appropriate fields to these feature classes for modeling overpasses/underpasses, one-way streets, travel times, hierarchy, and driving directions. They also create feature classes and tables for modeling turn restrictions and signpost guidance. The tools can also processes advanced logistics attributes from data vendors and model them as restrictions and attribute parameters in the network dataset. If historical traffic data, such as TomTom Speed Profiles® or HERE Traffic Patterns™, is also provided, these tools can carry over this information to the network dataset so you can generate the best routes based on a particular time and day of the week. The historical traffic data can be based on TMC codes or LINK_IDs.
 
 ## Software Requirements
-Separate versions of the toolbox are provided for use in ArcMap and ArcGIS Pro. (Note that network datasets created using the ArcMap version of this tool can still be used in ArcGIS Pro.  The tool must be run in ArcMap, but the resulting network is compatible with both products.)
 
-Requirements for the ArcGIS Pro version of the tool:
-* ArcGIS Pro 2.9 or later (The tool may run successfully on earlier version of ArcGIS Pro but has not been tested.)
+Separate versions of the toolbox are provided for use in ArcMap and ArcGIS Pro. All users are encouraged to use the ArcGIS Pro version, as the ArcMap version is deprecated and no longer updated.
+
+### ArcGIS Pro version
+
+Software requirements:
+* ArcGIS Pro 2.9 or later (The tool may run successfully on earlier versions of ArcGIS Pro but has not been tested.)
 * Basic license or higher
 * ArcGIS Network Analyst Extension
 
-Requirements for the ArcMap version of the tool:
+### ArcMap version
+
+DEPRECATION NOTICE: This version of the tool is deprecated because a version of this tool for ArcGIS Pro is now available and ArcMap is in the mature support phase and will be retired in 2026.  No further updates will be made to this tool, and only minimal support will be provided.  Please migrate your workflows to ArcGIS Pro.
+
+Software requirements:
 * ArcGIS 10.8 or later
 * ArcView (Basic) license or higher
 * ArcGIS Network Analyst Extension
 * If you have installed ArcGIS for Desktop Background Geoprocessing (64 Bit) update, the tools will run only if background geoprocessing is disabled.
+
+(Note that network datasets created using the ArcMap version of this tool can still be used in ArcGIS Pro.  The tool must be run in ArcMap, but the resulting network is compatible with both products.)
 
 ## Instructions
 
