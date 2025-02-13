@@ -70,15 +70,19 @@
                 <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Version</Key>
-                        <Value xsi:type='xs:short'>1</Value>
+                        <Value xsi:type='xs:short'>2</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Expression</Key>
-                        <Value xsi:type='xs:string'>[$FROMFIELD$]</Value>
+                        <Value xsi:type='xs:string'>!$FROMFIELD$!</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>PreLogic</Key>
                         <Value xsi:type='xs:string'/>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Language</Key>
+                        <Value xsi:type='xs:string'>Python</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
@@ -94,15 +98,19 @@
                 <PropertyArray xsi:type='typens:ArrayOfPropertySetProperty'>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Version</Key>
-                        <Value xsi:type='xs:short'>1</Value>
+                        <Value xsi:type='xs:short'>2</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Expression</Key>
-                        <Value xsi:type='xs:string'>[$TOFIELD$]</Value>
+                        <Value xsi:type='xs:string'>!$TOFIELD$!</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>PreLogic</Key>
                         <Value xsi:type='xs:string'/>
+                    </PropertySetProperty>
+                    <PropertySetProperty xsi:type='typens:PropertySetProperty'>
+                        <Key>Language</Key>
+                        <Value xsi:type='xs:string'>Python</Value>
                     </PropertySetProperty>
                 </PropertyArray>
             </NetworkEvaluatorData>
