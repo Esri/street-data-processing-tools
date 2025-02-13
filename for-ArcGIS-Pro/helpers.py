@@ -286,6 +286,7 @@ class StreetDataProcessor:
         with arcpy.da.SearchCursor(self.streets, ["OID@", id_field_name]) as cur:
             id_df = pd.DataFrame(cur, columns=["OID", id_field_name])
         duplicate_streets = id_df[id_df.duplicated(subset=id_field_name)]["OID"].to_list()
+        del id_df
         # If there are any duplicates, delete them.
         if duplicate_streets:
             duplicate_streets = [str(oid) for oid in duplicate_streets]

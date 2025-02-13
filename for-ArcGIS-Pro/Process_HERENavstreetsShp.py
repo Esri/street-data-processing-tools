@@ -412,7 +412,7 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
 
         # Partially create and populate historical traffic tables
         # Some traffic-related tables must be read early because the information is used in populating Streets feature
-        # class fields because. More work will be done later on populating traffic tables because a fully-populated
+        # class fields. More work will be done later on populating traffic tables because a fully-populated
         # Streets feature class is needed for that. (A bit of a chicken-and-egg problem here.)
         if self.include_historical_traffic:
             # Create the Profiles table and populate the spd_df dataframe that is used later
@@ -733,12 +733,16 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
                 # Retrieve the relevant traffic records for this LINK_ID
                 traff_records = self.traff_df.loc[link_id]
                 if isinstance(traff_records, pd.Series):
-                    traff_records = pd.DataFrame([traff_records])
-                for _, traff_record in traff_records.iterrows():
-                    if traff_record["EdgeFrmPos"] == 0:
-                        row[fname_idx["FT_AverageSpeed"]] = traff_record["AverageSpeed"]
-                    elif traff_record["EdgeFrmPos"] == 1:
-                        row[fname_idx["TF_AverageSpeed"]] = traff_record["AverageSpeed"]
+                    if traff_records["EdgeFrmPos"] == 0:
+                        row[fname_idx["FT_AverageSpeed"]] = traff_records["AverageSpeed"]
+                    elif traff_records["EdgeFrmPos"] == 1:
+                        row[fname_idx["TF_AverageSpeed"]] = traff_records["AverageSpeed"]
+                else:
+                    for _, traff_record in traff_records.iterrows():
+                        if traff_record["EdgeFrmPos"] == 0:
+                            row[fname_idx["FT_AverageSpeed"]] = traff_record["AverageSpeed"]
+                        elif traff_record["EdgeFrmPos"] == 1:
+                            row[fname_idx["TF_AverageSpeed"]] = traff_record["AverageSpeed"]
             except KeyError:
                 # There were no traffic records for this LINK_ID. Just skip it and move on.
                 pass
@@ -906,17 +910,25 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
                     # tool always used the last one, so that's what we do here.
                     alt_streets_records = alt_streets_df.loc[link_id]
                     if isinstance(alt_streets_records, pd.Series):
-                        alt_streets_records = pd.DataFrame([alt_streets_records])
-                    for _, alt_streets_record in alt_streets_records.iterrows():
                         if (
-                            alt_streets_record["ST_TYP_BEF"] != updated_row[fname_idx["ST_TYP_BEF"]] or
-                            alt_streets_record["ST_NM_BASE"] != updated_row[fname_idx["ST_NM_BASE"]] or
-                            alt_streets_record["ST_TYP_AFT"] != updated_row[fname_idx["ST_TYP_AFT"]]
+                            alt_streets_records["ST_TYP_BEF"] != updated_row[fname_idx["ST_TYP_BEF"]] or
+                            alt_streets_records["ST_NM_BASE"] != updated_row[fname_idx["ST_NM_BASE"]] or
+                            alt_streets_records["ST_TYP_AFT"] != updated_row[fname_idx["ST_TYP_AFT"]]
                         ):
                             for field in alt_street_fields:
-                                # Keep updating with each appropriate record discovered.  This results in the last one
-                                # ultimately being used, which matches the ArcMap tool's behavior.
-                                updated_row[fname_idx[field]] = alt_streets_record[field.rstrip("_Alt")]
+                                updated_row[fname_idx[field]] = alt_streets_records[field.rstrip("_Alt")]
+                    else:
+                        # If more than one matching record was returned, find the last record with differences and use
+                        # that, which matches the ArcMap tool's behavior. (iterating in backwards order)
+                        for _, alt_streets_record in alt_streets_records.iloc[::-1].iterrows():
+                            if (
+                                alt_streets_record["ST_TYP_BEF"] != updated_row[fname_idx["ST_TYP_BEF"]] or
+                                alt_streets_record["ST_NM_BASE"] != updated_row[fname_idx["ST_NM_BASE"]] or
+                                alt_streets_record["ST_TYP_AFT"] != updated_row[fname_idx["ST_TYP_AFT"]]
+                            ):
+                                for field in alt_street_fields:
+                                    updated_row[fname_idx[field]] = alt_streets_record[field.rstrip("_Alt")]
+                                break
                 except KeyError:
                     # There were no alt streets records for this LINK_ID. Just skip it and move on.
                     pass
@@ -1042,33 +1054,63 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
         self.spd_df["OID"] = range(1, len(self.spd_df) + 1)
         # Set index to prepare for future use
         self.spd_df.set_index("PATTERN_ID", inplace=True)
+        # Check for constant speed patterns where all H**_** fields are the same across the day
+        self.spd_df["IsConst"] = self.spd_df[h_fields].eq(self.spd_df[h_fields].iloc[:, 0], axis=0).all(axis=1)
+        # Drop H**_** fields, which are no longer needed
+        self.spd_df.drop(columns=h_fields, inplace=True)
 
     @timed_exec
     def _read_link_ref_files(self):
         """Read in the link reference tables and use them to populate the Streets_Patterns table."""
         assert self.spd_df is not None
 
-        # Check for constant speed patterns where all H**_** fields are the same across the day
-        cols = [col for col in self.spd_df.columns if col.startswith("H") and "_" in col]
-        self.spd_df["IsConst"] = self.spd_df[cols].eq(self.spd_df[cols].iloc[:, 0], axis=0).all(axis=1)
+        # Make a list of street link IDs to use for filtering out irrelevant traffic records
+        streets_ids = []
+        for row in arcpy.da.SearchCursor(self.streets, ["LINK_ID"]):
+            streets_ids.append(row[0])
+
+        # The traffic tables can sometimes be huge, so read them in and process them in chunks to reduce
+        # memory consumption
+        chunk_size = 100000
 
         # Read the link reference table covering functional class 5 and remove records that are constant across all
         # times of day and days of week
-        lr5_df = pd.read_csv(self.in_data_object.link_ref_table_5)
-        lr5_df = lr5_df.join(self.spd_df["IsConst"], "U")
-        lr5_df["IsConst2"] = lr5_df[DAY_FIELDS].eq(lr5_df[DAY_FIELDS].iloc[:, 0], axis=0).all(axis=1)
-        lr5_df = lr5_df.loc[~(lr5_df["IsConst"] & lr5_df["IsConst2"])]
-        lr5_df.drop(columns=["IsConst", "IsConst2"], inplace=True)
+        lr5_df_chunks = []
+        num_chunks = 0
+        for lr5_df in pd.read_csv(self.in_data_object.link_ref_table_5, chunksize=chunk_size):
+            num_chunks += 1
+            lr5_df = lr5_df[lr5_df["LINK_PVID"].isin(streets_ids)]
+            lr5_df = lr5_df.join(self.spd_df["IsConst"], "U")
+            lr5_df["IsConst2"] = lr5_df[DAY_FIELDS].eq(lr5_df[DAY_FIELDS].iloc[:, 0], axis=0).all(axis=1)
+            lr5_df = lr5_df.loc[~(lr5_df["IsConst"] & lr5_df["IsConst2"])]
+            lr5_df.drop(columns=["IsConst", "IsConst2"], inplace=True)
+            # Calculate from and to pos based on travel direction
+            lr5_df["EdgeFrmPos"] = lr5_df["TRAVEL_DIRECTION"] == "T"
+            lr5_df["EdgeToPos"] = lr5_df["TRAVEL_DIRECTION"] == "F"
+            lr5_df["EdgeFrmPos"] = lr5_df["EdgeFrmPos"].astype(int)
+            lr5_df["EdgeToPos"] = lr5_df["EdgeToPos"].astype(int)
+            lr5_df.drop(columns=["TRAVEL_DIRECTION"], inplace=True)
+            lr5_df_chunks.append(lr5_df)
+        lr5_df = pd.concat(lr5_df_chunks)
+        del lr5_df_chunks
 
         # Read the link reference table covering functional class 1-4 and combine it with the processed functional
         # class 5 table
-        lr_df = pd.concat([pd.read_csv(self.in_data_object.link_ref_table_1_4), lr5_df])
-
-        # Calculate from and to pos based on travel direction
-        lr_df["EdgeFrmPos"] = lr_df["TRAVEL_DIRECTION"] == "T"
-        lr_df["EdgeToPos"] = lr_df["TRAVEL_DIRECTION"] == "F"
-        lr_df["EdgeFrmPos"] = lr_df["EdgeFrmPos"].astype(int)
-        lr_df["EdgeToPos"] = lr_df["EdgeToPos"].astype(int)
+        lr_df_chunks = []
+        num_chunks = 0
+        for lr_df in pd.read_csv(self.in_data_object.link_ref_table_1_4, chunksize=chunk_size):
+            num_chunks += 1
+            lr_df = lr_df[lr_df["LINK_PVID"].isin(streets_ids)]
+            # Calculate from and to pos based on travel direction
+            lr_df["EdgeFrmPos"] = lr_df["TRAVEL_DIRECTION"] == "T"
+            lr_df["EdgeToPos"] = lr_df["TRAVEL_DIRECTION"] == "F"
+            lr_df["EdgeFrmPos"] = lr_df["EdgeFrmPos"].astype(int)
+            lr_df["EdgeToPos"] = lr_df["EdgeToPos"].astype(int)
+            lr_df.drop(columns=["TRAVEL_DIRECTION"], inplace=True)
+            lr_df_chunks.append(lr_df)
+        lr_df = pd.concat(lr_df_chunks + [lr5_df])
+        del lr_df_chunks
+        del lr5_df
 
         # Standardize schema
         lr_df.rename(columns={"LINK_PVID": "LINK_ID"}, inplace=True)
@@ -1120,11 +1162,17 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
 
         # Calculate AverageSpeed and BaseSpeed for each weekday based on info in the Patterns table
         for day in DAY_FIELDS:
-            temp_joined_df = self.traff_df.join(self.spd_df, day)
-            self.traff_df[f"AverageSpeed_{day}"] = temp_joined_df["AverageSpeed"]
-            self.traff_df[f"BaseSpeed_{day}"] = temp_joined_df["BaseSpeed"]
+            self.traff_df = self.traff_df.join(self.spd_df[["AverageSpeed", "BaseSpeed", "OID"]], day)
+            self.traff_df.rename(
+                columns={
+                    "AverageSpeed": f"AverageSpeed_{day}",
+                    "BaseSpeed": f"BaseSpeed_{day}"
+                },
+                inplace=True
+            )
             # Update day field to reference the Patterns OIDs instead of PatternID.
-            self.traff_df[day] = temp_joined_df["OID"]
+            self.traff_df[day] = self.traff_df["OID"]
+            self.traff_df.drop(columns=["OID"], inplace=True)
 
         # Calculate overall AverageSpeed and BaseSpeed
         # To get the freeflow speed, use the weighted harmonic mean of these seven speeds as follows:
