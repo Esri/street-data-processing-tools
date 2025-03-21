@@ -429,7 +429,7 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
         # Read in output streets for future look-ups
         self._read_and_index_streets()
 
-        # Create and populate the Streets_Patterns historical traffic table, which requires.  Other historical traffic
+        # Create and populate the Streets_Patterns historical traffic table.  Other historical traffic
         # was handled earlier, but this table requires the Streets feature class to be fully populated first.
         if self.include_historical_traffic:
             self._create_and_populate_streets_patterns_table()
@@ -726,7 +726,7 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
                 kph = kph * 1.2
             return kph
 
-        def calc_traffic_based_speed_and_minutes(row, kph_val):
+        def calc_traffic_based_speed_and_minutes(link_id, row, kph_val):
             """Populate AverageSpeed and Minutes fields based on traffic table info."""
             # CalculatefAverageSpeed field from matching traffic records
             try:
@@ -953,7 +953,7 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
                     updated_row[fname_idx["Minutes"]] = updated_row[fname_idx["Meters"]] * 0.06 / kph_val
                 else:
                     # Populate Minutes and AverageSpeed fields from traffic tables
-                    updated_row = calc_traffic_based_speed_and_minutes(updated_row, kph_val)
+                    updated_row = calc_traffic_based_speed_and_minutes(link_id, updated_row, kph_val)
 
                 # Populate the Language field
                 updated_row[fname_idx["Language"]] = LNG_CODES.get(updated_row[fname_idx["ST_LANGCD"]], "")
@@ -1080,7 +1080,16 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
         for lr5_df in pd.read_csv(self.in_data_object.link_ref_table_5, chunksize=chunk_size):
             num_chunks += 1
             lr5_df = lr5_df[lr5_df["LINK_PVID"].isin(streets_ids)]
+            # Preserve original table order for proper sorting
+            lr5_df["sort_order"] = lr5_df.index
             lr5_df = lr5_df.join(self.spd_df["IsConst"], "U")
+            # Sort the table by the original order. This shouldn't be strictly necessary because the join should
+            # preserve the index order of the table, but a bug in older versions of pandas included in versions of Pro
+            # prior to 3.5 caused the order to get jumbled.  Since the ordering of this table explicitly matters for
+            # what we're doing later, manually sort it just to be sure.
+            lr5_df.sort_values("sort_order", inplace=True)
+            lr5_df.drop(columns=["sort_order"], inplace=True)
+            # Figure out which rows have constant speeds across the day
             lr5_df["IsConst2"] = lr5_df[DAY_FIELDS].eq(lr5_df[DAY_FIELDS].iloc[:, 0], axis=0).all(axis=1)
             lr5_df = lr5_df.loc[~(lr5_df["IsConst"] & lr5_df["IsConst2"])]
             lr5_df.drop(columns=["IsConst", "IsConst2"], inplace=True)
@@ -1127,6 +1136,8 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
         traff_df["EdgeToPos"] = ~traff_df["EdgeFrmPos"]
         traff_df["EdgeFrmPos"] = traff_df["EdgeFrmPos"].astype(int)
         traff_df["EdgeToPos"] = traff_df["EdgeToPos"].astype(int)
+        # Preserve original table order for proper sorting later
+        traff_df["sort_order"] = traff_df.index
         return traff_df
 
     @timed_exec
@@ -1141,6 +1152,11 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
         traff_df["TMC"] = traff_df["TMC"].str.lstrip("+").str.lstrip("-").str.replace("+", "P", regex=False).str.replace("-", "N", regex=False)
         # Join the dataframes and keep only rows that are in both
         traff_df = traff_df.join(tmc_df, "TMC", how="inner")
+        # Sort the table by the original order. This shouldn't be strictly necessary because the join should
+        # preserve the index order of the table, but a bug in older versions of pandas included in versions of Pro prior
+        # to 3.5 caused the order to get jumbled.  Since the ordering of this table explicitly matters for what we're
+        # doing later, manually sort it just to be sure.
+        traff_df.sort_values("sort_order", inplace=True)
         return traff_df
 
     @timed_exec
@@ -1223,6 +1239,9 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
         self.traff_df = self.traff_df.join(self.streets_df[["Meters", "OID"]])
         self.traff_df.rename(columns={"OID": "EdgeFID"}, inplace=True)
         self.traff_df.reset_index(inplace=True)
+
+        # For consistency, sort the dataframe before writing out the records
+        self.traff_df.sort_values(["LINK_ID", "EdgeFrmPos"], inplace=True)
 
         # Write the records to the Streets_Patterns table
         out_fields = [
@@ -1481,6 +1500,8 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
         fields = ["LINK_ID", "MAN_LINKID", "COND_ID"]
         with arcpy.da.SearchCursor(self.in_data_object.rdms, fields) as cur:
             rdms_df = pd.DataFrame(cur, columns=fields)
+        # Preserve original table order for proper sorting later
+        rdms_df["sort_order"] = rdms_df.index
         rdms_df.set_index("COND_ID", inplace=True)
 
         # Read cdms table again to select rows representing road forks
@@ -1493,6 +1514,12 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
         # Join the cdms table to the rdms table to transfer END_OF_LK and to drop rows that don't match the COND_TYPE
         rdms_df = rdms_df.join(cdms_df, how="inner")
         rdms_df.reset_index(inplace=True)
+
+        # Sort the table by the original rmds order. This shouldn't be strictly necessary because the join should
+        # preserve the index order of the table, but a bug in older versions of pandas included in versions of Pro prior
+        # to 3.5 caused the order to get jumbled.  Since the ordering of this table explicitly matters for what we're
+        # doing here, manually sort it just to be sure.
+        rdms_df.sort_values("sort_order", inplace=True)
 
         # Group by LINK_ID to ensure that road fork records are grouped together
         rf_grouped_rdms_df = rdms_df.groupby(["LINK_ID"])
