@@ -969,6 +969,16 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
                 try:
                     # Retrieve the relevant cdms records for this LINK_ID
                     ufr_record = ufr_df.loc[link_id]
+                    if isinstance(ufr_record, pd.DataFrame):
+                        # There were multiple records associated with this LINK_ID.
+                        # There are several reasons why a link can have multiple entries with COND_TYPE = 12,
+                        # for example, time-dependent tolling, different tolling methods or agencies, etc.
+                        # The UFR fields are meant to capture whether a road is subject to a toll at any time,
+                        # so we would want to capture if there are any records for that link with COND_TYPE = 12
+                        # in the Cdms table with a value of Y for each AR field. Consequently, if there are
+                        # multiple records, use a value of Y if any row has a value of Y; otherwise, arbitrarily
+                        # use the value of the first returned record.
+                        ufr_record = ufr_record.iloc[0].mask(ufr_record.isin(["Y"]).any(), "Y")
                     for ufr_suff in AR_FLD_SUFS:
                         updated_row[fname_idx[f"UFR_{ufr_suff}"]] = ufr_record[f"AR_{ufr_suff}"]
                 except KeyError:
