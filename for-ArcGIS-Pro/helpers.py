@@ -238,9 +238,9 @@ class StreetDataProcessor:
             return False
 
         # Make sure the license is available.
-        if arcpy.CheckExtension("network").lower() == "available":
+        try:
             arcpy.CheckOutExtension("network")
-        else:
+        except Exception:  # pylint:disable=broad-except
             arcpy.AddError("The Network Analyst extension license is unavailable.")
             return False
 
