@@ -4213,7 +4213,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Expression</Key>
-                        <Value xsi:type='xs:string'>max(5, !NET2CLASS! + 1)</Value>
+                        <Value xsi:type='xs:string'>min(5, !NET2CLASS! + 1)</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>PreLogic</Key>
@@ -4241,7 +4241,7 @@
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>Expression</Key>
-                        <Value xsi:type='xs:string'>max(5, !NET2CLASS! + 1)</Value>
+                        <Value xsi:type='xs:string'>min(5, !NET2CLASS! + 1)</Value>
                     </PropertySetProperty>
                     <PropertySetProperty xsi:type='typens:PropertySetProperty'>
                         <Key>PreLogic</Key>
