@@ -1,6 +1,6 @@
 """Class to process raw HERE NAVSTREETS shapefile data into a network dataset.
 
-   Copyright 2025 Esri
+   Copyright 2026 Esri
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -1777,23 +1777,23 @@ class HereNavstreetsShpProcessor(StreetDataProcessor):
                             lang = LNG_CODES[record["LANG_CODE"]]
                             branch_dir = record["BR_RTEDIR"]
                             # Construct the first set of Branch* fields from BR_RTEID and BR_RTEDIR
-                            branch_text = record["BR_RTEID"].strip()
-                            if branch_text:
-                                branch_fields += [branch_text, branch_dir, lang]
+                            branch_text = record["BR_RTEID"]
+                            if branch_dir and branch_text and branch_text.strip():
+                                branch_fields += [branch_text.strip(), branch_dir, lang]
                             # Construct additional Branch* or Toward* fields from the SIGN_TEXT field
                             # if SIGN_TXTTP == "B", populate a branch
                             # SIGN_TXTTP == "T", populate a toward
-                            sign_text = record["SIGN_TEXT"].strip()
-                            if sign_text:
+                            sign_text = record["SIGN_TEXT"]
+                            if sign_text and sign_text.strip():
                                 sign_type = record["SIGN_TXTTP"]
-                                if sign_type == "B":
-                                    branch_fields += [sign_text, branch_dir, lang]
+                                if sign_type == "B" and branch_dir:
+                                    branch_fields += [sign_text.strip(), branch_dir, lang]
                                 elif sign_type == "T":
-                                    toward_fields += [sign_text, lang]
+                                    toward_fields += [sign_text.strip(), lang]
                             # Construct the final set of Toward* fields from the TOW_RTEID field
-                            toward_text = record["TOW_RTEID"].strip()
-                            if toward_text:
-                                toward_fields += [toward_text, lang]
+                            toward_text = record["TOW_RTEID"]
+                            if toward_text and toward_text.strip():
+                                toward_fields += [toward_text.strip(), lang]
 
                         # Truncate the record if we have too many branch and toward fields
                         truncate = False
